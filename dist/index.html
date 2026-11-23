@@ -2199,7 +2199,7 @@ async function wildEncounter(route) {
       first = false;
       const qw = rv || w;
       const st = S.stats[qw.key] || [0, 0];
-      const dir = st[0] === 0 ? 'fa2en' : (rand() < 0.5 ? 'en2fa' : 'fa2en');
+      const dir = 'en2fa'; // always type the Persian
       const q = makeQuestion(qw, dir);
       const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
       stat(qw, res.ok);
