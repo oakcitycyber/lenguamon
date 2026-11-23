@@ -217,20 +217,27 @@ for (const [m, [b, gl, idiom, fa, line]] of Object.entries(BOXER_TIPS)) npc(m, {
 // ---- story scenes ----
 async function starterSceneEN() {
   const hi = WORDS.find(w => w.tr0 === "how's it going?");
-  await say([T('HAYDEH', `Ah, ${nm()}! ${PF('سلام')}! Come in, come in!`), "In this school we speak English. You already know the basics, so we will start at an intermediate level: real conversations, phrasal verbs, idioms.", `Every conversation in America begins with one phrase. And that phrase is...`]);
+  await say([T('HAYDEH', BI(`Ah, ${nm()}! Come in, come in!`, `آه، ${S.name}! بیا تو، بیا تو!`)),
+    BI('In this school we speak English. You already know the basics, so we will start at an intermediate level: real conversations, phrasal verbs, idioms.', 'در این مدرسه انگلیسی حرف می‌زنیم. تو مقدمات را بلدی، پس از سطح متوسط شروع می‌کنیم: گفت‌وگوهای واقعی، افعال عبارتی و اصطلاحات.'),
+    BI('Every conversation in America begins with one phrase. And that phrase is...', 'هر گفت‌وگویی در آمریکا با یک عبارت شروع می‌شود. و آن عبارت این است...')]);
   const p = $('#portrait'); p.innerHTML = monImg(hi, 'big') + monTag(hi); p.classList.add('show');
   SND.fx('caught');
-  await say([`A little ${B('HOUSE MOUSE')}! In Persian, ${PF('موش')}.`, `It carries the phrase every American says: ${E("how's it going?", 'اوضاع چطوره؟')}`, `${esc(S.name)} received the ${B('HOUSE MOUSE')}!`]);
+  await say([BI(`A little ${B('HOUSE MOUSE')}!`, 'یک موش خانگی کوچولو!'),
+    `${BI('It carries the phrase every American says:', 'او عبارتی را با خودش دارد که هر آمریکایی می‌گوید:')} ${E("how's it going?", 'اوضاع چطوره؟')}`,
+    BI(`${esc(S.name)} received the ${B('HOUSE MOUSE')}!`, `${S.name} موش خانگی را گرفت!`)]);
   p.classList.remove('show');
   S.team.push(makeMon(hi)); S.caught[hi.key] = true; S.seen[hi.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([
-    T('HAYDEH', 'Wild Lenguamon live along Route 66 and all across America. Each one is an animal with an English word or phrase hidden inside.'),
-    `A battle starts with a quiz: you see the meaning in Persian and TYPE the English. ${PF('معنی فارسی را می‌بینی و انگلیسی‌اش را تایپ می‌کنی.')}`,
-    'Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!',
-    `Weaken a word, then use a ${B('NOTEBOOK')} ${PF('دفتر')} to write it down and catch it. Here are 5 NOTEBOOKS.`,
-    'On the road you will meet the Highway Patrol, a startup CEO, and THE AUTOCORRECT, a robot scrambling the words of Seattle. Beyond that lie the Rocky Mountains, Chicago, and finally NEW YORK CITY.',
-    'Every boss tests you with a real conversation. Win them all, and you can handle real life in English!',
-    T('HAYDEH', `${E('Good luck!', 'موفق باشی!')} Practice a little every day.`),
+    T('HAYDEH', BI('Wild Lenguamon live along Route 66 and all across America. Each one is an animal with an English word or phrase hidden inside.', 'لنگوامون‌های وحشی در طول جاده‌ی ۶۶ و سراسر آمریکا زندگی می‌کنند. هر کدام حیوانی است که یک کلمه یا عبارت انگلیسی در خودش پنهان کرده.')),
+    BI('A battle starts with a quiz: you see the meaning in Persian and TYPE the English.', 'نبرد با یک پرسش شروع می‌شود: معنی فارسی را می‌بینی و انگلیسی‌اش را تایپ می‌کنی.'),
+    BI('Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!', 'اگر درست جواب بدهی، حمله‌ات به هدف می‌خورد. اگر اشتباه کنی، لنگوامون وحشی با همان جوابی که لازم داشتی به تو حمله می‌کند!'),
+    BI(`Weaken a word, then use a ${B('NOTEBOOK')} to write it down and catch it. Here are 5 NOTEBOOKS.`, 'کلمه را ضعیف کن، بعد با دفتر آن را بنویس و شکارش کن. این پنج دفتر مال تو.'),
+    BI('Long phrases are higher level and tougher. Short ones are a good place to start.', 'عبارت‌های بلند سطح بالاتر و سخت‌ترند. عبارت‌های کوتاه برای شروع خوب‌اند.'),
+    BI('On the road you will meet the Highway Patrol, a startup CEO, and THE AUTOCORRECT, a robot scrambling the words of Seattle.', 'در راه با پلیس بزرگراه، مدیرعامل یک استارتاپ و «تصحیح خودکار» روبه‌رو می‌شوی؛ رباتی که کلمه‌های سیاتل را به هم ریخته.'),
+    BI('Beyond that lie the Rocky Mountains, Chicago, and finally NEW YORK CITY.', 'بعد از آن کوه‌های راکی، شیکاگو و در آخر شهر نیویورک است.'),
+    BI('Every boss tests you with a real conversation. Win them all, and you can handle real life in English!', 'هر غول آخر با یک گفت‌وگوی واقعی امتحانت می‌کند. همه را ببری، از پس زندگی واقعی به انگلیسی برمی‌آیی!'),
+    BI('One more thing: practice a little every day. Your progress is saved on this device.', 'یک چیز دیگر: هر روز کمی تمرین کن. پیشرفتت روی همین دستگاه ذخیره می‌شود.'),
+    T('HAYDEH', BI('Good luck!', 'موفق باشی!')),
   ]);
   writeSave();
 }

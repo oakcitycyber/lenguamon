@@ -100,22 +100,28 @@ async function gateBoss(id) {
 
 async function starterScene() {
   const hello = WORD[WORDS.find(w => w.tr0 === 'salam').key];
-  await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
+  await say([T('HAYDEH', BI(`Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`, `آه، ${S.name}! سلام! آمدی!`)),
+    BI('Today you begin your journey into the Persian language.', 'امروز سفرت به دنیای زبان فارسی شروع می‌شود.'),
+    BI('Every journey begins with one word. And the first word everyone learns is...', 'هر سفری با یک کلمه شروع می‌شود. و اولین کلمه‌ای که همه یاد می‌گیرند...')]);
   const p = $('#portrait'); p.innerHTML = monImg(hello, 'big') + monTag(hello); p.classList.add('show');
   SND.fx('caught');
-  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is written underneath.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
+  await say([BI(`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is written underneath.`, 'یک موش کوچولو! اسم انگلیسی‌اش زیرش نوشته شده.'),
+    BI(`It carries the first word everyone learns: ${W(hello)} = "hello".`, 'او اولین کلمه‌ای را که همه یاد می‌گیرند با خودش دارد: سلام.'),
+    BI(`${esc(S.name)} received ${B('MOOSH')}!`, `${S.name} موش را گرفت!`)]);
   p.classList.remove('show');
   S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([
-    T('HAYDEH', 'Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz. Each one is an animal of Iran called by its Persian name, with its English name on its collar, and each one carries a secret word.'),
-    "A battle starts straight away with a quiz about the wild Lenguamon's word. You get 4 choices, and you TYPE the right answer.",
-    'Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!',
-    `Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`,
-    'Long words and phrases are higher level and tougher. Short words are a good place to start.',
-    'On the way you will meet a Basij checkpoint, an IRGC commander and THE CENSOR, who has seized the tomb of Hafez in Shiraz. Beyond Shiraz the road climbs through the Zagros Mountains, crosses the salt desert, and ends in TEHRAN, the biggest city of all.',
-    'Every boss tests you with a real conversation. Win them all and you can truly hold a conversation in Persian!',
-    `One more thing: practice a little every day. Your progress is saved on this device.`,
-    T('HAYDEH', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`),
+    T('HAYDEH', BI('Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz.', 'لنگوامون‌های وحشی در بوته‌زارهای کنار جاده‌ی شمال، به سمت اصفهان و شیراز، زندگی می‌کنند.')),
+    BI('Each one is an animal of Iran called by its Persian name, and each one carries a secret word.', 'هر کدام یکی از حیوانات ایران است با اسم فارسی‌اش، و هر کدام یک کلمه‌ی پنهان با خودش دارد.'),
+    BI("A battle starts straight away with a quiz about the wild Lenguamon's word. You get 4 choices, and you TYPE the right answer.", 'نبرد با یک پرسش درباره‌ی کلمه‌ی لنگوامون وحشی شروع می‌شود. چهار گزینه داری و جواب درست را تایپ می‌کنی.'),
+    BI('Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!', 'اگر درست جواب بدهی، حمله‌ات به هدف می‌خورد. اگر اشتباه کنی، لنگوامون وحشی با همان جوابی که لازم داشتی به تو حمله می‌کند!'),
+    BI(`Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`, 'کلمه را ضعیف کن، بعد با دفتر آن را بنویس و شکارش کن. این پنج دفتر مال تو.'),
+    BI('Long words and phrases are higher level and tougher. Short words are a good place to start.', 'کلمه‌ها و عبارت‌های بلند سطح بالاتر و سخت‌ترند. کلمه‌های کوتاه برای شروع خوب‌اند.'),
+    BI('On the way you will meet a Basij checkpoint, an IRGC commander and THE CENSOR, who has seized the tomb of Hafez in Shiraz.', 'در راه به ایست بازرسی بسیج، یک فرمانده‌ی سپاه و «سانسورچی» برمی‌خوری که آرامگاه حافظ در شیراز را تصرف کرده.'),
+    BI('Beyond Shiraz the road climbs through the Zagros Mountains, crosses the salt desert, and ends in TEHRAN, the biggest city of all.', 'بعد از شیراز، جاده از کوه‌های زاگرس بالا می‌رود، از کویر نمک می‌گذرد و به تهران، بزرگ‌ترین شهر، می‌رسد.'),
+    BI('Every boss tests you with a real conversation. Win them all and you can truly hold a conversation in Persian!', 'هر غول آخر با یک گفت‌وگوی واقعی امتحانت می‌کند. همه را ببری، واقعاً می‌توانی فارسی صحبت کنی!'),
+    BI('One more thing: practice a little every day. Your progress is saved on this device.', 'یک چیز دیگر: هر روز کمی تمرین کن. پیشرفتت روی همین دستگاه ذخیره می‌شود.'),
+    T('HAYDEH', BI(`${F('موفق باشی', 'movafagh bashi')}! Good luck!`, 'موفق باشی!')),
   ]);
   writeSave();
 }
@@ -160,40 +166,51 @@ async function titleScreen(expired) {
 async function newGameIntro() {
   const p = $('#portrait');
   p.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`; p.classList.add('show');
-  await say([`${F('سلام', 'salam')}! Welcome to the world of LENGUAMON!`, 'My name is HAYDEH. People call me the Lenguamon Professor!', 'This world is full of creatures called LENGUAMON: LANGUAGE MONSTERS!', 'Every Lenguamon is a word or a phrase. Catch them, and you learn them!']);
-  await say(`First, which language do you speak? ${PF('اول بگو، به چه زبانی صحبت می‌کنی؟')}`, { keep: true });
+  await say([BI(`${F('سلام', 'salam')}! Welcome to the world of LENGUAMON!`, 'سلام! به دنیای لنگوامون خوش آمدی!'),
+    BI('My name is HAYDEH. People call me the Lenguamon Professor!', 'اسم من هایده است. مردم به من می‌گویند استاد لنگوامون!'),
+    BI('This world is full of creatures called LENGUAMON: LANGUAGE MONSTERS!', 'این دنیا پر از موجوداتی به اسم لنگوامون است: هیولاهای زبان!'),
+    BI('Every Lenguamon is a word or a phrase. Catch them, and you learn them!', 'هر لنگوامون یک کلمه یا عبارت است. شکارشان کن تا یادشان بگیری!')]);
+  await say(BI('First, which language do you speak?', 'اول بگو، به چه زبانی صحبت می‌کنی؟'), { keep: true });
   const speak = await choose(['ENGLISH', { html: `PERSIAN ${PF('فارسی')}` }], { cls: 'yn', cancel: false }); hideText();
+  await say(BI('And which language would you like to learn?', 'و چه زبانی را می‌خواهی یاد بگیری؟'), { keep: true });
   if (speak === 1) {
-    await say(`And which language would you like to learn? ${PF('و چه زبانی را می‌خواهی یاد بگیری؟')}`, { keep: true });
     await choose([{ html: `ENGLISH ${PF('انگلیسی')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
     useLanguage('en');
-    await say([`${E('English! Wonderful choice.', 'انگلیسی! انتخاب فوق‌العاده‌ای است.')}`, `You already know some English, so we will start at an ${E('intermediate', 'متوسط')} level: real conversations, phrasal verbs and idioms.`, `Your adventure takes place in America, from the deserts of New Mexico to the streets of New York City!`]);
+    await say([BI('English! Wonderful choice.', 'انگلیسی! انتخاب فوق‌العاده‌ای است.'),
+      BI('You already know some English, so we will start at an intermediate level: real conversations, phrasal verbs and idioms.', 'تو کمی انگلیسی بلدی، پس از سطح متوسط شروع می‌کنیم: گفت‌وگوهای واقعی، افعال عبارتی و اصطلاحات.'),
+      BI('Your adventure takes place in America, from the deserts of New Mexico to the streets of New York City!', 'ماجراجویی تو در آمریکاست، از صحراهای نیومکزیکو تا خیابان‌های شهر نیویورک!')]);
   } else {
-    await say('And which language would you like to learn?', { keep: true });
     await choose([{ html: `PERSIAN ${F('فارسی', 'farsi')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
     useLanguage('fa');
-    await say(`${F('فارسی', 'farsi')}! Wonderful choice.`);
+    await say([BI(`${F('فارسی', 'farsi')}! Wonderful choice.`, 'فارسی! انتخاب فوق‌العاده‌ای است.'),
+      BI('Your adventure takes place in Iran, from the desert city of Yazd to the streets of Tehran!', 'ماجراجویی تو در ایران است، از شهر کویری یزد تا خیابان‌های تهران!')]);
   }
   const en = LANG === 'en';
   const pp = $('#portrait'); pp.innerHTML = `<div class="gender"><img class="mon" src="${charUrl('player')}"><img class="mon" src="${charUrl('playerGirl')}"></div>`;
-  await say(en ? `Now, are you a boy or a girl? ${PF('پسر هستی یا دختر؟')}` : 'Now, are you a boy or a girl?', { keep: true });
+  await say(BI('Now, are you a boy or a girl?', 'حالا بگو، پسر هستی یا دختر؟'), { keep: true });
   const g = await choose(en ? [{ html: `BOY ${PF('پسر')}` }, { html: `GIRL ${PF('دختر')}` }] : [{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
   pp.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`;
-  await say(en ? `And what is your name? ${PF('اسمت چیه؟')}` : 'And what is your name?', { keep: true });
+  await say(BI('And what is your name?', 'و اسمت چیست؟'), { keep: true });
   const name = await textInput('YOUR NAME?', 16); hideText();
   S = newState(name); S.gender = g === 1 ? 'girl' : 'boy';
   if (isCyrusName(name)) {
     setupCyrus(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
     SND.fx('badge');
-    await say([`CYRUS THE GREAT?! ${F('کوروش بزرگ', 'kourosh-e bozorg')}!`, ...(en ? ['You chose to explore America. Every city from Santa Fe to New York is open to you.'] : []), 'Your Majesty! The King of Kings, founder of the Persian Empire, here in my school!',
-      'The whole land is yours to explore: every road is open, every gate is unlocked, and every Lenguamon is already in your Lenguadex.',
-      'Wild Lenguamon will leave you in peace (you can change that in OPTIONS). Open the MAP from the START menu to travel to any city.',
-      `Visit your own tomb at Pasargadae, read the signs, drink chai, and collect the old sayings from the elders. ${F('سفر خوش بگذره', 'safar khosh begzareh')}! Enjoy your trip!`]);
+    await say([`CYRUS THE GREAT?! ${F('کوروش بزرگ', 'kourosh-e bozorg')}!`,
+      BI('Your Majesty! The King of Kings, founder of the Persian Empire, here in my school!', 'اعلیحضرت! شاه شاهان، بنیان‌گذار امپراتوری پارس، اینجا در مدرسه‌ی من!'),
+      ...(en ? [BI('You chose to explore America. Every city from Santa Fe to New York is open to you.', 'تو سفر به آمریکا را انتخاب کردی. همه‌ی شهرها، از سانتافه تا نیویورک، به رویت باز است.')] : []),
+      BI('The whole land is yours to explore: every road is open, every gate is unlocked, and every Lenguamon is already in your Lenguadex.', 'همه‌ی سرزمین برای گشت‌وگذار توست: همه‌ی جاده‌ها و دروازه‌ها باز است و همه‌ی لنگوامون‌ها از قبل در لنگودکس تو هستند.'),
+      BI('Wild Lenguamon will leave you in peace (you can change that in OPTIONS). Open the MAP from the START menu to travel to any city.', 'لنگوامون‌های وحشی مزاحمت نمی‌شوند (می‌توانی این را در OPTIONS عوض کنی). از منوی START نقشه را باز کن تا به هر شهری سفر کنی.'),
+      en ? BI("Read the signs, drink coffee at the cafés, and collect the old sayings from the elders. Enjoy your trip!", 'تابلوها را بخوان، در کافه‌ها قهوه بنوش و ضرب‌المثل‌های قدیمی را از سالمندان یاد بگیر. سفر خوش بگذره!')
+        : BI(`Visit your own tomb at Pasargadae, read the signs, drink chai, and collect the old sayings from the elders. ${F('سفر خوش بگذره', 'safar khosh begzareh')}!`, 'به آرامگاه خودت در پاسارگاد سر بزن، تابلوها را بخوان، چای بنوش و ضرب‌المثل‌های قدیمی را از ریش‌سفیدها یاد بگیر. سفر خوش بگذره!')]);
     p.classList.remove('show'); p.innerHTML = ''; S.map = en ? 'ushouse' : 'house'; S.x = 5; S.y = 5; S.dir = 'up'; return;
   }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
-  await say(en ? [`${esc(name)}! What a great name.`, `In English you introduce yourself like this: ${E(`Hi, I'm ${name}. Nice to meet you!`, `سلام، من ${name} هستم. از آشنایی‌ات خوشحالم!`)}`, 'Your very own LENGUAMON adventure is about to begin!', "A world of words awaits. Let's go!"]
-    : [`${esc(name)}! What a great name.`, `In Persian you introduce yourself like this: ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`, 'Your very own LENGUAMON adventure is about to begin!', 'A world of words awaits. Let\'s go!']);
+  await say([BI(`${esc(name)}! What a great name.`, `${name}! چه اسم قشنگی.`),
+    en ? `${BI('In English you introduce yourself like this:', 'در انگلیسی این‌طور خودت را معرفی می‌کنی:')} ${E(`Hi, I'm ${name}. Nice to meet you!`, `سلام، من ${name} هستم. از آشنایی‌ات خوشحالم!`)}`
+      : `${BI('In Persian you introduce yourself like this:', 'در فارسی این‌طور خودت را معرفی می‌کنی:')} ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`,
+    BI('Your very own LENGUAMON adventure is about to begin!', 'ماجراجویی لنگوامونِ خودت همین الان شروع می‌شود!'),
+    BI("A world of words awaits. Let's go!", 'دنیایی از کلمه‌ها منتظرت است. بزن بریم!')]);
   p.classList.remove('show'); p.innerHTML = '';
   S.map = en ? 'ushouse' : 'house'; S.x = 5; S.y = 5; S.dir = 'up';
 }

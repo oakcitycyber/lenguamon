@@ -2,6 +2,8 @@
 const F = (fa, tr) => `<span class="fa"><span class="fs" dir="rtl" lang="fa">${esc(fa)}</span><span class="ft">${esc(tr)}</span></span>`;
 // E(): an English phrase with its Persian meaning underneath (English mode); PF(): Persian text inline
 const E = (en, fa) => `<span class="fa en-w"><span class="es">${esc(en)}</span>${fa ? `<span class="ep" dir="rtl" lang="fa">${esc(fa)}</span>` : ''}</span>`;
+// a line in English with its Persian translation underneath (the professor's instructions)
+const BI = (en, fa) => `${en}<span class="bi-fa" dir="rtl" lang="fa">${esc(fa)}</span>`;
 const PF = fa => `<span class="pi" dir="rtl" lang="fa">${esc(fa)}</span>`;
 const W = w => LANG === 'en' ? E(splitAlts(w.tr)[0], '') : F(w.fa, splitAlts(w.tr)[0]);
 // a word's meaning, as shown to the player (English for Persian learners, Persian for English learners)
