@@ -101,11 +101,11 @@ async function starterScene() {
   await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
   const p = $('#portrait'); p.innerHTML = monImg(hello, 'big'); p.classList.add('show');
   SND.fx('caught');
-  await say([`A little ${B('HOUSE MOUSE')}! Its Persian name, ${F('موش', 'moosh')}, is on its collar.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received the ${B('HOUSE MOUSE')}!`]);
+  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is on its collar.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
   p.classList.remove('show');
   S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([
-    T('HAYDEH', 'Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz. Each one is an animal of Iran, with its Persian name on its collar, and each one carries a secret word.'),
+    T('HAYDEH', 'Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz. Each one is an animal of Iran called by its Persian name, with its English name on its collar, and each one carries a secret word.'),
     "A battle starts straight away with a quiz about the wild Lenguamon's word. You get 4 choices, and you TYPE the right answer.",
     'Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!',
     `Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`,

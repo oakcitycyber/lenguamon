@@ -45,7 +45,7 @@ function quiz(q, title, o = {}) {
       <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}"><button>ENTER</button></form></div>`;
     el.classList.add('show'); window.__q = q;
     const inp = el.querySelector('input'); const t0 = performance.now();
-    setTimeout(() => inp.focus(), 30);
+    inp.disabled = true; setTimeout(() => { inp.disabled = false; inp.value = ''; inp.focus(); }, 300); // ignore leftover A-button presses
     const block = () => { }; pushH(block);
     let done = false;
     el.querySelector('form').addEventListener('submit', async e => {

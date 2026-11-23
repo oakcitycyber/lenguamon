@@ -1,6 +1,6 @@
 # Lenguamon: Persian Edition (v1)
 
-A tiny Game Boy Color style language game set in Iran. Catch **Lenguamon** (language monsters): 106 cartoon animals of Iran, from house mice and chickens to the Asiatic cheetah. Each wears a collar with its Persian name spelled phonetically, and each carries a secret word you have to know to beat it. Easy words come with common farm and house animals; harder words come with rarer animals.
+A tiny Game Boy Color style language game set in Iran. Catch **Lenguamon** (language monsters): 106 cartoon animals of Iran, from house mice and chickens to the Asiatic cheetah. Each is called by its Persian name (GAVMISH, SHOGHAL) and wears a collar with its English name, and each carries a secret word you have to know to beat it. Easy words come with common farm and house animals; harder words come with rarer animals.
 
 - Native language: English. Target language: Persian (Farsi). More languages later.
 - Runs in any browser. One self-contained file: `index.html` (about 120 KB, no network requests). Play it on GitHub Pages or open the file directly.

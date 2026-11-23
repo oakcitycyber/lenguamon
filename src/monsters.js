@@ -1,6 +1,6 @@
 // ===== LENGUAMON monsters: smooth SVG caricatures of animals found in Iran =====
 // Ordered from the most common (home and farm) to the rarest. Easy words get common animals,
-// hard words get rare ones. Each animal wears a collar with its Persian name spelled phonetically.
+// hard words get rare ones. Each animal is called by its Persian name and wears a collar with its English name.
 const SP = (id, name, tr, fa, kind, fur, fur2, dark, o = {}) => ({ id, name, tr, fa, kind, fur, fur2, dark, ears: 'none', muzzle: 'none', extra: [], ...o });
 const SPECIES = [
   // --- home and farm ---
@@ -122,7 +122,7 @@ const SPECIES_BY_ID = Object.fromEntries(SPECIES.map(s => [s.id, s]));
   const ranked = WORDS.slice().sort((a, b) => score(a) - score(b) || a.idx - b.idx);
   ranked.forEach((w, i) => { w.sp = SPECIES[Math.min(SPECIES.length - 1, Math.floor(i * SPECIES.length / ranked.length))]; });
   const hello = WORDS.find(w => w.tr0 === 'salam'); if (hello) hello.sp = SPECIES_BY_ID.mouse;
-  for (const w of WORDS) { w.word = w.tr0.toUpperCase(); w.name = w.sp.name; }
+  for (const w of WORDS) { w.word = w.tr0.toUpperCase(); w.name = w.sp.tr.toUpperCase(); }
 })();
 function speciesOf(w) { return w.sp || SPECIES[0]; }
 
@@ -427,16 +427,16 @@ function monsterSvg(w) {
 
   // ================= collar with the animal's Persian name (phonetic) =================
   let collar = '';
-  const label = esc(sp.tr);
+  const label = esc(sp.name);
   if (collarW > 0) {
     const x1 = 32 - collarW / 2, x2 = 32 + collarW / 2, y = collarY, sag = Math.min(3.5, collarW / 9);
     collar += sh('path', { d: `M${x1},${y} Q32,${y + sag * 2} ${x2},${y} L${x2},${y + 5.4} Q32,${y + 5.4 + sag * 2} ${x1},${y + 5.4} Z`, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    const len = Math.min(collarW - 2, sp.tr.length * 2.1);
+    const len = Math.min(collarW - 2, sp.name.length * 2.1);
     collar += sh('path', { id: 'cp', d: `M${32 - len / 2},${y + 4.1} Q32,${y + 4.1 + sag * 2} ${32 + len / 2},${y + 4.1}`, fill: 'none' });
     collar += `<text font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="3.7" fill="#ffffff"><textPath href="#cp" textLength="${len.toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</textPath></text>`;
   } else {
     collar += sh('rect', { x: 8, y: 50, width: 44, height: 7, rx: 3.5, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    collar += `<text x="30" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.tr.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
+    collar += `<text x="30" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.name.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
   }
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);

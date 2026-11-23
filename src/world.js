@@ -213,7 +213,7 @@ function dexEntryHtml(w) {
   const caught = S.caught[w.key], seen = S.seen[w.key];
   if (!seen && !caught) return `<div class="dx-d"><div class="dx-q">?</div><div><b>-----</b><br>Not seen yet.<br><small>${ROUTE_NAMES[w.route]}</small></div></div>`;
   const st = S.stats[w.key] || [0, 0];
-  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.word)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)} <small>"${esc(w.en)}"</small><br><small>${esc(w.name)} · ${esc(speciesOf(w).tr)}${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
+  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.word)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)} <small>"${esc(w.en)}"</small><br><small>${esc(w.name)} ${F(speciesOf(w).fa, '')} · ${esc(speciesOf(w).name.toLowerCase())}${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
 }
 async function dexScreen() {
   const el = document.createElement('div'); el.className = 'layer dex show'; $('#screen').appendChild(el);
