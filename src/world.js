@@ -197,7 +197,12 @@ async function startMenu() {
     const items = [
       { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'DAFTAR', { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
     const r = await choose(items, { cls: 'startmenu', start: idx, startCloses: true });
-    if (r < 0 || r === 6) return;
+    if (r < 0) return;
+    if (r === 6) {
+      if (!(await ask('Return to the title screen? Your game will be saved.'))) continue;
+      writeSave(); SND.music(null); await fade(true, 400);
+      location.reload(); return;
+    }
     idx = r;
     if (r === 0) await dexScreen();
     else if (r === 1) await teamScreen(false);

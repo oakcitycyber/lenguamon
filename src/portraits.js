@@ -91,56 +91,97 @@ function portraitSvg(id) {
 const PORTRAIT_URL = {};
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
 
-// ---- tea scene: Agha Reza serving you a glass of chai (shown for 3 seconds) ----
+// ---- tea scene: Agha Reza serving you chai, painted in a soft, warm, hand-drawn style ----
 function teaSceneSvg(L) {
-  const st = 'stroke="#2b1d16" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"';
-  const hair = L.hair, long = L.hairStyle === 'long';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-    <defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4e6c8"/><stop offset="1" stop-color="#e8d2a8"/></linearGradient>
-      <radialGradient id="glow" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>
-    <rect width="120" height="80" fill="url(#w)"/>
-    <rect y="22" width="120" height="7" fill="#2858a8"/><rect y="22" width="120" height="1" fill="#e0b040"/><rect y="28" width="120" height="1" fill="#e0b040"/>
-    ${[6, 18, 30, 42, 54, 66, 78, 90, 102, 114].map(x => `<path d="M${x},23.5 l2.5,2 l-2.5,2 l-2.5,-2 Z" fill="#f4f0e0"/><circle cx="${x}" cy="25.5" r=".8" fill="#30b4b0"/>`).join('')}
-    <path d="M44,6 C44,-2 76,-2 76,6 L76,20 L44,20 Z" fill="#7ac8e8" stroke="#6a4020" stroke-width="2"/><path d="M60,0 L60,20 M44,12 L76,12" stroke="#6a4020" stroke-width="1.4"/>
-    <rect y="60" width="120" height="20" fill="#a8303a"/><rect y="60" width="120" height="3" fill="#283878"/>
-    ${[10, 30, 50, 70, 90, 110].map(x => `<path d="M${x},66 l4,4 l-4,4 l-4,-4 Z" fill="#e0b040"/><circle cx="${x}" cy="70" r="1.2" fill="#283878"/>`).join('')}
-    <circle cx="60" cy="32" r="40" fill="url(#glow)"/>
-    <!-- samovar -->
-    <g transform="translate(8 30)"><rect x="4" y="26" width="16" height="4" rx="1" fill="#a07818" ${st}/><path d="M5,26 C3,14 5,8 12,8 C19,8 21,14 19,26 Z" fill="#e8b840" ${st}/>
-      <path d="M8,12 C7,16 7,20 8,24" stroke="#fff6c0" stroke-width="1.6" fill="none"/><rect x="9" y="3" width="6" height="5" rx="1" fill="#a07818" ${st}/>
-      <rect x="9" y="-3" width="6" height="6" rx="2" fill="#f4f0e0" ${st}/><path d="M19,20 L24,21 L24,22.5 L19,22" fill="#a07818" ${st}/>
-      <path d="M10,-6 C9,-9 12,-10 11,-13 M14,-6 C13,-9 16,-10 15,-13" stroke="#ffffff" stroke-width="1" fill="none" opacity=".8"/></g>
-    <!-- you -->
-    <g transform="translate(26 26)">
-      ${long ? `<rect x="5" y="4" width="14" height="22" rx="6" fill="${hair}" ${st}/>` : ''}
-      <rect x="5" y="22" width="14" height="22" rx="5" fill="${L.top}" ${st}/>
-      <rect x="7" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/><rect x="13" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/>
-      <ellipse cx="12" cy="13" rx="8" ry="8.5" fill="${L.skin}" ${st}/>
-      <path d="M4,13 C3,3 21,3 20,13 C17,8 14,8 12,9 C9,8 6,9 4,13 Z" fill="${hair}" ${st}/>
-      <ellipse cx="15" cy="13.5" rx="1" ry="1.3" fill="#1e1410"/><path d="M14,17 Q16,18.5 18,17" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
-      <ellipse cx="17" cy="16" rx="1.6" ry=".9" fill="#ff8a9a" opacity=".5"/>
-      <path d="M16,28 C22,30 25,32 27,33" stroke="${L.top}" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="28" cy="33.5" r="2" fill="${L.skin}" ${st}/>
-    </g>
-    <!-- Agha Reza -->
-    <g transform="translate(66 18)">
-      <rect x="6" y="28" width="22" height="28" rx="6" fill="#f0f0f0" ${st}/><path d="M10,32 L24,32 L23,52 L11,52 Z" fill="#ffffff" ${st}/>
-      <rect x="9" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/><rect x="19" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/>
-      <ellipse cx="17" cy="16" rx="10" ry="11" fill="#e8b890" ${st}/>
-      <path d="M7,14 C7,5 27,5 27,14 C24,9 20,9 17,10 C14,9 10,9 7,14 Z" fill="#a8a8a8" ${st}/>
-      <path d="M9,13 Q11,11 13,12.5 M21,12.5 Q23,11 25,13" stroke="#6a6a6a" stroke-width="1.2" fill="none"/>
-      <path d="M11,15.5 Q12,14.5 13,15.5 M21,15.5 Q22,14.5 23,15.5" stroke="#1e1410" stroke-width="1.2" fill="none"/>
-      <path d="M11,21 C14,19 20,19 23,21 C20,23 14,23 11,21 Z" fill="#8a8a8a"/><path d="M14,23.5 Q17,25.5 20,23.5" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
-      <ellipse cx="9.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/><ellipse cx="24.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/>
-      <path d="M8,34 C2,36 -2,38 -6,39" stroke="#f0f0f0" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M8,34 C2,36 -2,38 -6,39" stroke="#2b1d16" stroke-width="5.8" stroke-linecap="round" fill="none" opacity=".25"/>
-      <circle cx="-7" cy="39.5" r="2.4" fill="#e8b890" ${st}/>
-      <!-- tray with tea glass and sugar cubes -->
-      <ellipse cx="-12" cy="37" rx="12" ry="2.6" fill="#d8a838" ${st}/><ellipse cx="-12" cy="36.4" rx="10" ry="1.6" fill="#f0c860"/>
-      <path d="M-17,26 L-11,26 L-11.8,35 L-16.2,35 Z" fill="#b83a1a" stroke="#2b1d16" stroke-width=".9"/><path d="M-16.6,26 L-11.4,26 L-11.6,28 L-16.4,28 Z" fill="#f8f0e0" opacity=".7"/>
-      <ellipse cx="-14" cy="35.2" rx="3.6" ry="1" fill="#e8e0d0" stroke="#2b1d16" stroke-width=".6"/>
-      <path d="M-15,24 C-16,21 -13,20 -14,17 M-12.5,24 C-13.5,21 -10.5,20 -11.5,17" stroke="#ffffff" stroke-width=".9" fill="none" opacity=".85"/>
-      <rect x="-8" y="32.5" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/><rect x="-5" y="33" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/>
-    </g>
-  </svg>`;
+  const ink = '#5a3a2a', lw = 'stroke-width=".7" stroke-linejoin="round" stroke-linecap="round"';
+  const s = `stroke="${ink}" ${lw}`;
+  const hair = L.hair, long = L.hairStyle === 'long', skin = '#f4cfa8';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e7c8"/><stop offset="1" stop-color="#e7c894"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0f0"/><stop offset=".7" stop-color="#d8f0f4"/><stop offset="1" stop-color="#fff4d0"/></linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8dc" stop-opacity=".75"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></linearGradient>
+    <radialGradient id="warm" cx="55%" cy="45%" r="70%"><stop offset="0" stop-color="#fff2c8" stop-opacity=".35"/><stop offset="1" stop-color="#7a3a1a" stop-opacity=".25"/></radialGradient>
+    <radialGradient id="tea" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#f0702a"/><stop offset="1" stop-color="#8a1e10"/></radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd890" stop-opacity=".8"/><stop offset="1" stop-color="#ffd890" stop-opacity="0"/></radialGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b8821e"/><stop offset=".45" stop-color="#f8d878"/><stop offset="1" stop-color="#a8721a"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="1.4"/></filter>
+    <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .2  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+  </defs>
+  <rect width="160" height="100" fill="url(#wall)"/>
+  <!-- arched window with garden and sky -->
+  <path d="M48,52 L48,20 C48,6 76,6 76,20 L76,52 Z" fill="url(#sky)" stroke="#8a5a30" stroke-width="2.2"/>
+  <path d="M50,52 C52,44 58,42 62,46 C64,40 72,40 74,48 L74,52 Z" fill="#7cbf6a" opacity=".9"/><path d="M53,52 C55,47 59,46 61,49 L61,52 Z" fill="#5aa04e"/>
+  <ellipse cx="57" cy="18" rx="5" ry="2" fill="#ffffff" opacity=".9"/><ellipse cx="68" cy="24" rx="4" ry="1.6" fill="#ffffff" opacity=".8"/>
+  <path d="M62,8 L62,52 M48,30 L76,30" stroke="#8a5a30" stroke-width="1.4"/>
+  <polygon points="52,24 74,24 128,100 70,100" fill="url(#beam)" filter="url(#soft)"/>
+  <!-- tile frieze -->
+  <rect y="56" width="160" height="5" fill="#2f6fb0"/><rect y="56" width="160" height=".8" fill="#e8c060"/><rect y="60.2" width="160" height=".8" fill="#e8c060"/>
+  ${Array.from({ length: 14 }, (_, i) => `<path d="M${6 + i * 12},57 l2,1.5 l-2,1.5 l-2,-1.5 Z" fill="#f6efd8"/><circle cx="${6 + i * 12}" cy="58.5" r=".6" fill="#3ab0a8"/>`).join('')}
+  <!-- hanging plant -->
+  <path d="M100,0 L100,12" stroke="#8a5a30" stroke-width=".6"/><path d="M95,12 L105,12 L103.5,18 L96.5,18 Z" fill="#c06a3a" ${s}/>
+  ${[[-6, 22], [-3, 26], [0, 21], [3, 25], [6, 23], [-8, 17], [8, 18]].map(([dx, dy]) => `<path d="M100,13 Q${100 + dx * .6},${(13 + dy) / 2} ${100 + dx},${dy}" stroke="#4f9a40" stroke-width="1" fill="none"/><ellipse cx="${100 + dx}" cy="${dy}" rx="1.6" ry=".9" fill="#5fb04c" transform="rotate(${dx * 8} ${100 + dx} ${dy})"/>`).join('')}
+  <!-- samovar on a little table -->
+  <rect x="130" y="62" width="22" height="3" rx="1" fill="#8a5a30" ${s}/><path d="M133,65 L134,80 M149,65 L148,80" stroke="#6a4020" stroke-width="1.6"/>
+  <path d="M134,62 C131,50 133,42 141,42 C149,42 151,50 148,62 Z" fill="url(#brass)" ${s}/><rect x="137.5" y="37" width="7" height="5" rx="1" fill="#c8922a" ${s}/>
+  <rect x="138" y="31" width="6" height="6" rx="2.4" fill="#f4ecdc" ${s}/><path d="M141,31 L141,29" stroke="#8a5a30" stroke-width="1"/>
+  <path d="M148,55 L153,56 L153,57.5 L148,57" fill="#c8922a" ${s}/><path d="M136,46 C135,50 135,55 136,58" stroke="#fff6c8" stroke-width="1.4" fill="none" opacity=".8"/>
+  ${[0, 1, 2].map(i => `<path d="M${139 + i * 2},28 C${137 + i * 2},24 ${142 + i * 2},22 ${140 + i * 2},17" stroke="#ffffff" stroke-width="1.1" fill="none" opacity="${.65 - i * .15}" filter="url(#soft)"/>`).join('')}
+  <!-- takht (daybed) with kilim and cushions -->
+  <rect x="0" y="70" width="70" height="8" rx="1.5" fill="#9a6232" ${s}/><path d="M4,78 L4,96 M64,78 L64,96" stroke="#7a4a22" stroke-width="2.4"/>
+  <path d="M0,62 L70,62 L72,72 L0,72 Z" fill="#b8323a" ${s}/>
+  ${Array.from({ length: 6 }, (_, i) => `<path d="M${6 + i * 11},64 l3.5,3 l-3.5,3 l-3.5,-3 Z" fill="#f0c060"/><circle cx="${6 + i * 11}" cy="67" r=".9" fill="#2a3a7a"/>`).join('')}
+  <rect x="-2" y="50" width="16" height="13" rx="5" fill="#e09a3a" ${s}/><path d="M2,52 L2,61 M6,51 L6,62 M10,52 L10,61" stroke="#b8323a" stroke-width="1"/>
+  <!-- you, sitting on the takht -->
+  <g transform="translate(22 30)">
+    ${long ? `<path d="M3,10 C1,22 3,30 6,33 L18,33 C19,26 19,18 17,10 Z" fill="${hair}" ${s}/>` : ''}
+    <path d="M4,32 C3,26 6,22 12,22 C18,22 21,26 20,32 L20,34 L4,34 Z" fill="${L.top}" ${s}/>
+    <path d="M6,33 C8,38 18,38 26,36 L30,37 L30,40 L24,41 C16,42 7,42 5,37 Z" fill="${L.legs}" ${s}/>
+    <path d="M29,36.5 C31,36 33,37 33,39 L29.5,40 Z" fill="#3a2a22" ${s}/>
+    <path d="M17,26 C22,27 26,26 30,23" stroke="${L.top}" stroke-width="3.6" stroke-linecap="round" fill="none"/><path d="M17,26 C22,27 26,26 30,23" stroke="${ink}" stroke-width="4.4" stroke-linecap="round" fill="none" opacity=".25"/>
+    <ellipse cx="31" cy="22.6" rx="1.9" ry="1.6" fill="${skin}" ${s}/>
+    <ellipse cx="12" cy="13" rx="7.4" ry="8" fill="${skin}" ${s}/>
+    <path d="M4.6,13 C4,4 14,1.5 19,7 C20,9 20,11 19.4,13 C17,9.5 14,8.5 11,9.5 C9,8 6,9.5 4.6,13 Z" fill="${hair}" ${s}/>
+    ${long ? `<path d="M5,11 C4,16 4.5,20 5.5,22" stroke="${hair}" stroke-width="2.4" fill="none"/>` : ''}
+    <ellipse cx="15.4" cy="13.8" rx="1.25" ry="1.6" fill="#2a1a14"/><circle cx="15.8" cy="13.2" r=".45" fill="#fff"/>
+    <path d="M13.6,11.2 Q15.3,10.4 17,11.1" stroke="${hair}" stroke-width=".7" fill="none"/>
+    <path d="M18.8,15.2 L19.6,16 L18.8,16.4" stroke="#c88a6a" stroke-width=".5" fill="none"/>
+    <path d="M16.5,18.2 Q17.6,19 18.6,18.4" stroke="#a84a3a" stroke-width=".6" fill="none"/>
+    <ellipse cx="16.6" cy="16.6" rx="1.6" ry=".9" fill="#ff9a9a" opacity=".45"/>
+  </g>
+  <!-- Agha Reza, leaning in with the tray -->
+  <g transform="translate(76 18)">
+    <path d="M14,40 C12,52 12,64 13,82 L37,82 C38,64 38,52 36,40 C32,36 18,36 14,40 Z" fill="#fbf6ee" ${s}/>
+    <path d="M15,42 C14,52 14,64 15,82 L22,82 L22,44 C20,42 17,41 15,42 Z M35,42 C36,52 36,64 35,82 L28,82 L28,44 C30,42 33,41 35,42 Z" fill="#6a4a3a" ${s}/>
+    <path d="M22,46 L28,46 M22,52 L28,52" stroke="#d8cbb8" stroke-width=".5"/>
+    <path d="M16,44 C10,48 4,50 -1,51" stroke="#fbf6ee" stroke-width="5.4" stroke-linecap="round" fill="none"/><path d="M16,44 C10,48 4,50 -1,51" stroke="${ink}" stroke-width="6.2" stroke-linecap="round" fill="none" opacity=".18"/>
+    <path d="M34,45 C28,50 18,52 6,52" stroke="#6a4a3a" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="-1.5" cy="51.2" rx="2.2" ry="1.8" fill="#eebf98" ${s}/><ellipse cx="5" cy="52.4" rx="2.2" ry="1.8" fill="#eebf98" ${s}/>
+    <!-- head -->
+    <ellipse cx="25" cy="24" rx="10.5" ry="12" fill="#eebf98" ${s}/>
+    <path d="M14.6,24 C14,17 15.5,14 17,13 C16,17 16.4,20 17.6,23 Z M35.4,24 C36,17 34.5,14 33,13 C34,17 33.6,20 32.4,23 Z" fill="#d8d4d0" ${s}/>
+    <path d="M17,13 C20,10.5 30,10.5 33,13" stroke="#c8a888" stroke-width=".6" fill="none"/>
+    <path d="M18,20 C20,18.6 22.5,18.6 23.6,19.8 M26.4,19.8 C27.5,18.6 30,18.6 32,20" stroke="#cfcac4" stroke-width="1.8" fill="none"/>
+    <path d="M18.8,23.4 Q20.8,21.8 22.8,23.4 M27.2,23.4 Q29.2,21.8 31.2,23.4" stroke="#3a2418" stroke-width=".9" fill="none"/>
+    <path d="M18,25.5 Q19,26.6 20,26.2 M32,25.5 Q31,26.6 30,26.2" stroke="#c88a6a" stroke-width=".45" fill="none"/>
+    <path d="M24.4,24 C24,27 24.4,28 25.8,28.2" stroke="#b87a5a" stroke-width=".7" fill="none"/>
+    <ellipse cx="18.6" cy="28" rx="2.3" ry="1.3" fill="#f48a7a" opacity=".45"/><ellipse cx="31.4" cy="28" rx="2.3" ry="1.3" fill="#f48a7a" opacity=".45"/>
+    <path d="M18.5,30.5 C21,28.6 24,29 25,30 C26,29 29,28.6 31.5,30.5 C30,32.4 27,32.6 25,31.6 C23,32.6 20,32.4 18.5,30.5 Z" fill="#dcd8d2" ${s}/>
+    <path d="M22.6,33.6 Q25,35 27.4,33.6" stroke="#a84a3a" stroke-width=".7" fill="none"/>
+    <!-- brass tray, tea glass and sugar cubes -->
+    <ellipse cx="2" cy="49.6" rx="13" ry="3" fill="url(#brass)" ${s}/><ellipse cx="2" cy="49" rx="11" ry="2" fill="#f8dc8a" opacity=".7"/>
+    <circle cx="-2" cy="40" r="9" fill="url(#glow)"/>
+    <ellipse cx="-2" cy="48.4" rx="4.2" ry="1.1" fill="#f4ecdc" ${s}/>
+    <path d="M-5.2,37 L1.2,37 L.3,47.8 L-4.3,47.8 Z" fill="url(#tea)" stroke="${ink}" stroke-width=".55"/>
+    <path d="M-5,37 L1,37 L.9,38.6 L-4.9,38.6 Z" fill="#fff4e0" opacity=".6"/><path d="M-4,39.5 L-3.4,46.5" stroke="#ffd0a0" stroke-width=".6" opacity=".8"/>
+    <rect x="4.4" y="45.6" width="2.6" height="2.6" rx=".3" fill="#ffffff" ${s}/><rect x="7.4" y="46.2" width="2.6" height="2.6" rx=".3" fill="#ffffff" ${s}/><rect x="5.9" y="43.4" width="2.6" height="2.6" rx=".3" fill="#ffffff" ${s}/>
+    ${[0, 1].map(i => `<path d="M${-3.6 + i * 2.4},35 C${-5 + i * 2.4},31 ${-1.5 + i * 2.4},29 ${-3 + i * 2.4},24" stroke="#ffffff" stroke-width="1" fill="none" opacity=".7" filter="url(#soft)"/>`).join('')}
+  </g>
+  <!-- warm light and dust in the sunbeam -->
+  ${[[70, 40], [82, 52], [91, 34], [77, 66], [99, 60], [88, 72]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".6" fill="#fffbe8" opacity=".9"/>`).join('')}
+  <rect width="160" height="100" fill="url(#warm)"/>
+  <rect width="160" height="100" fill="#fff" filter="url(#paper)"/>
+</svg>`;
 }
 async function teaScene() {
   const p = $('#portrait');
