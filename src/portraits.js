@@ -186,9 +186,10 @@ function teaSceneSvg(L, vest = '#6a4a3a') {
   <rect width="160" height="100" fill="#fff" filter="url(#paper)"/>
 </svg>`;
 }
+// tea scene: a hand-painted picture of the host serving you chai (one for each hero)
 async function teaScene(vest, host = 'Agha Reza') {
   const p = $('#portrait');
-  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook(), vest));
+  const url = TEA_IMG[S && S.gender === 'girl' ? 'girl' : 'boy'];
   p.innerHTML = `<div class="tea"><img src="${url}" alt="${host} serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
   p.classList.add('show'); SND.fx('heal'); healTeam();
   await sleep(3000);
