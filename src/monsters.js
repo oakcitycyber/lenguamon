@@ -116,8 +116,99 @@ const SPECIES = [
 ];
 const SPECIES_BY_ID = Object.fromEntries(SPECIES.map(s => [s.id, s]));
 
+// ===== English mode: animals of the United States, from the farm and backyard to the rarest =====
+// Called by their English name; the Persian name is written underneath.
+const SPECIES_FA = SPECIES.slice();
+const SPECIES_US = [
+  // --- farm, home and backyard ---
+  SP('mouse', 'HOUSE MOUSE', 'moosh', 'موش', 'quad', '#b8b0b4', '#f0e8ec', '#5a5058', { ears: 'mouse', muzzle: 'rodent', tail: 'thin' }),
+  SP('chicken', 'CHICKEN', 'morgh', 'مرغ', 'bird', '#c87a3a', '#f0c890', '#6a3a14', { muzzle: 'beak', extra: ['comb'] }),
+  SP('tabby', 'TABBY CAT', 'gorbe', 'گربه راه‌راه', 'quad', '#d8a060', '#f8ead4', '#7a4a1e', { ears: 'small', muzzle: 'cat', tail: 'thin', extra: ['stripes', 'stripe'] }),
+  SP('dog', 'DOG', 'sag', 'سگ', 'quad', '#c8945a', '#f4e4cc', '#5a3a1a', { ears: 'floppy', muzzle: 'dog', tail: 'curl' }),
+  SP('cow', 'DAIRY COW', 'gav', 'گاو شیرده', 'quad', '#fbf8f2', '#ffffff', '#2a2420', { ears: 'side', muzzle: 'cow', horns: 'cow', tail: 'tuft', pattern: 'patches' }),
+  SP('pig', 'PIG', 'khuk', 'خوک', 'quad', '#f4b8b8', '#fcd8d8', '#a85a60', { ears: 'pointy', muzzle: 'pig', tail: 'curl' }),
+  SP('sheep', 'SHEEP', 'gusfand', 'گوسفند', 'quad', '#f4f0e8', '#fffdf8', '#3a3030', { ears: 'side', muzzle: 'long', extra: ['wool', 'darkface'] }),
+  SP('goat', 'GOAT', 'boz', 'بز', 'quad', '#e8e0d0', '#fffaf0', '#6a5a48', { ears: 'floppy', muzzle: 'long', horns: 'goat', tail: 'tuft', extra: ['beard'] }),
+  SP('horse', 'QUARTER HORSE', 'asb', 'اسب', 'quad', '#9a5a30', '#d8a878', '#2a1408', { ears: 'side', muzzle: 'long', tail: 'tuft', extra: ['mane', 'blaze'] }),
+  SP('donkey', 'DONKEY', 'olagh', 'الاغ', 'quad', '#9a9098', '#e8e4e8', '#3a3438', { ears: 'long', muzzle: 'long', tail: 'tuft', extra: ['mane'] }),
+  SP('mallard', 'MALLARD DUCK', 'ordak', 'اردک سرسبز', 'bird', '#a89a88', '#e8dcc8', '#3a3028', { muzzle: 'duck', extra: ['tealhead'] }),
+  SP('turkey', 'WILD TURKEY', 'booghalamun', 'بوقلمون وحشی', 'bird', '#6a4a3a', '#a07a5a', '#2a1a10', { muzzle: 'small', extra: ['snood', 'fan'] }),
+  SP('pigeon', 'PIGEON', 'kabutar', 'کبوتر', 'bird', '#a8b0c0', '#d8dce8', '#4a5060', { muzzle: 'small', extra: ['neckshine', 'barwings'] }),
+  SP('goldfish', 'GOLDFISH', 'mahi-ye ghermez', 'ماهی قرمز', 'fish', '#f08030', '#ffc060', '#a03a10', { extra: ['veiltail'] }),
+  SP('bee', 'HONEY BEE', 'zanbur-e asal', 'زنبور عسل', 'bee', '#f0c030', '#fff0a0', '#2a1a10'),
+  SP('graysquirrel', 'EASTERN GRAY SQUIRREL', 'sanjab-e khakestari', 'سنجاب خاکستری', 'quad', '#9a9a9e', '#ecece8', '#3e3e44', { ears: 'small', muzzle: 'rodent', tail: 'squirrel' }),
+  SP('chipmunk', 'CHIPMUNK', 'sanjab-e rahrah', 'سنجاب راه‌راه', 'quad', '#c8884a', '#f8e4cc', '#3a2010', { ears: 'small', muzzle: 'rodent', tail: 'squirrel', extra: ['stripe', 'stripes', 'cheeks'] }),
+  SP('cottontail', 'COTTONTAIL RABBIT', 'khargush-e dom-panbe', 'خرگوش دم‌پنبه‌ای', 'quad', '#a88a6a', '#f4e8dc', '#4a3a28', { ears: 'rabbit', muzzle: 'rodent', tail: 'puff' }),
+  SP('raccoon', 'RACCOON', 'rakun', 'راکون', 'quad', '#9a9494', '#ece8e4', '#2a2626', { ears: 'round', muzzle: 'dog', tail: 'bushy', extra: ['bandit', 'ringtail'] }),
+  SP('opossum', 'OPOSSUM', 'opossum', 'اپوسوم', 'quad', '#a8a4a8', '#fafafa', '#3a3438', { ears: 'round', muzzle: 'shrew', tail: 'thin', extra: ['whitehead'] }),
+  SP('skunk', 'STRIPED SKUNK', 'rasu-ye rahrah', 'راسوی راه‌راه', 'quad', '#2a2628', '#4a4648', '#0c0a0a', { ears: 'small', muzzle: 'dog', tail: 'fluffy', extra: ['whitestripe'] }),
+  SP('cardinal', 'NORTHERN CARDINAL', 'kardinal', 'کاردینال شمالی', 'bird', '#d02828', '#e85a4a', '#5a0c0c', { muzzle: 'redbeak', extra: ['crest', 'blackmask'] }),
+  SP('bluejay', 'BLUE JAY', 'zagh-e abi', 'زاغ آبی', 'bird', '#4a7ad0', '#eef2f8', '#1a2a58', { muzzle: 'small', extra: ['crest', 'blackbib', 'barwings'] }),
+  SP('robin', 'AMERICAN ROBIN', 'sineh-sorkh', 'سینه‌سرخ آمریکایی', 'bird', '#5a5450', '#e8783a', '#1a1614', { muzzle: 'thin', extra: ['redthroat', 'eyering'] }),
+  SP('crow', 'AMERICAN CROW', 'kalagh', 'کلاغ آمریکایی', 'bird', '#2a2a30', '#4a4a54', '#0c0c10', { muzzle: 'beak' }),
+  SP('cgoose', 'CANADA GOOSE', 'ghaz-e kanadayi', 'غاز کانادایی', 'bird', '#8a7a68', '#e8e0d4', '#1a1614', { muzzle: 'duck', extra: ['longneck', 'whitecheek'] }),
+  SP('hummingbird', 'RUBY-THROATED HUMMINGBIRD', 'morgh-e magas-khar', 'مرغ مگس‌خوار گلوسرخ', 'bird', '#3aa060', '#e8f4e8', '#145a2a', { muzzle: 'thin', extra: ['redthroat'] }),
+  SP('groundhog', 'GROUNDHOG', 'marmot', 'مارموت آمریکایی', 'quad', '#8a6a4a', '#c8a880', '#3a2614', { ears: 'round', muzzle: 'rodent', tail: 'thin', extra: ['stand'] }),
+  SP('gartersnake', 'GARTER SNAKE', 'mar-e bandaki', 'مار بندکی', 'snake', '#3a4a3a', '#e8d870', '#141a14', { pattern: 'bands' }),
+  SP('boxturtle', 'EASTERN BOX TURTLE', 'lakposht-e jabe-i', 'لاک‌پشت جعبه‌ای', 'tortoise', '#8a5a2a', '#e8b040', '#3a2410'),
+  SP('catfish', 'CHANNEL CATFISH', 'gorbe-mahi', 'گربه‌ماهی', 'fish', '#7a8a9a', '#d0d8e0', '#2a3440', { extra: ['sturgeon'] }),
+  SP('bass', 'LARGEMOUTH BASS', 'mahi-ye bas', 'ماهی باس دهان‌گشاد', 'fish', '#6a9a4a', '#e0ecc0', '#2a4a18'),
+  SP('bigbrownbat', 'BIG BROWN BAT', 'khoffash-e ghahvei', 'خفاش قهوه‌ای بزرگ', 'bat', '#8a5a34', '#c89a6a', '#3a2410', { ears: 'big', muzzle: 'rodent' }),
+  // --- common wild ---
+  SP('fox', 'RED FOX', 'rubah-e ghermez', 'روباه قرمز', 'quad', '#e8782e', '#ffffff', '#3a2010', { ears: 'pointy', muzzle: 'dog', tail: 'bushy', pattern: 'mask' }),
+  SP('coyote', 'COYOTE', 'koyot', 'کایوت', 'quad', '#b8a080', '#f0e6d4', '#4a3a28', { ears: 'pointy', muzzle: 'dog', tail: 'bushy' }),
+  SP('whitetail', 'WHITE-TAILED DEER', 'gavazn-e dom-sefid', 'گوزن دم‌سفید', 'quad', '#b8784a', '#f8eadc', '#4a2810', { ears: 'big', muzzle: 'long', horns: 'antler', tail: 'puff' }),
+  SP('armadillo', 'ARMADILLO', 'armadilo', 'آرمادیلو', 'quad', '#b8a088', '#e0d0bc', '#5a4a38', { ears: 'small', muzzle: 'long', tail: 'thin', extra: ['armor'] }),
+  SP('prairiedog', 'PRAIRIE DOG', 'sag-e dashti', 'سگ دشتی', 'quad', '#c8a070', '#f4e4cc', '#5a3a1a', { ears: 'small', muzzle: 'rodent', tail: 'thin', extra: ['stand'] }),
+  SP('beaver', 'BEAVER', 'sag-e abi', 'سگ آبی', 'quad', '#7a4e2a', '#b88a5a', '#2a1808', { ears: 'small', muzzle: 'rodent', extra: ['beavertail'] }),
+  SP('porcupine', 'NORTH AMERICAN PORCUPINE', 'tashi', 'تشی آمریکایی', 'quad', '#5a4a44', '#8a7a70', '#201814', { ears: 'round', muzzle: 'rodent', extra: ['quills'] }),
+  SP('ghowl', 'GREAT HORNED OWL', 'shah-buf', 'شاه‌بوف آمریکایی', 'bird', '#a8784a', '#e8c898', '#3a2410', { muzzle: 'owl', extra: ['eartufts', 'orangeeyes', 'streaks'] }),
+  SP('lobster', 'MAINE LOBSTER', 'labster', 'لابستر', 'scorpion', '#c83a2a', '#f08a6a', '#5a1208'),
+  // --- less common wild ---
+  SP('roadrunner', 'ROADRUNNER', 'rodraner', 'رودرانر', 'bird', '#8a7458', '#f0e4d0', '#2a2014', { muzzle: 'thin', extra: ['crest', 'streaks', 'longlegs'] }),
+  SP('bpelican', 'BROWN PELICAN', 'pelikan-e ghahvei', 'پلیکان قهوه‌ای', 'bird', '#8a7a68', '#f4ece0', '#3a3028', { muzzle: 'pouch', extra: ['whitehead'] }),
+  SP('flamingo', 'AMERICAN FLAMINGO', 'felamingo', 'فلامینگوی آمریکایی', 'bird', '#f8788a', '#ffb8c4', '#c03050', { muzzle: 'flamingo', extra: ['longlegs', 'longneck'] }),
+  SP('alligator', 'AMERICAN ALLIGATOR', 'aligator', 'آلیگاتور آمریکایی', 'croc', '#3a4a2a', '#8a9a60', '#141c0c'),
+  SP('rattlesnake', 'WESTERN DIAMONDBACK RATTLESNAKE', 'mar-e zangi', 'مار زنگی', 'snake', '#b8a07a', '#e8dcc0', '#4a3a24', { pattern: 'blotch' }),
+  SP('gila', 'GILA MONSTER', 'hayula-ye gila', 'هیولای گیلا', 'lizard', '#2a1c18', '#f08a6a', '#0c0806', { pattern: 'dots2w', extra: ['smooth'] }),
+  SP('hornedlizard', 'TEXAS HORNED LIZARD', 'susmar-e shakhdar', 'سوسمار شاخ‌دار تگزاسی', 'lizard', '#c8a878', '#f0e0c0', '#5a4428', { extra: ['flaps'] }),
+  SP('dtortoise', 'DESERT TORTOISE', 'lakposht-e sahrayi', 'لاک‌پشت صحرایی', 'tortoise', '#a8946a', '#dccca0', '#4a3e22'),
+  SP('blackbear', 'AMERICAN BLACK BEAR', 'khers-e siyah', 'خرس سیاه آمریکایی', 'quad', '#2a2626', '#8a6a4a', '#0c0a0a', { ears: 'round', muzzle: 'bear' }),
+  SP('wolf', 'GRAY WOLF', 'gorg', 'گرگ خاکستری', 'quad', '#9a9aa4', '#ecece8', '#3e3e48', { ears: 'pointy', muzzle: 'dog', tail: 'bushy', pattern: 'mask' }),
+  SP('bobcat', 'BOBCAT', 'babkat', 'بابکت', 'quad', '#c8986a', '#f4e4cc', '#3a2818', { ears: 'lynx', muzzle: 'bigcat', pattern: 'spots', extra: ['ruff'] }),
+  SP('elk', 'ELK', 'gavazn-e elk', 'گوزن الک', 'quad', '#9a6a3e', '#d8b888', '#3a2010', { ears: 'side', muzzle: 'long', horns: 'red', extra: ['ruff'] }),
+  SP('pronghorn', 'PRONGHORN', 'pranghorn', 'پرانگهورن', 'quad', '#d8984a', '#fffaf0', '#3a2410', { ears: 'big', muzzle: 'long', horns: 'lyre', tail: 'thin', pattern: 'face' }),
+  SP('bighorn', 'BIGHORN SHEEP', 'ghuch-e shakh-bozorg', 'قوچ شاخ‌بزرگ', 'quad', '#a88058', '#f0e6d8', '#4a3020', { ears: 'side', muzzle: 'long', horns: 'curl' }),
+  SP('mtgoat', 'MOUNTAIN GOAT', 'boz-e kuhi', 'بز کوهی', 'quad', '#f6f4ee', '#ffffff', '#2a2a2a', { ears: 'side', muzzle: 'long', horns: 'goat', extra: ['beard', 'shag'] }),
+  SP('moose', 'MOOSE', 'gavazn-e mus', 'گوزن موس', 'quad', '#5a3e2a', '#8a6a4e', '#1e140c', { ears: 'side', muzzle: 'long', horns: 'antler', extra: ['beard', 'hump'] }),
+  SP('cougar', 'MOUNTAIN LION', 'shir-e kuhi', 'شیر کوهی', 'quad', '#d0a06a', '#f8ecdc', '#4a3018', { ears: 'small', muzzle: 'bigcat', tail: 'thin' }),
+  SP('seaotter', 'SEA OTTER', 'samur-e daryayi', 'سمور دریایی', 'seal', '#7a5a3e', '#d8c4a8', '#2a1a0c', { muzzle: 'seal' }),
+  SP('hseal', 'HARBOR SEAL', 'fok-e bandari', 'فوک بندری', 'seal', '#9aa4ac', '#d8dee4', '#3a4450', { muzzle: 'seal', pattern: 'freckles' }),
+  SP('salmon', 'CHINOOK SALMON', 'mahi-ye azad', 'ماهی آزاد', 'fish', '#c86a5a', '#f4c8b0', '#4a2420'),
+  SP('mustang', 'MUSTANG', 'asb-e vahshi', 'اسب وحشی موستانگ', 'quad', '#3a2a22', '#8a6a54', '#120c08', { ears: 'side', muzzle: 'long', tail: 'tuft', extra: ['mane', 'blaze'] }),
+  SP('orca', 'ORCA', 'nahang-e ghatel', 'نهنگ قاتل', 'dolphin', '#1a1a20', '#fafafa', '#000000'),
+  // --- rare and endangered ---
+  SP('manatee', 'FLORIDA MANATEE', 'gav-e daryayi', 'گاو دریایی', 'seal', '#8a9098', '#c8ccd2', '#3a4048', { muzzle: 'seal' }),
+  SP('seaturtle', 'LOGGERHEAD SEA TURTLE', 'lakposht-e daryayi', 'لاک‌پشت دریایی', 'seaturtle', '#8a6a3a', '#d8b878', '#3a2a14'),
+  SP('grizzly', 'GRIZZLY BEAR', 'khers-e grizli', 'خرس گریزلی', 'quad', '#8a6040', '#c8a070', '#3a2414', { ears: 'round', muzzle: 'bear', extra: ['hump'] }),
+  SP('polarbear', 'POLAR BEAR', 'khers-e ghotbi', 'خرس قطبی', 'quad', '#f4f0e6', '#ffffff', '#2a2a2a', { ears: 'round', muzzle: 'bear' }),
+  SP('crane', 'WHOOPING CRANE', 'derna-ye sefid', 'درنای سفید آمریکایی', 'bird', '#fafafa', '#ffffff', '#1a1a1a', { muzzle: 'spear', extra: ['longlegs', 'redcap'] }),
+  SP('ferret', 'BLACK-FOOTED FERRET', 'rasu-ye pa-siyah', 'راسوی پاسیاه', 'quad', '#e8d4a8', '#fff8e8', '#2a2018', { ears: 'round', muzzle: 'shrew', tail: 'thin', extra: ['bandit'] }),
+  SP('panther', 'FLORIDA PANTHER', 'palang-e florida', 'پلنگ فلوریدا', 'quad', '#c8945a', '#f4e4cc', '#3a2410', { ears: 'small', muzzle: 'bigcat', tail: 'thin', extra: ['tears'] }),
+  SP('bison', 'AMERICAN BISON', 'bizon', 'گاومیش کوهان‌دار آمریکایی', 'quad', '#5a3e28', '#8a6648', '#1a100a', { ears: 'side', muzzle: 'cow', horns: 'buffalo', tail: 'tuft', extra: ['hump', 'shag', 'beard'] }),
+  SP('jaguar', 'JAGUAR', 'jaguar', 'جگوار', 'quad', '#e8b450', '#fff0d0', '#3a2a1a', { ears: 'small', muzzle: 'bigcat', tail: 'thin', pattern: 'rosettes' }),
+  SP('condor', 'CALIFORNIA CONDOR', 'kondor', 'کندور کالیفرنیایی', 'bird', '#2a2628', '#e8e4e0', '#0c0a0a', { muzzle: 'hook', extra: ['redring', 'ruffneck'] }),
+  SP('baldeagle', 'BALD EAGLE', 'oghab-e sar-sefid', 'عقاب سرسفید', 'bird', '#5a3a1e', '#7a5434', '#1e1208', { muzzle: 'hook', extra: ['brow', 'whitehead'] }),
+];
+function useSpecies(list) {
+  SPECIES.length = 0; SPECIES.push(...list);
+  for (const k of Object.keys(SPECIES_BY_ID)) delete SPECIES_BY_ID[k];
+  for (const s of SPECIES) SPECIES_BY_ID[s.id] = s;
+}
+
 // assign animals: rank words by difficulty (length of the Persian, later routes harder), common animals first
 function assignSpecies() {
+  useSpecies(LANG === 'en' ? SPECIES_US : SPECIES_FA);
   const score = w => w.level + (w.route - 1) * 6;
   const ranked = WORDS.slice().sort((a, b) => score(a) - score(b) || a.idx - b.idx);
   ranked.forEach((w, i) => { w.sp = SPECIES[Math.min(SPECIES.length - 1, Math.floor(i * SPECIES.length / ranked.length))]; });
@@ -163,6 +254,8 @@ function monsterSvg(w, flip = false) {
     const tailT = sp.tail;
     if (tailT === 'fluffy') back += sh('path', { d: 'M44,50 C58,52 60,38 52,34 C56,42 50,46 44,46 Z', ...f(sp.fur) });
     if (tailT === 'bushy') back += sh('path', { d: 'M43,50 C56,56 62,42 56,32 C54,42 48,44 43,45 Z', ...f(sp.fur) }) + sh('path', { d: 'M56,32 C58,36 57,40 54.5,41 C55,37 55,35 56,32 Z', fill: sp.id === 'fox' || sp.id === 'wffox' ? '#fff' : sp.dark });
+    if (X.has('ringtail')) back += [[47, 50.5, 47.5, 45], [51.5, 49.5, 51.5, 43], [55, 46.5, 54, 40]].map(([x1, y1, x2, y2]) => sh('path', { d: `M${x1},${y1} L${x2},${y2}`, stroke: sp.dark, 'stroke-width': 2.6, 'stroke-linecap': 'round' })).join('');
+    if (X.has('beavertail')) back += sh('ellipse', { cx: 50, cy: 55, rx: 10, ry: 5, fill: '#4a3424', stroke: OL, 'stroke-width': 1.4, transform: 'rotate(-18 50 55)' }) + sh('path', { d: 'M44,54 L56,51 M45,57 L57,54 M48,52 L51,58 M53,50.5 L55,56.5', stroke: '#2a1c12', 'stroke-width': .6, opacity: .7 });
     if (tailT === 'thin') back += sh('path', { d: 'M44,50 C54,52 56,44 52,38', fill: 'none', stroke: OL, 'stroke-width': 4.2, 'stroke-linecap': 'round' }) + sh('path', { d: 'M44,50 C54,52 56,44 52,38', fill: 'none', stroke: ['mouse', 'shrew', 'mtdormouse'].includes(sp.id) ? '#e8b0b8' : sp.fur, 'stroke-width': 2.2, 'stroke-linecap': 'round' });
     if (tailT === 'tuft') back += sh('path', { d: 'M44,50 C50,52 52,48 52,44', fill: 'none', stroke: OL, 'stroke-width': 2 }) + sh('path', { d: 'M52,44 L50,39 L53,41 L54,37 L55,42 Z', fill: sp.dark, stroke: OL, 'stroke-width': .8 });
     if (tailT === 'curl') back += sh('path', { d: 'M44,48 C54,50 56,40 50,38 C46,38 47,44 50,43', fill: 'none', stroke: OL, 'stroke-width': 4.4, 'stroke-linecap': 'round' }) + sh('path', { d: 'M44,48 C54,50 56,40 50,38 C46,38 47,44 50,43', fill: 'none', stroke: sp.fur, 'stroke-width': 2.4, 'stroke-linecap': 'round' });
@@ -218,6 +311,7 @@ function monsterSvg(w, flip = false) {
       if (sp.pattern === 'saddle') body += sh('ellipse', { cx: 40, cy: 44, rx: 4, ry: 3, fill: '#f4ece0' });
       if (sp.pattern === 'patches') body += sh('path', { d: 'M20,42 C24,38 28,44 24,48 C21,49 19,46 20,42 Z M38,50 C42,46 46,50 43,53 C40,55 37,53 38,50 Z', fill: sp.dark });
       if (sp.pattern === 'dots') for (const [x, y] of [[23, 43], [27, 40], [37, 40], [41, 43], [24, 49], [40, 49]]) body += sh('circle', { cx: x, cy: y, r: 1.2, fill: '#fff' });
+      if (X.has('armor')) body += [41, 46, 51].map(y => sh('path', { d: `M19,${y} C26,${y - 3.4} 38,${y - 3.4} 45,${y}`, fill: 'none', stroke: sp.dark, 'stroke-width': 1.4 })).join('');
       if (X.has('stripes')) body += both('M20,42 L25,45 M19,47 L24,49 M21,52 L25,53', { stroke: sp.dark, 'stroke-width': 1.6 });
       if (X.has('wool')) { let c = ''; for (const [x, y] of [[21, 42], [26, 39], [32, 38], [38, 39], [43, 42], [20, 48], [44, 48], [26, 54], [38, 54]]) c += sh('circle', { cx: x, cy: y, r: 4.2, ...f(sp.fur) }); body = c + body; }
       if (sp.pattern === 'spots' || sp.pattern === 'rosettes') for (let i = 0; i < 9; i++) { const x = 21 + r() * 22, y = 40 + r() * 14; if (Math.abs(x - 32) < 7 && y > 44) continue; body += sp.pattern === 'spots' ? sh('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 1.1, fill: sp.dark }) : sh('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 1.6, fill: 'none', stroke: sp.dark, 'stroke-width': .9 }); }
@@ -340,12 +434,14 @@ function monsterSvg(w, flip = false) {
   if (sp.pattern === 'mask') head += both('M17,30 C20,38 27,38 30,34 C26,32 22,30 17,30 Z', { fill: sp.fur2 });
   if (X.has('mask2')) head += sh('path', { d: 'M18,22 C24,18 40,18 46,22 L44,28 C38,24 26,24 20,28 Z', fill: '#4a3a30', opacity: .8 });
   if (sp.pattern === 'face') head += sh('path', { d: 'M30,15 C31,24 31,28 30,33 L34,33 C33,28 33,24 34,15 Z', fill: sp.fur2 });
+  if (X.has('bandit')) head += sh('path', { d: 'M15,26 C20,21.5 28,23.5 32,25.5 C36,23.5 44,21.5 49,26 C46,32 38,32 32,28.6 C26,32 18,32 15,26 Z', fill: sp.dark, opacity: .92 });
+  if (X.has('whitestripe')) head += sh('path', { d: 'M30,12 L34,12 L33.4,25 L30.6,25 Z', fill: '#fafafa' });
   if (X.has('stripe')) head += sh('path', { d: 'M31,14 L33,14 L33,24 L31,24 Z', fill: sp.dark });
   if (sp.pattern === 'spots' || sp.pattern === 'rosettes') for (let i = 0; i < 7; i++) { const a = r() * Math.PI * 2, d = 7 + r() * 6, x = 32 + Math.cos(a) * d * 1.1, y = 24 + Math.sin(a) * d * .55; if (y > 27) continue; head += sh('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: sp.pattern === 'spots' ? .9 : 1.3, fill: sp.pattern === 'spots' ? sp.dark : 'none', stroke: sp.pattern === 'rosettes' ? sp.dark : 'none', 'stroke-width': .8 }); }
   if (sp.pattern === 'freckles') for (let i = 0; i < 6; i++) head += sh('circle', { cx: (22 + r() * 20).toFixed(1), cy: (cy - 11 + r() * 7).toFixed(1), r: .9, fill: sp.dark, opacity: .5 });
   if (X.has('cheeks')) head += both('M16,28 C12,30 14,38 20,36 C22,34 21,30 18,28 Z', f(sp.fur2));
   if (X.has('eyering')) head += both(`M21,${eyeY - 5} C23,${eyeY - 8} 29,${eyeY - 8} 31,${eyeY - 5}`, { fill: 'none', stroke: '#1a1210', 'stroke-width': 2.4 });
-  if (X.has('crest')) { let c = ''; for (let i = 0; i < 5; i++) { const x = 22 + i * 5, a = (i - 2) * 9; c += sh('path', { d: `M${x},16 C${x - 2},8 ${x - 1},2 ${x + 1},0 C${x + 3},2 ${x + 3},8 ${x + 2},16 Z`, fill: '#f0943a', stroke: OL, 'stroke-width': 1.1, transform: `rotate(${a} ${x} 16)` }) + sh('path', { d: `M${x - .2},3 C${x},1 ${x + 1},0 ${x + 1},0 C${x + 2},1 ${x + 2.4},2 ${x + 2.2},3.5 Z`, fill: '#1a1210', transform: `rotate(${a} ${x} 16)` }); } head = c + head; }
+  if (X.has('crest')) { let c = ''; for (let i = 0; i < 5; i++) { const x = 22 + i * 5, a = (i - 2) * 9; c += sh('path', { d: `M${x},16 C${x - 2},8 ${x - 1},2 ${x + 1},0 C${x + 3},2 ${x + 3},8 ${x + 2},16 Z`, fill: sp.id === 'cardinal' ? '#d02828' : sp.id === 'bluejay' ? '#4a7ad0' : sp.id === 'roadrunner' ? '#6a5a44' : '#f0943a', stroke: OL, 'stroke-width': 1.1, transform: `rotate(${a} ${x} 16)` }) + sh('path', { d: `M${x - .2},3 C${x},1 ${x + 1},0 ${x + 1},0 C${x + 2},1 ${x + 2.4},2 ${x + 2.2},3.5 Z`, fill: '#1a1210', transform: `rotate(${a} ${x} 16)` }); } head = c + head; }
   if (X.has('crest2')) head = sh('path', { d: `M30,${cy - 11} C28,${cy - 20} 34,${cy - 22} 36,${cy - 18} C34,${cy - 18} 33,${cy - 15} 34,${cy - 11} Z`, ...f('#2a2420') }) + head;
   if (X.has('curlycrest')) head = sh('path', { d: `M30,${cy - 11} C26,${cy - 18} 32,${cy - 22} 34,${cy - 18} C36,${cy - 22} 40,${cy - 18} 36,${cy - 11} Z`, ...f(sp.fur) }) + head;
   if (X.has('comb')) head = sh('path', { d: `M26,${cy - 10} C25,${cy - 17} 28,${cy - 19} 29,${cy - 15} C29,${cy - 20} 33,${cy - 21} 33,${cy - 16} C34,${cy - 20} 38,${cy - 19} 37,${cy - 12} Z`, ...f('#e02a30') }) + head;
