@@ -63,6 +63,12 @@ const TYPES = {
   WEATHER: { label: 'WEATHER', pal: ['#d0f0ff', '#58a8d8', '#205078'] },
   VERB: { label: 'ACTION', pal: ['#d8f8c8', '#50b860', '#185a28'] },
   PHRASE: { label: 'PHRASE', pal: ['#ffe0e8', '#e8607a', '#7a1830'] },
+  NATURE: { label: 'NATURE', pal: ['#d0f0c0', '#5a9a48', '#22481c'] },
+  TRAVEL: { label: 'TRAVEL', pal: ['#f0e0c8', '#b08458', '#5a3a1c'] },
+  TALK: { label: 'CHAT', pal: ['#e0e8ff', '#5878c8', '#22306a'] },
+  HOME: { label: 'HOME', pal: ['#fff0c8', '#d0a040', '#6a4a10'] },
+  CITY: { label: 'CITY', pal: ['#e0e0e8', '#78809a', '#30364a'] },
+  TAAROF: { label: 'TAAROF', pal: ['#ffe0d0', '#d06a50', '#6a2414'] },
 };
 const WORDS = [];
 const WORD = {};
@@ -82,7 +88,7 @@ const WORD = {};
   }
 })();
 const wordsOfRoute = r => WORDS.filter(w => w.route === r);
-const ROUTE_NAMES = { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD' };
+const ROUTE_NAMES = { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD', 4: 'ZAGROS MOUNTAINS', 5: 'DASHT-E KAVIR', 6: 'TEHRAN' };
 
 // ---- options (kept separately from the 48h save) ----
 const OPT_KEY = 'lenguamon_opts_v1';

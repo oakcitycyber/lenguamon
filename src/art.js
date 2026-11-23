@@ -40,7 +40,7 @@ function groundAt(m, x, y) {
   for (let r = 1; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
     if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
     const ch = m && m.grid[y + dy] && m.grid[y + dy][x + dx];
-    if (ch === ',') return 'sand'; if (ch === '.' || ch === ':' || ch === '*') return 'grass';
+    if (ch && ',≈¤░▓'.includes(ch)) return 'sand'; if (ch === '.' || ch === ':' || ch === '*') return 'grass';
   }
   return 'grass';
 }
@@ -141,6 +141,7 @@ function renderMap(m) {
     if (typeof gritTile === 'function') gritTile(ctx, x, y, ch, nb, m);
     ctx.restore();
   }
+  if (typeof drawSprites === 'function') drawSprites(ctx, m);
   return cv;
 }
 

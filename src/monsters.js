@@ -133,8 +133,8 @@ const mir = d => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (m, x, y) => 
 const both = (d, attrs) => sh('path', { d, ...attrs }) + sh('path', { d: mir(d), ...attrs });
 
 function monsterSvg(w, flip = false) {
-  const sp = speciesOf(w), r = rng(hashStr(w.key + '|look'));
-  const col = TYPES[w.type].pal;
+  const sp = speciesOf(w), r = rng(hashStr((w.lookKey || w.key) + '|look'));
+  const col = TYPES[w.palType || w.type].pal;
   const X = new Set(sp.extra || []);
   let expr = Math.floor(r() * 5); if (X.has('grumpy')) expr = 2; if (X.has('sleepy')) expr = 3;
   const st = { stroke: OL, 'stroke-width': 1.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
@@ -430,10 +430,53 @@ function monsterSvg(w, flip = false) {
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);
   const order = isFish ? back + head + body + front + face + collar : longBill ? back + body + head + face + front + collar : back + body + collar + head + face + front;
-  const inner = shadow + order;
+  // evolved forms: a golden aura and sparkles, and a crown (taj) at the final stage
+  let pre = '', post = '';
+  if (w.stage) {
+    pre = `<defs><radialGradient id="aura" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9a0" stop-opacity=".85"/><stop offset=".6" stop-color="#ffd060" stop-opacity=".35"/><stop offset="1" stop-color="#ffd060" stop-opacity="0"/></radialGradient></defs><ellipse cx="32" cy="34" rx="${w.stage > 1 ? 34 : 30}" ry="${w.stage > 1 ? 34 : 29}" fill="url(#aura)"/>`;
+    const star = (x, y, s) => `<path d="M${x},${y - s} L${x + s * .3},${y - s * .3} L${x + s},${y} L${x + s * .3},${y + s * .3} L${x},${y + s} L${x - s * .3},${y + s * .3} L${x - s},${y} L${x - s * .3},${y - s * .3} Z" fill="#fff6c0" stroke="#d8a020" stroke-width=".5"/>`;
+    post += star(6, 10, 3.4) + star(58, 20, 2.8) + star(54, 52, 2.4) + (w.stage > 1 ? star(9, 46, 2.6) + star(46, -2, 2.2) : '');
+    if (w.stage > 1) { const cx = hc.cx || 32, cy = hc.cy - hc.ry - 1.5;
+      post += `<path d="M${cx - 8},${cy} L${cx - 9},${cy - 8} L${cx - 4},${cy - 4} L${cx},${cy - 10} L${cx + 4},${cy - 4} L${cx + 9},${cy - 8} L${cx + 8},${cy} Z" fill="#f4c840" stroke="${OL}" stroke-width="1.2" stroke-linejoin="round"/><circle cx="${cx}" cy="${cy - 3.6}" r="1.6" fill="#2ab0a8" stroke="${OL}" stroke-width=".6"/><circle cx="${cx - 5}" cy="${cy - 2.4}" r="1" fill="#d83040"/><circle cx="${cx + 5}" cy="${cy - 2.4}" r="1" fill="#d83040"/>`; }
+  }
+  const inner = pre + shadow + order + post;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -8 68 74">${flip ? `<g transform="translate(64 0) scale(-1 1)">${inner}</g>` : inner}</svg>`;
 }
 const MON_URL = {};
-function monUrl(w, flip = false) { const k = w.key + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
+function monUrl(w, flip = false) { const k = (w.viewKey || w.key) + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
 function monTag(w) { return `<div class="mon-tag">${esc(speciesOf(w).name)}</div>`; }
 function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, cls === 'me')}" alt="${esc(w.name)}">`; }
+
+// ===== evolution: a word grows into a phrase that uses it, and its animal grows stronger =====
+// e.g. SALAM ("hello") -> SALAM, KHUBI? ("hello, how are you?"). Words with no phrase of their own
+// grow into a longer phrase of the same kind. Two evolutions at most.
+const EVO = {};
+const EN_STOP = new Set(['the', 'and', 'you', 'are', 'for', 'with', 'its', 'not', 'how', 'what', 'lit']);
+(function buildEvolutions() {
+  const toks = w => norm(w.tr0).split(' ').filter(Boolean);
+  const T = new Map(WORDS.map(w => [w.key, toks(w)]));
+  const contains = (big, small) => { for (let i = 0; i + small.length <= big.length; i++) if (small.every((t, j) => big[i + j] === t)) return true; return false; };
+  for (const w of WORDS) {
+    const wt = T.get(w.key), lvl = w.level;
+    let c = WORDS.filter(p => p !== w && p.level > lvl && T.get(p.key).length > wt.length && contains(T.get(p.key), wt));
+    if (c.length) { c.sort((a, b) => a.level - b.level || a.idx - b.idx); EVO[w.key] = c[0].key; continue; }
+    if (!c.length) { // a phrase whose meaning uses this word's meaning (water -> I want water)
+      const ew = norm(w.en0).split(' ').filter(t => t.length > 2 && !EN_STOP.has(t));
+      if (ew.length) c = WORDS.filter(p => p !== w && p.level > lvl && T.get(p.key).length > 1 && ew.every(t => norm(p.en0).split(' ').includes(t)));
+    }
+    if (!c.length) c = WORDS.filter(p => p !== w && p.type === w.type && T.get(p.key).length > 1 && p.level > lvl + 1);
+    if (!c.length) c = WORDS.filter(p => p !== w && p.route >= w.route && T.get(p.key).length > 1 && p.level > lvl + 1);
+    if (!c.length) continue;
+    c.sort((a, b) => a.level - b.level || a.idx - b.idx);
+    const near = c.slice(0, 3);
+    EVO[w.key] = near[hashStr(w.key) % near.length].key;
+  }
+})();
+const MON_VIEW = {};
+// what a team member looks like now: its current word, but the animal it was born as
+function monView(m) {
+  const w = WORD[m.key];
+  if (!m.base || m.base === m.key) return w;
+  const b = WORD[m.base] || w, stage = m.stage || 1, k = m.key + '>' + m.base + '>' + stage;
+  return MON_VIEW[k] || (MON_VIEW[k] = { ...w, sp: b.sp, name: b.name + ' ' + '★'.repeat(stage), lookKey: b.key, palType: b.type, stage, viewKey: k });
+}

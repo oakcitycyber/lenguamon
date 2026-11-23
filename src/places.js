@@ -26,6 +26,8 @@ const GYMS = {
   '<': { route: 1, city: 'YAZD', boy: 'MORSHED JAMSHID', girl: 'MORSHED GORDAFARID' },
   '>': { route: 2, city: 'ISFAHAN', boy: 'MORSHED SOHRAB', girl: 'MORSHED TAHMINEH' },
   '?': { route: 3, city: 'SHIRAZ', boy: 'MORSHED ROSTAM', girl: 'MORSHED RUDABEH' },
+  'μ': { route: [4, 5], city: 'KASHAN', boy: 'MORSHED ZAL', girl: 'MORSHED FARANAK' },
+  'π': { route: 6, city: 'TEHRAN', boy: 'MORSHED FEREYDOUN', girl: 'MORSHED SINDOKHT' },
 };
 const GYM_ROUNDS = 8;
 function gymWords(route) {
@@ -40,6 +42,7 @@ async function gymXp(m, amt) {
     m.xp -= m.lvl * 8; const oldMax = maxHp(m.lvl); m.lvl++; m.hp += maxHp(m.lvl) - oldMax;
     SND.fx('levelup'); await say(`${esc(w.name)} grew to level ${m.lvl}!`);
   }
+  await maybeEvolve(m);
 }
 async function gymDrill(g) {
   const words = gymWords(g.route);
@@ -66,7 +69,13 @@ async function gymDrill(g) {
 }
 async function gymTalk(g0) {
   const g = { ...g0, name: G(g0.boy, g0.girl) };
-  const met = 'gym' + g.route;
+  if (Array.isArray(g0.route)) {
+    await say(T(g.name, 'Which words shall we train today?'), { keep: true });
+    const r = await choose(g0.route.map(x => ROUTE_NAMES[x]), { cls: 'yn' }); hideText();
+    if (r < 0) return;
+    g.route = g0.route[r];
+  }
+  const met = 'gym' + g0.city;
   if (!S.flags[met]) {
     await say([T(g.name, `${F('خوش آمدید', 'khosh amadid')}! Welcome to the ${F('زورخانه', 'zoorkhaneh')}, the house of strength.`),
       'Here athletes swing the heavy meel clubs while I beat the drum and sing the Shahnameh, the Book of Kings.',
@@ -80,6 +89,10 @@ async function gymTalk(g0) {
   await gymDrill(g);
 }
 for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', lookG: 'morshedF', talk: () => gymTalk(g) });
+npc('ν', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('SIAVASH', 'HOMA'), `Before we swing the clubs, the morshed rings the bell and we all say ${F('یا علی', 'ya ali')}.`), `After training, tired friends say ${F('خدا قوت', 'khoda ghovvat')}: "may God give you strength."`]); } });
+npc('ρ', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'right', talk: async () => { await say([T(G('ESFANDIAR', 'AZADEH'), `In Tehran everyone is in a hurry: ${F('زود باش', 'zood bash')}! Hurry up!`), `But in the zurkhaneh we say ${F('آروم آروم', 'aroom aroom')}: slowly, slowly. Strength takes time.`]); } });
+npc('κ', { look: 'javad', lookG: 'goli', talk: () => isGirl() ? teaHost('KHANOM GOLI', null, [`${F('سلام', 'salam')}, ${F('دخترم', 'dokhtaram')}! Welcome to Kashan. I am Khanom Goli.`, 'Smell that? I put a drop of our famous Kashan rosewater in every glass.', `${F('بفرمایید', 'befarmaid')}!`]) : teaHost('AGHA JAVAD', null, [`${F('خوش اومدی', 'khosh oomadi')}! I am Agha Javad, cousin of Agha Reza from Yazd.`, 'Our whole family pours tea, from Yazd all the way to Tehran!', 'Here in Kashan we add a drop of rosewater. Try it!']) });
+npc('τ', { look: 'masoud', lookG: 'mahin', talk: () => isGirl() ? teaHost('KHANOM MAHIN', null, [`${F('خسته نباشی', 'khasteh nabashi')}, ${F('عزیزم', 'azizam')}! Tehran is exhausting, isn't it?`, 'I am Khanom Mahin. Sit down, forget the traffic, and have a glass of chai.']) : teaHost('AGHA MASOUD', null, [`${F('خسته نباشی', 'khasteh nabashi')}! Tehran traffic, eh?`, 'I am Agha Masoud. My grandfather poured tea for the storytellers of old Tehran. Sit, sit.']) });
 npc('|', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('KAVEH', 'KATAYOUN'), `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
 npc('_', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'right', talk: async () => { await say([T(G('BIZHAN', 'MANIZHEH'), `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
 npc(';', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('GIV', 'FARANGIS'), `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });

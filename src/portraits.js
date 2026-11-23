@@ -51,6 +51,25 @@ function portraitSvg(id) {
       <rect x="22" y="48" width="20" height="13" rx="1.5" fill="#7a2a1a" ${st}/><path d="M32,48 v13" stroke="#e0b040" stroke-width="1.2"/><path d="M25,52 h4 M35,52 h4" stroke="#e0b040" stroke-width="1"/>
     </svg>`;
   }
+  if (id === 'anchor') {
+    // an invented state-TV news anchor: frozen smile, helmet hair, earpiece, desk and teleprompter
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <rect x="0" y="0" width="64" height="44" fill="#1e3a6a"/><circle cx="50" cy="14" r="11" fill="none" stroke="#5a86c8" stroke-width="1"/><path d="M39,14 h22 M50,3 v22 M42,8 q8,6 16,0 M42,20 q8,-6 16,0" stroke="#5a86c8" stroke-width=".8" fill="none"/>
+      <rect x="2" y="4" width="18" height="7" rx="1" fill="#c82838"/><text x="11" y="9.4" font-family="Verdana" font-weight="700" font-size="4" fill="#fff" text-anchor="middle">LIVE</text>
+      <path d="M12,64 C12,46 20,40 32,40 C44,40 52,46 52,64 Z" fill="#2a2f45" ${st}/>
+      <path d="M27,40 L32,52 L37,40 Z" fill="#f4f2ec" ${st}/><path d="M31,42 L33,42 L34,54 L32,57 L30,54 Z" fill="#a8283a" stroke="#2b1d16" stroke-width=".8"/>
+      <ellipse cx="32" cy="26" rx="12.5" ry="14.5" fill="${skin}" ${st}/>
+      <path d="M19,24 C17,10 47,8 45,24 C44,18 40,14 33,14 C27,15 21,17 19,24 Z" fill="#1a1612" ${st}/><path d="M24,15 C30,11 38,11 42,15" stroke="#5a5a6a" stroke-width="1" fill="none"/>
+      <ellipse cx="26.5" cy="26" rx="2" ry="2.4" fill="#1e1410"/><ellipse cx="37.5" cy="26" rx="2" ry="2.4" fill="#1e1410"/><circle cx="27.2" cy="25.2" r=".7" fill="#fff"/><circle cx="38.2" cy="25.2" r=".7" fill="#fff"/>
+      <path d="M22.5,21.5 Q26.5,19.8 30,21.5 M34,21.5 Q37.5,19.8 41.5,21.5" stroke="#1a1612" stroke-width="1.4" fill="none"/>
+      <path d="M24,32 Q32,39 40,32 Q32,35 24,32 Z" fill="#fff" ${st}/><path d="M26,33.6 h12" stroke="#c8c0b8" stroke-width=".5"/>
+      <path d="M20,27 C17,27 17,32 20,32" fill="${skin}" ${st}/><path d="M18.4,28.6 C16,31 16,36 19,38" stroke="#d8d8d8" stroke-width="1.2" fill="none"/><circle cx="18.6" cy="28.8" r="1.3" fill="#d8d8d8" stroke="#2b1d16" stroke-width=".6"/>
+      <rect x="0" y="50" width="64" height="14" fill="#c8ccd8" ${st}/><rect x="0" y="50" width="64" height="3" fill="#8890a8"/>
+      <rect x="22" y="55" width="20" height="6" rx="1" fill="#1e3a6a"/><text x="32" y="59.6" font-family="Verdana" font-weight="700" font-size="3.6" fill="#ffd860" text-anchor="middle">STATE TV</text>
+      <path d="M46,50 L48,40 L50,40 L50,50" fill="#3a3a44" stroke="#2b1d16" stroke-width=".8"/><ellipse cx="49" cy="39.4" rx="2.2" ry="1.6" fill="#2a2a30"/>
+      <rect x="4" y="56" width="12" height="5" rx="1" fill="#f4f2ec" stroke="#2b1d16" stroke-width=".7"/><path d="M6,58 h8 M6,59.6 h6" stroke="#8a8a96" stroke-width=".6"/>
+    </svg>`;
+  }
   if (id === 'censor') {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff5a7a"/><stop offset="1" stop-color="#ff5a7a" stop-opacity="0"/></radialGradient></defs>

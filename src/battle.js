@@ -153,6 +153,7 @@ async function gainXp(m, amt) {
     m.xp -= m.lvl * 8; const oldMax = maxHp(m.lvl); m.lvl++; m.hp += maxHp(m.lvl) - oldMax;
     SND.fx('levelup'); bDraw(); await say(`${esc(w.name)} grew to level ${m.lvl}!`);
   }
+  await maybeEvolve(m);
 }
 // returns true if the player still has a Lenguamon standing
 async function handleFaint() {
@@ -164,10 +165,10 @@ async function handleFaint() {
   BT.me = S.team[r]; bDraw(); await say(`Go! ${esc(monW(BT.me).name)}!`); return true;
 }
 async function blackout() {
-  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to ${G('Agha Reza', 'Khanom Zari')}'s teahouse...`]);
+  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to the teahouse...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
-  healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say(`${G('AGHA REZA', 'KHANOM ZARI')}: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  healTeam(); placePlayer(S.lastTea || 'teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
+  await say(`${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
   await teaScene();
   await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
@@ -323,7 +324,42 @@ const BOSSES = {
       ['کلمه‌ها ممنوع هستند!', 'kalameh-ha mamnu hastand!', 'Words are forbidden!', 'نه! من فارسی حرف می‌زنم!', 'na! man farsi harf mizanam!', 'No! I speak Persian!'],
       ['نه! نه! خداحافظ!', 'na! na! khodahafez!', 'No! No! Goodbye!', 'خداحافظ، سانسورچی!', 'khodahafez, sansurchi!', 'Goodbye, Censor!'],
     ],
-    beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} NOOO! (THE CENSOR fled. The words of Hafez are free again!)`,
+    beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} This isn't over! In TEHRAN I control every screen! (THE CENSOR fled north toward Tehran. The words of Hafez are free again!)`,
+  },
+  b4: {
+    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: 12, showEn: true, optEn: false,
+    title: 'the STATE TV ANCHOR broadcasting live from the gate of Tehran',
+    intro: [`${F('شب بخیر، بینندگان عزیز', 'shab bekheir, binandegan-e aziz')}! Good evening, dear viewers!`, 'We are LIVE at the gate of Tehran, where a dangerous traveller is trying to... SPEAK FREELY. Let us interview them!', 'Remember, viewers: everything is wonderful. Only approved words on this channel!'],
+    lines: [
+      ['شب بخیر، بینندگان عزیز!', 'shab bekheir, binandegan-e aziz!', 'Good evening, dear viewers!', 'سلام، شب شما هم بخیر', 'salam, shab-e shoma ham bekheir', 'Hello, good evening to you too'],
+      ['شما کی هستید؟', 'shoma ki hastid?', 'Who are you?', 'من {NAME} هستم', 'man {NAME} hastam', "I'm {NAME}"],
+      ['کجا می‌رید؟', 'koja mirid?', 'Where are you going?', 'من به تهران می‌رم', 'man be tehran miram', "I'm going to Tehran"],
+      ['چرا؟', 'chera?', 'Why?', 'می‌خوام برج میلاد رو ببینم', 'mikham borj-e milad ro bebinam', 'I want to see Milad Tower'],
+      ['به نظر شما تلویزیون ما خوبه؟', 'be nazar-e shoma televizion-e ma khube?', 'In your opinion, is our TV good?', 'نه، فکر نمی‌کنم', 'na, fekr nemikonam', "No, I don't think so"],
+      ['همه چیز عالیه! موافقید؟', "hame chiz a'liye! movafeghid?", 'Everything is great! Do you agree?', 'نه، مخالفم!', 'na, mokhalefam!', 'No, I disagree!'],
+      ['اینترنت لازم نیست!', 'internet lazem nist!', "The internet isn't necessary!", 'شوخی می‌کنی؟', 'shukhi mikoni?', 'Are you joking?'],
+      ['وقت دارید؟ برنامه ادامه دارد...', 'vaght darid? barnameh edameh darad...', 'Do you have time? The show continues...', 'نه، وقت ندارم. بیا بریم!', 'na, vaght nadaram. bia berim!', "No, I don't have time. Let's go!"],
+      ['...و حالا، تبلیغات!', '...va hala, tablighat!', '...and now, a word from our sponsors!', 'خداحافظ، به امید دیدار', 'khodahafez, be omid-e didar', 'Goodbye, hope to see you again'],
+    ],
+    beaten: `...we are experiencing technical difficulties. ${F('ببخشید', 'bebakhshid')}! (The broadcast cut to a test pattern. The gate of Tehran is open!)`,
+  },
+  b5: {
+    name: 'THE CENSOR', look: 'censor', lvl: 44, route: 6, need: 12, showEn: false, optEn: false, lair: true,
+    title: 'THE CENSOR, jamming every word in Iran from the top of Milad Tower',
+    intro: [`You AGAIN? ${F('باز هم تو؟', 'baz ham to?')}`, 'From the top of Milad Tower I jam every phone, every screen, every word in Iran. Here I am all-powerful!', 'One last conversation. Long Persian sentences, no English hints. Fail, and Persian falls silent forever!'],
+    lines: [
+      ['باز هم تو؟', 'baz ham to?', 'You again?', 'بله، من دوباره اومدم!', 'baleh, man dobare oomadam!', 'Yes, I came back!'],
+      ['تهران خیلی بزرگه. گم نشدی؟', 'tehran kheyli bozorge. gom nashodi?', "Tehran is huge. Didn't you get lost?", 'نه، نقشه دارم', 'na, naghsheh daram', 'No, I have a map'],
+      ['چطوری اومدی؟', 'chetori oomadi?', 'How did you get here?', 'با قطار اومدم', 'ba ghatar oomadam', 'I came by train'],
+      ['اینترنت قطعه! هاها!', "internet ghat'eh! haha!", 'The internet is down! Haha!', 'مهم نیست، من فارسی بلدم', 'mohem nist, man farsi baladam', "It doesn't matter, I know Persian"],
+      ['تعارف نکن، بشین!', "ta'arof nakon, beshin!", "Don't be shy, sit down!", 'مرسی، مزاحم نمی‌شم', 'merci, mozahem nemisham', "Thanks, I won't bother you"],
+      ['به نظرت کلمه‌ها خطرناک هستند؟', 'be nazaret kalameh-ha khatarnak hastand?', 'Do you think words are dangerous?', 'نه، به نظر من کلمه‌ها قشنگ هستند', 'na, be nazar-e man kalameh-ha ghashang hastand', 'No, in my opinion words are beautiful'],
+      ['شماره تلفنت چنده؟', 'shomareh telefonet chande?', "What's your phone number?", 'نمی‌گم! شتر دیدی ندیدی', 'nemigam! shotor didi, nadidi', "I won't tell! (Did you see a camel? You didn't.)"],
+      ['من همه چیز رو ممنوع می‌کنم!', 'man hame chiz ro mamnu mikonam!', 'I ban everything!', 'نمی‌تونی! ما با هم هستیم', 'nemitooni! ma ba ham hastim', "You can't! We are together"],
+      ['چرا فارسی یاد می‌گیری؟', 'chera farsi yad migiri?', 'Why are you learning Persian?', 'چون ایران رو دوست دارم', 'chon iran ro doost daram', 'Because I love Iran'],
+      ['نه! نه! سیگنال قطع شد!', "na! na! signal ghat' shod!", 'No! No! The signal is cut!', 'خداحافظ سانسورچی! خوش گذشت', 'khodahafez sansurchi! khosh gozasht', 'Goodbye, Censor! I had a great time'],
+    ],
+    beaten: `My signal... my beautiful silence... ${F('نه!', 'na!')} NOOOO! (THE CENSOR's jammer exploded into a shower of sparks. Every word in Iran is free again!)`,
   },
 };
 function bossReplyWord(b, line) {
@@ -372,4 +408,27 @@ async function bossBattle(id) {
   await say(`${b.name}: ${b.beaten}`);
   writeSave(); await battleOutro();
   return true;
+}
+
+// ---- evolution: after a level-up, a Lenguamon may try to grow its word into a phrase ----
+function evoTarget(m) { const nk = EVO[m.key]; if (!nk || (m.stage || 0) >= 2) return null; const nx = WORD[nk]; return nx && m.lvl >= nx.level ? nx : null; }
+async function maybeEvolve(m) {
+  const nx = evoTarget(m); if (!nx || m.evoTry === m.lvl) return false;
+  m.evoTry = m.lvl;
+  const before = monW(m), cur = WORD[m.key];
+  await say([`What? ${B(before.name)} is evolving!`, `Its word ${W(cur)} "${esc(cur.en0)}" wants to grow into a phrase. Type the phrase to help it!`]);
+  hideText();
+  const res = await quiz(makeQuestion(nx, 'en2fa'), `EVOLUTION · ${esc(before.name)}`);
+  stat(nx, res.ok);
+  if (!res.ok) { await say([`The phrase was ${W(nx)} = <b>${esc(nx.en0)}</b>.`, `${esc(before.name)} stopped evolving. It will try again at its next level.`]); return false; }
+  m.base = m.base || m.key; m.key = nx.key; m.stage = (m.stage || 0) + 1;
+  const after = monW(m);
+  const p = $('#portrait');
+  p.innerHTML = `<div class="evo"><img class="mon a" src="${monUrl(before)}"><img class="mon b" src="${monUrl(after)}"></div>`; p.classList.add('show');
+  SND.fx('levelup'); await sleep(2600); SND.fx('badge');
+  S.caught[nx.key] = true; S.seen[nx.key] = true;
+  await say([`Congratulations! ${esc(before.name)} evolved into ${B(after.name)}!`, `Its word grew into a phrase: ${W(nx)} = "${esc(nx.en0)}"`]);
+  p.classList.remove('show'); p.innerHTML = '';
+  if ($('#battle').classList.contains('show')) bDraw();
+  writeSave(); return true;
 }
