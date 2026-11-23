@@ -114,7 +114,7 @@ function drawChar(ctx, px, py, L, dir, step) {
     for (const [dx, dy] of dots) el(c, HX + dx, HY + dy, .45, .45, L.scarf2 || '#f4e8d0');
     if (dir === 'down') { c.beginPath(); c.moveTo(HX - .9, HY + HR + .5); c.lineTo(HX + .9, HY + HR + .5); c.lineTo(HX, HY + HR + 2); c.closePath(); c.fillStyle = L.scarf; c.fill(); c.stroke(); }
   }
-  if (L.apron && dir !== 'up') { rrect(c, dir === 'left' ? 5.4 : 6.1, 9, dir === 'left' ? 2.6 : 3.8, 3.4, .5, '#f2ece0', true, .35); }
+  if (L.apron && dir !== 'up') { const long = typeof L.apron === 'string'; rrect(c, dir === 'left' ? 5.4 : 6.1, long ? 8 : 9, dir === 'left' ? 2.6 : 3.8, long ? 6.2 : 3.4, .5, long ? L.apron : '#f2ece0', true, .35); if (long && dir === 'down') { c.strokeStyle = L.apron; c.lineWidth = .45; c.beginPath(); c.moveTo(6.4, 8.1); c.lineTo(7, 7.3); c.moveTo(9.6, 8.1); c.lineTo(9, 7.3); c.stroke(); } }
   if (L.cap) {
     c.beginPath(); c.moveTo(L0 - .1, HY - .6); c.bezierCurveTo(L0 - .1, T0 - .6, R0 + .1, T0 - .6, R0 + .1, HY - .6); c.closePath(); c.fillStyle = L.cap; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
     if (dir === 'down') { rrect(c, L0 - .5, HY - 1, R0 - L0 + 1, 1.1, .5, '#26301a', true, .35); el(c, HX, HY - 2.3, .65, .6, C.gold); }

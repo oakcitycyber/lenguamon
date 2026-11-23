@@ -3,8 +3,9 @@
 // ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers (or, for a girl hero, the brothers' wives) ----
 async function teaHost(name, vest, lines) {
   await say(lines.map(l => T(name, l)));
-  await teaScene(vest, name); await say(['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
-  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some DAFTARS too. You now have 5.`); }
+  await teaScene(vest, name);
+  await say(LANG === 'en' ? ['Your Lenguamon had coffee and pie and feel refreshed!', T(name, 'Enjoy, hon! Come back anytime.')] : ['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some ${DAF()}S too. You now have 5.`); }
 }
 npc('!', { look: 'hassan', lookG: 'parvin', talk: () => isGirl() ? teaHost('KHANOM PARVIN', null, [
   `${F('خوش اومدی', 'khosh oomadi')}, ${F('عزیزم', 'azizam')}! Welcome, dear! I am Khanom Parvin.`,
@@ -49,22 +50,22 @@ async function gymDrill(g) {
   let score = 0;
   for (let i = 0; i < words.length; i++) {
     const w = words[i]; hideText();
-    const res = await quiz(makeQuestion(w, 'en2fa'), `${g.city} ZURKHANEH · ROUND ${i + 1}/${words.length} · ${score} ✓`);
+    const res = await quiz(makeQuestion(w, 'en2fa'), `${g.city} ${g.gym || 'ZURKHANEH'} · ROUND ${i + 1}/${words.length} · ${score} ✓`);
     stat(w, res.ok); S.seen[w.key] = true;
-    if (res.ok) { score++; if (i < words.length - 1 && rand() < 0.35) await say(T(g.name, `${F('آفرین', 'afarin')}! Well done!`)); }
-    else await say(`${T(g.name, 'Not quite. Remember:')} ${W(w)} = <b>${esc(w.en0)}</b>`);
+    if (res.ok) { score++; if (i < words.length - 1 && rand() < 0.35) await say(T(g.name, g.gym ? pick(['Nice jab!', 'Good job!', 'Keep it up, champ!']) : `${F('آفرین', 'afarin')}! Well done!`)); }
+    else await say(`${T(g.name, 'Not quite. Remember:')} ${W(w)} = <b>${M(w)}</b>`);
   }
   const perfect = score === words.length;
   SND.fx(perfect ? 'badge' : 'good');
   await say([`You got ${B(score + ' / ' + words.length)}!`,
-    perfect ? T(g.name, `*rings the bell* ${F('آفرین، پهلوان', 'afarin, pahlevan')}! A perfect round, champion!`)
-      : score >= words.length / 2 ? T(g.name, 'Good strength. Come back and train again!') : T(g.name, `${F('آروم آروم', 'aroom aroom')}: slowly, slowly. Every champion started weak.`)]);
+    perfect ? T(g.name, g.gym ? '*DING DING DING* That\'s a knockout! A perfect round, champ!' : `*rings the bell* ${F('آفرین، پهلوان', 'afarin, pahlevan')}! A perfect round, champion!`)
+      : score >= words.length / 2 ? T(g.name, 'Good work. Come back and train again!') : T(g.name, g.gym ? 'Hang in there. Every champ started as a rookie.' : `${F('آروم آروم', 'aroom aroom')}: slowly, slowly. Every champion started weak.`)]);
   const amt = score * 2 + (perfect ? 6 : 0);
   if (amt && S.team.length) {
     await say(`Your Lenguamon trained alongside you and gained ${amt} EXP. Points each!`);
     for (const m of S.team) await gymXp(m, amt);
   }
-  if (perfect) { S.daftar += 2; await say(`${g.name} gave you 2 DAFTARS. You now have ${S.daftar}.`); }
+  if (perfect) { S.daftar += 2; await say(`${g.name} gave you 2 ${DAF()}S. You now have ${S.daftar}.`); }
   writeSave();
 }
 async function gymTalk(g0) {
@@ -76,6 +77,10 @@ async function gymTalk(g0) {
     g.route = g0.route[r];
   }
   const met = 'gym' + g0.city;
+  if (!S.flags[met] && g.gym) {
+    await say([T(g.name, `Welcome to the gym, ${isGirl() ? 'kid' : 'kid'}! ${PF('به باشگاه خوش اومدی!')}`), 'Boxers here train their fists. You will train your WORDS.', 'Eight rounds. I say a word in Persian, you type it in English. Fast and sharp, like a jab!']);
+    S.flags[met] = true;
+  }
   if (!S.flags[met]) {
     await say([T(g.name, `${F('خوش آمدید', 'khosh amadid')}! Welcome to the ${F('زورخانه', 'zoorkhaneh')}, the house of strength.`),
       'Here athletes swing the heavy meel clubs while I beat the drum and sing the Shahnameh, the Book of Kings.',
@@ -84,8 +89,8 @@ async function gymTalk(g0) {
     S.flags[met] = true;
   }
   if (!S.team.length) { await say(T(g.name, 'First get a Lenguamon from Professor Haydeh. Then come train!')); return; }
-  if (!(await ask(`${g.name}: Train on the words of ${esc(ROUTE_NAMES[g.route])}? ${GYM_ROUNDS} rounds.`))) { await say(T(g.name, `${F('باشه', 'bashe')}. The pit will be waiting.`)); return; }
-  await say(T(g.name, '*BOOM, ba-da BOOM* goes the drum. Begin!'));
+  if (!(await ask(`${g.name}: Train on the words of ${esc(ROUTE_NAMES[g.route])}? ${GYM_ROUNDS} rounds.`))) { await say(T(g.name, g.gym ? 'Alright. The ring will be waiting.' : `${F('باشه', 'bashe')}. The pit will be waiting.`)); return; }
+  await say(T(g.name, g.gym ? '*DING DING* Round one. Let\'s go!' : '*BOOM, ba-da BOOM* goes the drum. Begin!'));
   await gymDrill(g);
 }
 for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', lookG: 'morshedF', talk: () => gymTalk(g) });

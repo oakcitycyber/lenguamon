@@ -47,6 +47,56 @@ const SAYINGS = [
   ['هر چه کنی به خود کنی', 'har che koni be khod koni', 'Whatever you do, you do to yourself.', 'What goes around comes around.'],
   ['مهمان حبیب خداست', 'mehman habib-e khodast', "The guest is God's beloved friend.", 'Guests are treasured in Iran.'],
 ];
+// ===== American sayings (English mode): [saying, plain-English meaning, Persian meaning or the matching Persian proverb] =====
+const SAYINGS_EN = [
+  // Santa Fe: patience and effort
+  ["Rome wasn't built in a day.", 'Big things take time.', 'کارهای بزرگ زمان می‌برند. (گر صبر کنی ز غوره حلوا سازی)'],
+  ['Practice makes perfect.', 'The more you do something, the better you get.', 'کار نیکو کردن از پر کردن است'],
+  ["Where there's a will, there's a way.", "If you want something enough, you'll find a way.", 'خواستن توانستن است'],
+  ['Better late than never.', 'Doing something late is better than not doing it.', 'دیر رسیدن بهتر از هرگز نرسیدن است'],
+  ['Slow and steady wins the race.', 'Patience and consistency beat speed.', 'رهرو آن است که آهسته و پیوسته رود'],
+  ['No pain, no gain.', 'You have to work hard to get results.', 'نابرده رنج گنج میسر نمی‌شود'],
+  ['The early bird catches the worm.', 'People who start early succeed.', 'سحرخیز باش تا کامروا باشی'],
+  ['Every cloud has a silver lining.', 'Something good can come from something bad.', 'در ناامیدی بسی امید است'],
+  // San Francisco: money and work
+  ['Time is money.', 'Wasting time is like wasting money.', 'وقت طلاست'],
+  ["Don't put all your eggs in one basket.", "Don't risk everything on one plan.", 'همه تخم‌مرغ‌هایت را در یک سبد نگذار'],
+  ["There's no such thing as a free lunch.", 'Nothing is really free.', 'هیچ چیز مجانی نیست؛ هر چیزی بهایی دارد'],
+  ['The grass is always greener on the other side.', "Other people's lives always look better.", 'مرغ همسایه غاز است'],
+  ['Too many cooks spoil the broth.', 'Too many bosses ruin the work.', 'آشپز که دو تا شد، آش یا شور می‌شه یا بی‌نمک'],
+  ["Don't count your chickens before they hatch.", "Don't celebrate before it really happens.", 'جوجه را آخر پاییز می‌شمارند'],
+  ['A penny saved is a penny earned.', 'Saving money is as good as earning it.', 'پول پس‌انداز شده مثل پول درآمده است'],
+  ['Actions speak louder than words.', 'What you do matters more than what you say.', 'به عمل کار برآید، به سخندانی نیست'],
+  // Seattle: friends and people
+  ['A friend in need is a friend indeed.', 'A real friend helps you in hard times.', 'دوست آن باشد که گیرد دست دوست، در پریشان‌حالی و درماندگی'],
+  ['Birds of a feather flock together.', 'Similar people spend time together.', 'کبوتر با کبوتر، باز با باز'],
+  ["Don't judge a book by its cover.", "Don't judge people by how they look.", 'از روی ظاهر قضاوت نکن'],
+  ['Two heads are better than one.', 'Working together gives better ideas.', 'یک دست صدا ندارد'],
+  ['Absence makes the heart grow fonder.', 'You love people more when they are far away.', 'دوری، محبت را بیشتر می‌کند'],
+  ['Honesty is the best policy.', 'Always tell the truth.', 'صداقت بهترین سیاست است'],
+  ['Treat others the way you want to be treated.', 'Be kind, the way you want people to be kind to you.', 'با دیگران همان‌طور رفتار کن که دوست داری با تو رفتار کنند'],
+  ['Laughter is the best medicine.', 'Laughing makes you feel better.', 'خنده بهترین داروست'],
+  // Chicago: caution and good sense
+  ['Better safe than sorry.', 'Be careful now to avoid problems later.', 'کار از محکم‌کاری عیب نمی‌کند'],
+  ['Look before you leap.', 'Think before you act.', 'اول فکر کن، بعد عمل کن'],
+  ["Where there's smoke, there's fire.", 'Rumors usually have some truth in them.', 'تا نباشد چیزکی، مردم نگویند چیزها'],
+  ["Don't bite off more than you can chew.", "Don't take on more than you can handle.", 'لقمه بزرگ‌تر از دهانت برندار'],
+  ['Curiosity killed the cat.', 'Being too curious can get you into trouble.', 'فضولی زیاد دردسر می‌سازد'],
+  ['Easy come, easy go.', 'Things you get easily, you lose easily.', 'باد آورده را باد می‌برد'],
+  ['Haste makes waste.', 'Rushing causes mistakes.', 'عجله کار شیطان است'],
+  ['Speak of the devil.', 'Said when the person you were talking about walks in.', 'حلال‌زاده است! (اسمش را آوردیم، پیدایش شد)'],
+  // New York: big city life
+  ['When in Rome, do as the Romans do.', 'Follow the local customs.', 'خواهی نشوی رسوا، همرنگ جماعت شو'],
+  ["It's never too late to learn.", 'You can always start learning.', 'ماهی را هر وقت از آب بگیری تازه است'],
+  ['If you can make it there, you can make it anywhere.', 'Succeeding in New York proves you can succeed anywhere.', 'اگر در نیویورک موفق شوی، همه‌جا موفق می‌شوی'],
+  ['The bigger they are, the harder they fall.', 'Powerful people lose more when they fail.', 'هر که بامش بیش، برفش بیشتر'],
+  ["You can't have your cake and eat it too.", "You can't keep two good things that cancel each other out.", 'هم خدا را می‌خواهی و هم خرما را؟ نمی‌شود'],
+  ['What goes around comes around.', 'Your actions come back to you.', 'هر چه کنی به خود کنی'],
+  ["There's no place like home.", 'Home is the best place of all.', 'هیچ جا خانه خود آدم نمی‌شود'],
+  ['Knowledge is power.', 'Learning makes you strong.', 'توانا بود هر که دانا بود'],
+];
+const SAY_CITY_EN = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'CHICAGO', 'NEW YORK'];
+const sayList = () => (LANG === 'en' ? SAYINGS_EN : SAYINGS);
 const SAY_CITY = ['YAZD', 'ISFAHAN', 'SHIRAZ', 'KASHAN', 'TEHRAN'];
 const sayLearned = () => (S.sayings || (S.sayings = {}));
 const sayCount = () => Object.keys(sayLearned()).length;
@@ -55,32 +105,35 @@ async function elderTalk(group, name, hello) {
   const L = sayLearned(), ids = [0, 1, 2, 3, 4, 5, 6, 7].map(i => group * 8 + i);
   const next = ids.find(i => !L[i]);
   if (next !== undefined) {
-    const [fa, tr, lit, mean] = SAYINGS[next];
-    await say([T(name, hello), `${T(name, 'Here is an old Persian saying:')}<br>${F(fa, tr)}`, `Word for word: "${esc(lit)}"`, `It means: ${B(esc(mean))}`]);
+    if (LANG === 'en') { const [sy, mean, fa] = SAYINGS_EN[next];
+      await say([T(name, hello), `${T(name, 'Here is an old American saying:')}<br>${B(sy)}`, `It means: ${esc(mean)}`, `In Persian: ${PF(fa)}`]);
+    } else { const [fa, tr, lit, mean] = SAYINGS[next];
+    await say([T(name, hello), `${T(name, 'Here is an old Persian saying:')}<br>${F(fa, tr)}`, `Word for word: "${esc(lit)}"`, `It means: ${B(esc(mean))}`]); }
     L[next] = 1; SND.fx('good');
-    await say(`You wrote the saying in your notebook. (${sayCount()} / ${SAYINGS.length} Old Persian sayings)${ids.every(i => L[i]) ? `<br>You know all of ${name}'s sayings!` : ''}`);
+    await say(`You wrote the saying in your notebook. (${sayCount()} / ${sayList().length} ${LANG === 'en' ? 'American' : 'Old Persian'} sayings)${ids.every(i => L[i]) ? `<br>You know all of ${name}'s sayings!` : ''}`);
     writeSave(); return;
   }
   // all learned: a little quiz about one of them
-  const pick = ids[Math.floor(rand() * ids.length)], [fa, tr, , mean] = SAYINGS[pick];
-  await say([T(name, `${F('آفرین', 'afarin')}! You know all my sayings. Let's see if you remember...`), `What does ${F(fa, tr)} mean?`], { keep: true });
-  const wrong = shuffle(SAYINGS.map((s, i) => i).filter(i => i !== pick)).slice(0, 3);
+  const L2 = sayList(), en = LANG === 'en', mi = en ? 1 : 3, pick = ids[Math.floor(rand() * ids.length)];
+  const shown = en ? B(L2[pick][0]) : F(L2[pick][0], L2[pick][1]), mean = L2[pick][mi];
+  await say([T(name, en ? "You know all my sayings, sweetheart! Let's see if you remember..." : `${F('آفرین', 'afarin')}! You know all my sayings. Let's see if you remember...`), `What does ${shown} mean?`], { keep: true });
+  const wrong = shuffle(L2.map((s, i) => i).filter(i => i !== pick)).slice(0, 3);
   const opts = shuffle([pick, ...wrong]);
-  const r = await choose(opts.map(i => esc(SAYINGS[i][3])), { cls: 'sayq', cancel: false }); hideText();
-  if (opts[r] === pick) { SND.fx('good'); S.daftar += 1; await say([T(name, `${F('درسته', 'doroste')}! That's right!`), `${name} gave you a DAFTAR. You have ${S.daftar}.`]); }
-  else { SND.fx('bad'); await say([T(name, 'Not quite, my dear.'), `${F(fa, tr)} means: ${B(esc(mean))}`]); }
+  const r = await choose(opts.map(i => esc(L2[i][mi])), { cls: 'sayq', cancel: false }); hideText();
+  if (opts[r] === pick) { SND.fx('good'); S.daftar += 1; await say([T(name, en ? "That's right!" : `${F('درسته', 'doroste')}! That's right!`), `${name} gave you a ${DAF()}. You have ${S.daftar}.`]); }
+  else { SND.fx('bad'); await say([T(name, 'Not quite, my dear.'), `${shown} means: ${B(esc(mean))}`]); }
   writeSave();
 }
 async function sayingsScreen() {
   const el = document.createElement('div'); el.className = 'layer dex show'; $('#screen').appendChild(el);
-  const L = sayLearned(), n = SAYINGS.length, per = 8; let idx = 0;
+  const L = sayLearned(), LS = sayList(), en = LANG === 'en', n = LS.length, per = 8; let idx = 0;
   const draw = () => {
-    const s = SAYINGS[idx], known = L[idx], start = clamp(idx - 2, 0, n - per);
+    const s = LS[idx], known = L[idx], start = clamp(idx - 2, 0, n - per);
     let list = '';
-    for (let i = start; i < start + per; i++) list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(2, '0')} ${L[i] ? esc(SAYINGS[i][1].split(',')[0].slice(0, 26)) : '- - - - -'}</div>`;
-    const detail = known ? `<div class="sy-d">${F(s[0], s[1])}<div class="sm">"${esc(s[2])}"</div><div><b>${esc(s[3])}</b></div></div>`
-      : `<div class="sy-d"><b>???</b><div class="sm">Learn this saying from the elder in ${SAY_CITY[Math.floor(idx / 8)]}.</div></div>`;
-    el.innerHTML = `<div class="box dx sy"><div class="dx-h">OLD PERSIAN SAYINGS <span>${sayCount()} / ${n}</span></div>${detail}<div class="dx-l">${list}</div><div class="dx-f">↑↓ move · B: back</div></div>`;
+    for (let i = start; i < start + per; i++) list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(2, '0')} ${L[i] ? esc((en ? LS[i][0] : LS[i][1].split(',')[0]).slice(0, 26)) : '- - - - -'}</div>`;
+    const detail = known ? (en ? `<div class="sy-d"><b>${esc(s[0])}</b><div class="sm">${esc(s[1])}</div><div>${PF(s[2])}</div></div>` : `<div class="sy-d">${F(s[0], s[1])}<div class="sm">"${esc(s[2])}"</div><div><b>${esc(s[3])}</b></div></div>`)
+      : `<div class="sy-d"><b>???</b><div class="sm">Learn this saying from the elder in ${(en ? SAY_CITY_EN : SAY_CITY)[Math.floor(idx / 8)]}.</div></div>`;
+    el.innerHTML = `<div class="box dx sy"><div class="dx-h">${en ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS <span>${sayCount()} / ${n}</span></div>${detail}<div class="dx-l">${list}</div><div class="dx-f">↑↓ move · B: back</div></div>`;
   };
   draw();
   await new Promise(res => {

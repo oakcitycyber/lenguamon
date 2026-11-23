@@ -77,21 +77,23 @@ npc('l', { look: 'shirin', dir: 'left', talk: async () => {
 } });
 
 async function gateBoss(id) {
-  const b = BOSSES[id], name = b.name, routeName = ROUTE_NAMES[b.route];
+  const b = bossDef(id), name = b.name, routeName = ROUTE_NAMES[b.route], en = LANG === 'en';
   const have = caughtInRoute(b.route);
   await say(b.intro.map(l => T(name, l)));
   if (have < b.need) {
-    await say([`(To pass, you must hold a conversation with ${name} in Persian.)`, `(First catch at least ${B(b.need)} Lenguamon around ${esc(routeName)}. You have ${B(have)}.)`]);
+    await say([`(To pass, you must hold a conversation with ${name} in ${en ? 'English' : 'Persian'}.)`, `(First catch at least ${B(b.need)} Lenguamon around ${esc(routeName)}. You have ${B(have)}.)`]);
     return;
   }
-  if (!(await ask(`${name}: Are you ready to talk? ${F('آماده‌ای؟', 'amadeyi?')}`))) { await say(T(name, `${F('باشه', 'bashe')}. Come back when you are ready.`)); return; }
+  if (!(await ask(en ? `${name}: Are you ready to talk? ${PF('آماده‌ای؟')}` : `${name}: Are you ready to talk? ${F('آماده‌ای؟', 'amadeyi?')}`))) { await say(T(name, en ? 'Alright. Come back when you are ready.' : `${F('باشه', 'bashe')}. Come back when you are ready.`)); return; }
   if (!teamAlive()) { await say('Your Lenguamon are too tired. Rest first!'); return; }
   const won = await bossBattle(id);
   if (!won) return;
   S.flags[id] = true; S.daftar += 5; healTeam();
   SND.fx('badge');
-  await say([`${esc(S.name)} earned the ${B(['', 'YAZD', 'ISFAHAN', 'SHIRAZ', 'KAVIR', 'TEHRAN'][+id[1]] + ' KASHI BADGE')}!`, `You found 5 DAFTARS, and your Lenguamon were healed.`]);
+  const badge = en ? ['', 'ROUTE 66', 'GOLDEN GATE', 'SPACE NEEDLE', 'LIBERTY BELL', 'EMPIRE STATE'][+id[1]] + ' STAR BADGE' : ['', 'YAZD', 'ISFAHAN', 'SHIRAZ', 'KAVIR', 'TEHRAN'][+id[1]] + ' KASHI BADGE';
+  await say([`${esc(S.name)} earned the ${B(badge)}!`, `You found 5 ${en ? 'NOTEBOOKS' : 'DAFTARS'}, and your Lenguamon were healed.`]);
   writeSave();
+  if (en) { await afterBossEN(id); return; }
   if (id === 'b3') await say([T('SHIRIN', `You did it! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`), 'But THE CENSOR ran north toward Tehran. The road north of Shiraz is open now, past Persepolis and the Tomb of Cyrus. Follow him!']);
   if (id === 'b5') { await say(['Footsteps hurry up the stairs of Milad Tower...', T('HAYDEH', `${nm()}! I took the night bus all the way from Yazd! I saw everything on the news!`)]); await endingScene(); }
 }
@@ -112,7 +114,7 @@ async function starterScene() {
     'Long words and phrases are higher level and tougher. Short words are a good place to start.',
     'On the way you will meet a Basij checkpoint, an IRGC commander and THE CENSOR, who has seized the tomb of Hafez in Shiraz. Beyond Shiraz the road climbs through the Zagros Mountains, crosses the salt desert, and ends in TEHRAN, the biggest city of all.',
     'Every boss tests you with a real conversation. Win them all and you can truly hold a conversation in Persian!',
-    `One more thing: if you stop playing for 48 hours, your notebook ink fades and the journey starts over. Practice a little every day!`,
+    `One more thing: practice a little every day. Your progress is saved on this device.`,
     T('HAYDEH', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`),
   ]);
   writeSave();
@@ -135,18 +137,17 @@ async function endingScene() {
 async function titleScreen(expired) {
   const t = $('#title');
   const sample = shuffle(WORDS).slice(0, 3);
-  t.innerHTML = `<div class="tt-bg"></div><div class="tt-logo">LENGUAMON</div><div class="tt-sub">PERSIAN EDITION ${F('فارسی', 'farsi')}</div><div class="tt-mons">${sample.map(w => monImg(w)).join('')}</div><div class="tt-press">PRESS A / ENTER</div><div class="tt-ver">v1 · English → Persian</div>`;
+  t.innerHTML = `<div class="tt-bg"></div><div class="tt-logo">LENGUAMON</div><div class="tt-sub">PERSIAN ⇄ ENGLISH</div><div class="tt-mons">${sample.map(w => monImg(w)).join('')}</div><div class="tt-press">PRESS A / ENTER</div><div class="tt-ver">v2 · English ⇄ Persian</div>`;
   t.classList.add('show'); SND.music(null);
   await waitA(); SND.init(); SND.music('town'); SND.fx('select');
   t.querySelector('.tt-press').remove();
-  if (expired) await say([`Your last journey as ${esc(expired.name)} faded.`, 'More than 48 hours passed without play, so the notebook ink disappeared. A new adventure begins!']);
   while (true) {
     const { save } = readSave();
-    const items = save ? [{ html: `CONTINUE<br><small>${esc(save.name)} · ${Object.keys(save.caught).length} words · ${hoursLeft(save)}h left</small>` }, 'NEW GAME', 'OPTIONS'] : ['NEW GAME', 'OPTIONS'];
+    const items = save ? [{ html: `CONTINUE<br><small>${esc(save.name)} · ${Object.keys(save.caught).length} words</small>` }, 'NEW GAME', 'OPTIONS'] : ['NEW GAME', 'OPTIONS'];
     const r = await choose(items, { cls: 'titlemenu', cancel: false });
     const pickd = save ? ['cont', 'new', 'opt'][r] : ['new', 'opt'][r];
     if (pickd === 'opt') { await optionsScreen(); continue; }
-    if (pickd === 'cont') { S = save; break; }
+    if (pickd === 'cont') { useLanguage(save.lang || 'fa'); S = save; break; }
     if (pickd === 'new') {
       if (save && !(await ask('Start a new game? Your current save will be erased.'))) continue;
       t.classList.remove('show'); t.innerHTML = '';
@@ -160,38 +161,48 @@ async function newGameIntro() {
   const p = $('#portrait');
   p.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`; p.classList.add('show');
   await say([`${F('سلام', 'salam')}! Welcome to the world of LENGUAMON!`, 'My name is HAYDEH. People call me the Lenguamon Professor!', 'This world is full of creatures called LENGUAMON: LANGUAGE MONSTERS!', 'Every Lenguamon is a word or a phrase. Catch them, and you learn them!']);
-  await say('First, which language do you speak?', { keep: true });
-  await choose(['ENGLISH', { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
-  await say('And which language would you like to learn?', { keep: true });
-  await choose([{ html: `PERSIAN ${F('فارسی', 'farsi')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
-  await say(`${F('فارسی', 'farsi')}! Wonderful choice.`);
+  await say(`First, which language do you speak? ${PF('اول بگو، به چه زبانی صحبت می‌کنی؟')}`, { keep: true });
+  const speak = await choose(['ENGLISH', { html: `PERSIAN ${PF('فارسی')}` }], { cls: 'yn', cancel: false }); hideText();
+  if (speak === 1) {
+    await say(`And which language would you like to learn? ${PF('و چه زبانی را می‌خواهی یاد بگیری؟')}`, { keep: true });
+    await choose([{ html: `ENGLISH ${PF('انگلیسی')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
+    useLanguage('en');
+    await say([`${E('English! Wonderful choice.', 'انگلیسی! انتخاب فوق‌العاده‌ای است.')}`, `You already know some English, so we will start at an ${E('intermediate', 'متوسط')} level: real conversations, phrasal verbs and idioms.`, `Your adventure takes place in America, from the deserts of New Mexico to the streets of New York City!`]);
+  } else {
+    await say('And which language would you like to learn?', { keep: true });
+    await choose([{ html: `PERSIAN ${F('فارسی', 'farsi')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
+    useLanguage('fa');
+    await say(`${F('فارسی', 'farsi')}! Wonderful choice.`);
+  }
+  const en = LANG === 'en';
   const pp = $('#portrait'); pp.innerHTML = `<div class="gender"><img class="mon" src="${charUrl('player')}"><img class="mon" src="${charUrl('playerGirl')}"></div>`;
-  await say('Now, are you a boy or a girl?', { keep: true });
-  const g = await choose([{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
+  await say(en ? `Now, are you a boy or a girl? ${PF('پسر هستی یا دختر؟')}` : 'Now, are you a boy or a girl?', { keep: true });
+  const g = await choose(en ? [{ html: `BOY ${PF('پسر')}` }, { html: `GIRL ${PF('دختر')}` }] : [{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
   pp.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`;
-  await say('And what is your name?', { keep: true });
+  await say(en ? `And what is your name? ${PF('اسمت چیه؟')}` : 'And what is your name?', { keep: true });
   const name = await textInput('YOUR NAME?', 16); hideText();
   S = newState(name); S.gender = g === 1 ? 'girl' : 'boy';
   if (isCyrusName(name)) {
     setupCyrus(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
     SND.fx('badge');
-    await say([`CYRUS THE GREAT?! ${F('کوروش بزرگ', 'kourosh-e bozorg')}!`, 'Your Majesty! The King of Kings, founder of the Persian Empire, here in my school!',
+    await say([`CYRUS THE GREAT?! ${F('کوروش بزرگ', 'kourosh-e bozorg')}!`, ...(en ? ['You chose to explore America. Every city from Santa Fe to New York is open to you.'] : []), 'Your Majesty! The King of Kings, founder of the Persian Empire, here in my school!',
       'The whole land is yours to explore: every road is open, every gate is unlocked, and every Lenguamon is already in your Lenguadex.',
       'Wild Lenguamon will leave you in peace (you can change that in OPTIONS). Open the MAP from the START menu to travel to any city.',
       `Visit your own tomb at Pasargadae, read the signs, drink chai, and collect the old sayings from the elders. ${F('سفر خوش بگذره', 'safar khosh begzareh')}! Enjoy your trip!`]);
-    p.classList.remove('show'); p.innerHTML = ''; S.map = 'house'; S.x = 5; S.y = 5; S.dir = 'up'; return;
+    p.classList.remove('show'); p.innerHTML = ''; S.map = en ? 'ushouse' : 'house'; S.x = 5; S.y = 5; S.dir = 'up'; return;
   }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
-  await say([`${esc(name)}! What a great name.`, `In Persian you introduce yourself like this: ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`, 'Your very own LENGUAMON adventure is about to begin!', 'A world of words awaits. Let\'s go!']);
+  await say(en ? [`${esc(name)}! What a great name.`, `In English you introduce yourself like this: ${E(`Hi, I'm ${name}. Nice to meet you!`, `سلام، من ${name} هستم. از آشنایی‌ات خوشحالم!`)}`, 'Your very own LENGUAMON adventure is about to begin!', "A world of words awaits. Let's go!"]
+    : [`${esc(name)}! What a great name.`, `In Persian you introduce yourself like this: ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`, 'Your very own LENGUAMON adventure is about to begin!', 'A world of words awaits. Let\'s go!']);
   p.classList.remove('show'); p.innerHTML = '';
-  S.map = 'house'; S.x = 5; S.y = 5; S.dir = 'up';
+  S.map = en ? 'ushouse' : 'house'; S.x = 5; S.y = 5; S.dir = 'up';
 }
 async function enterWorld() {
   await fade(true, 1);
   placePlayer(S.map, S.x, S.y, S.dir); writeSave(); drawWorld();
   pushH(worldH);
   await fade(false, 300);
-  if (!S.flags.starter && S.map === 'house') await run(() => say(T('MAMAN', `${nm()} jan! Come here, talk to me.`)));
+  if (!S.flags.starter && (S.map === 'house' || S.map === 'ushouse')) await run(() => say(T('MAMAN', LANG === 'en' ? `${nm()} ${PF('جان')}! Come here, ${PF('عزیزم')}. Talk to me.` : `${nm()} jan! Come here, talk to me.`)));
 }
 
 // ---- the far north: State TV at the gate of Tehran and THE CENSOR's last stand ----

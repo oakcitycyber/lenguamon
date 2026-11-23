@@ -16,6 +16,6 @@ if (window.visualViewport) visualViewport.addEventListener('resize', () => { if 
 (function boot() {
   applyOpts(); layout(); buildMaps(); bindTouch();
   requestAnimationFrame(loop);
-  const { expired } = readSave();
-  titleScreen(expired);
+  try { const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (raw && raw.lang) useLanguage(raw.lang); } catch (e) { }
+  titleScreen();
 })();

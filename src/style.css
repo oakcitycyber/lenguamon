@@ -268,3 +268,13 @@ button { font: inherit; cursor: pointer; }
 .sayq .mi { white-space: normal; line-height: 1.15; }
 .travel { right: calc(var(--u) * 2); top: calc(var(--u) * 2); }
 .startmenu { gap: calc(var(--u) * 1) calc(var(--u) * 6); }
+
+/* English mode: English words with Persian meanings */
+.en-w .es { color: #1d4a8a; font-weight: 700; }
+.en-w .ep { font-family: "Vazirmatn", "Noto Naskh Arabic", "Noto Sans Arabic", Tahoma, sans-serif; font-size: .82em; color: #8a1c2c; font-weight: 700; }
+.notr .en-w .ep { display: none; }
+.pi { font-family: "Vazirmatn", "Noto Naskh Arabic", "Noto Sans Arabic", Tahoma, sans-serif; color: #8a1c2c; font-weight: 700; unicode-bidi: isolate; }
+.mon-tag.fs { color: #fff; font-size: calc(var(--u) * 4); }
+
+.tea.us img { height: auto; width: 100%; }
+.tea-cap .en-w .es { color: #ffd860; } .tea-cap .en-w .ep { color: #9fe8e0; }

@@ -69,46 +69,66 @@ const TYPES = {
   HOME: { label: 'HOME', pal: ['#fff0c8', '#d0a040', '#6a4a10'] },
   CITY: { label: 'CITY', pal: ['#e0e0e8', '#78809a', '#30364a'] },
   TAAROF: { label: 'TAAROF', pal: ['#ffe0d0', '#d06a50', '#6a2414'] },
+  SMALLTALK: { label: 'SMALL TALK', pal: ['#9ff0e0', '#30b0a8', '#14605c'] },
+  PHRASAL: { label: 'PHRASAL VERB', pal: ['#d8f8c8', '#50b860', '#185a28'] },
+  WORK: { label: 'WORK', pal: ['#c8d8ff', '#6878e0', '#28307a'] },
+  MONEY: { label: 'MONEY', pal: ['#e0f8c0', '#68a838', '#2a5010'] },
+  FEELINGS: { label: 'FEELINGS', pal: ['#ffc8f0', '#c858b0', '#601858'] },
+  OPINION: { label: 'OPINION', pal: ['#e0e8ff', '#5878c8', '#22306a'] },
+  ROADTRIP: { label: 'ROAD TRIP', pal: ['#f0e0c8', '#b08458', '#5a3a1c'] },
+  OUTDOORS: { label: 'OUTDOORS', pal: ['#d0f0c0', '#5a9a48', '#22481c'] },
+  ERRANDS: { label: 'ERRANDS', pal: ['#fff0c8', '#d0a040', '#6a4a10'] },
+  HEALTH: { label: 'HEALTH', pal: ['#ffd8d8', '#d86060', '#702020'] },
+  NYC: { label: 'BIG CITY', pal: ['#fff4a0', '#d8b020', '#6a5000'] },
+  IDIOM: { label: 'IDIOM', pal: ['#ffe0e8', '#e8607a', '#7a1830'] },
 };
 const WORDS = [];
 const WORD = {};
-(function parseWords() {
-  for (const line of RAW_WORDS.trim().split('\n')) {
-    const p = line.split('|').map(s => s.trim()); if (p.length < 5) continue;
-    const [tr, en, fa, route, type] = p;
-    const tr0 = splitAlts(tr)[0], en0 = splitAlts(en)[0];
+// Which language the player is learning: 'fa' = Persian (for English speakers), 'en' = English (for Persian speakers)
+let LANG = 'fa';
+const ROUTE_NAMES_BY = {
+  fa: { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD', 4: 'ZAGROS MOUNTAINS', 5: 'DASHT-E KAVIR', 6: 'TEHRAN' },
+  en: { 1: 'ROUTE 66', 2: 'SAN FRANCISCO', 3: 'PACIFIC COAST HIGHWAY', 4: 'ROCKY MOUNTAINS', 5: 'PENNSYLVANIA FARMLAND', 6: 'NEW YORK CITY' },
+};
+const ROUTE_NAMES = { ...ROUTE_NAMES_BY.fa };
+function parseWords() {
+  WORDS.length = 0; for (const k of Object.keys(WORD)) delete WORD[k];
+  const en = LANG === 'en';
+  for (const line of (en ? RAW_WORDS_EN : RAW_WORDS).trim().split('\n')) {
+    const p = line.split('|').map(s => s.trim()); if (p.length < (en ? 4 : 5)) continue;
+    // English mode: you type the English; its meaning is shown in Persian
+    const [tr, mean, fa, route, type] = en ? [p[0], p[1], p[0], p[2], p[3]] : p;
+    const tr0 = splitAlts(tr)[0], en0 = splitAlts(mean)[0];
     const key = norm(tr0) + '|' + norm(en0);
     if (WORD[key]) continue;
     const w = {
-      key, tr, en, fa: fa.replace(/\+/g, '‌'), route: +route, type,
+      key, tr, en: mean, fa: en ? fa : fa.replace(/\+/g, '‌'), route: +route, type,
       tr0, en0, name: tr0.toUpperCase(), level: Math.max(2, tr0.replace(/[?!.'’,]/g, '').length),
-      enForms: acceptForms(en), trForms: acceptForms(tr), idx: WORDS.length,
+      enForms: acceptForms(mean), trForms: acceptForms(tr), idx: WORDS.length,
     };
     WORDS.push(w); WORD[key] = w;
   }
-})();
+}
+parseWords();
 const wordsOfRoute = r => WORDS.filter(w => w.route === r);
-const ROUTE_NAMES = { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD', 4: 'ZAGROS MOUNTAINS', 5: 'DASHT-E KAVIR', 6: 'TEHRAN' };
 
-// ---- options (kept separately from the 48h save) ----
+// ---- options (kept separately from the save) ----
 const OPT_KEY = 'lenguamon_opts_v1';
 const OPTS = Object.assign({ translit: true, music: true, sfx: true, speed: 1 }, (() => { try { return JSON.parse(localStorage.getItem(OPT_KEY)) || {}; } catch (e) { return {}; } })());
 function saveOpts() { try { localStorage.setItem(OPT_KEY, JSON.stringify(OPTS)); } catch (e) { } applyOpts(); }
 function applyOpts() { document.body.classList.toggle('notr', !OPTS.translit); }
 
-// ---- save (expires 48h after last play) ----
+// ---- save (kept in the browser; it never expires) ----
 const SAVE_KEY = 'lenguamon_save_v1';
-const LIFE_MS = 48 * 3600 * 1000;
 let S = null; // live game state
 function newState(name) {
-  return { v: 1, name, map: 'house', x: 3, y: 3, dir: 'down', team: [], caught: {}, seen: {}, stats: {}, daftar: 0, flags: {}, created: Date.now(), lastPlayed: Date.now() };
+  return { v: 1, lang: LANG, name, map: LANG === 'en' ? 'ushouse' : 'house', x: 3, y: 3, dir: 'down', team: [], caught: {}, seen: {}, stats: {}, daftar: 0, flags: {}, created: Date.now(), lastPlayed: Date.now() };
 }
 function readSave() {
   try {
     const raw = localStorage.getItem(SAVE_KEY); if (!raw) return { save: null };
     const s = JSON.parse(raw);
     if (!s || !s.lastPlayed) return { save: null };
-    if (Date.now() - s.lastPlayed > LIFE_MS) { localStorage.removeItem(SAVE_KEY); return { save: null, expired: s }; }
     s.team = s.team.filter(m => WORD[m.key]);
     return { save: s };
   } catch (e) { return { save: null }; }
@@ -118,13 +138,8 @@ let lastTouch = 0;
 function touchPlay() {
   if (!S) return;
   const now = Date.now();
-  if (now - S.lastPlayed > LIFE_MS) { // tab left open more than 48h
-    try { localStorage.removeItem(SAVE_KEY); } catch (e) { }
-    S = null; location.reload(); return;
-  }
   if (now - lastTouch > 30000) { lastTouch = now; S.lastPlayed = now; writeSave(); }
 }
-const hoursLeft = s => Math.max(0, Math.ceil((LIFE_MS - (Date.now() - s.lastPlayed)) / 3600000));
 
 // ---- audio: tiny chiptune synth ----
 const SND = (() => {
@@ -197,6 +212,32 @@ const SND = (() => {
       lead: bars([7, _, 8, 7, 5, 3], [1.5, 3, 1.5, 0, _, _], [0, 1.5, 3, 5, 3, 1.5], [3, _, 1.5, 0, _, _], [12, 10, 8, 7, 8, 10], [8, 7, 5, 3, 5, 7], [5, 3, 1.5, 3, 1.5, 0], [0, _, -2, 0, _, _]),
       bass: bars([0, 0, 12, 0, 0, 12], [0, 0, 12, 0, 0, 12], [0, 0, 12, 0, 0, 12], [-2, -2, 10, 0, 0, 12], [8, 8, 20, 8, 8, 20], [5, 5, 17, 3, 3, 15], [1.5, 1.5, 13.5, 1.5, 1.5, 13.5], [0, 0, 12, 0, 0, 12]),
       drums: 'DttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDtDtDD' },
+    // ---- English mode: 8-bit Americana from public-domain folk tunes ----
+    // "Home on the Range" (1870s), a waltz: Santa Fe and the towns
+    us_town: { bpm: 112, root: 60, wave: 'square',
+      lead: bars([-5, _, -5, _, 0, _], [2, _, 4, _, 0, -1], [-3, _, 5, _, 5, _], [5, _, _, _, 4, 5], [7, _, 0, _, 0, _], [0, _, -1, _, 0, _], [2, _, _, _, _, _], [_, _, _, _, -5, -5]),
+      bass: bars([0, _, 7, _, 7, _], [0, _, 7, _, 7, _], [5, _, 9, _, 9, _], [5, _, 9, _, 9, _], [0, _, 7, _, 7, _], [0, _, 4, _, 4, _], [7, _, 11, _, 11, _], [7, _, 11, _, 11, _]),
+      drums: 'D.t.t.D.t.t.D.t.t.D.t.t.D.t.t.D.t.t.D.t.t.D.t.t.' },
+    // "Yankee Doodle" (1700s): the open road
+    us_route: { bpm: 150, root: 62, wave: 'square',
+      lead: bars([0, 0, 2, 4, 0, 4, 2, -5], [0, 0, 2, 4, 0, _, -1, _], [0, 0, 2, 4, 5, 4, 2, 0], [-1, -5, -3, -1, 0, _, 0, _], [-3, -1, -3, -5, -3, -1, 0, _], [-5, -3, -5, -7, -5, _, -3, _], [-3, -1, -3, -5, -3, -1, 0, -3], [-5, 0, -1, 2, 0, _, 0, _]),
+      bass: bars([0, _, 7, _, 0, _, 7, _], [0, _, 7, _, -5, _, 2, _], [0, _, 7, _, 5, _, 0, _], [-5, _, 2, _, 0, _, 0, _], [5, _, 0, _, 5, _, 0, _], [-5, _, 2, _, -5, _, 2, _], [5, _, 0, _, 5, _, 0, _], [-5, _, 2, _, 0, _, 0, _]),
+      drums: 'D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.D.t.DDt.D.t.D.t.D.t.D.tt' },
+    // an original rock-and-roll riff: wild battles
+    us_battle: { bpm: 170, root: 64, wave: 'square',
+      lead: bars([0, _, 3, 5, _, 3, 0, _], [7, _, 5, 3, _, 0, -2, _], [0, _, 3, 5, 7, 10, 7, _], [5, 3, 0, _, -2, 0, _, _], [12, _, 10, 7, _, 5, 7, _], [10, _, 7, 5, _, 3, 5, _], [7, 5, 3, 0, 3, 5, 7, 10], [12, _, 12, _, 12, _, _, _]),
+      bass: bars([0, 0, 12, 0, 0, 12, 0, 12], [0, 0, 12, 0, 0, 12, -2, 10], [5, 5, 17, 5, 5, 17, 5, 17], [7, 7, 19, 7, -2, 10, -2, 10], [0, 0, 12, 0, 0, 12, 0, 12], [5, 5, 17, 5, 5, 17, 3, 15], [7, 7, 19, 7, 7, 19, 7, 19], [0, 0, 12, 0, 0, _, 0, _]),
+      drums: 'DtDtDtDtDtDtDDtDDtDtDtDtDtDtDDtDDtDtDtDtDtDtDDtDDtDtDtDtDtDtDDDD' },
+    // "When Johnny Comes Marching Home" (1863), in a minor key: bosses
+    us_boss: { bpm: 150, root: 57, wave: 'square',
+      lead: bars([-5, _, 0, _, 0, 0], [0, _, 2, 3, _, 2], [0, _, -2, -5, _, _], [3, _, 3, 3, _, 2], [0, _, 2, 3, _, 5], [7, _, _, 7, _, _], [5, _, 3, 2, _, 0], [-2, _, 0, _, _, _]),
+      bass: bars([0, 0, 12, 0, 0, 12], [0, 0, 12, 0, 0, 12], [-2, -2, 10, -2, -2, 10], [3, 3, 15, 3, 3, 15], [0, 0, 12, 0, 0, 12], [-4, -4, 8, -4, -4, 8], [-5, -5, 7, -5, -5, 7], [0, 0, 12, 0, 0, 12]),
+      drums: 'DttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDtDtDD' },
+    // "Shenandoah" (1800s), slow and wide: Seattle and the ending
+    us_end: { bpm: 84, root: 60, wave: 'triangle',
+      lead: bars([-5, _, 0, 0, _, _, 0, 2], [4, 5, 9, _, 7, _, _, _], [12, _, 10, 9, 7, _, 9, 7], [5, _, 7, _, 9, _, _, _], [5, 7, 9, _, 9, _, 7, 9], [7, 5, 2, _, 0, _, _, _], [2, _, 5, _, 4, _, 0, _], [5, _, _, _, _, _, _, _]),
+      bass: bars([5, _, _, _, 12, _, _, _], [5, _, _, _, 0, _, _, _], [10, _, _, _, 5, _, _, _], [5, _, _, _, 0, _, _, _], [2, _, _, _, 9, _, _, _], [10, _, _, _, 5, _, _, _], [-2, _, _, _, 0, _, _, _], [5, _, _, _, _, _, _, _]),
+      drums: 'D.......D...t...D.......D...t...D.......D...t...D.......D...t...' },
     // Homayoun (stately, used for poetry): Shiraz and the ending
     end: { bpm: 96, root: 60, wave: 'triangle',
       lead: bars([7, _, 8, 10, _, 8], [7, _, 5, 4, _, _], [4, 5, 7, 8, 7, 5], [4, _, 1.5, 0, _, _], [0, 1.5, 4, 5, _, 7], [8, _, 7, 5, 4, 5], [4, _, 1.5, 1.5, 0, _], [0, _, _, _, _, _]),
@@ -232,7 +273,7 @@ const SND = (() => {
   return {
     init() { init(); if (ac && ac.state === 'suspended') ac.resume(); if (ac && cur && !timer && OPTS.music) { const c = cur; cur = null; play(c); } },
     fx(n) { if (!ac || !OPTS.sfx) return; try { fx[n] && fx[n](); } catch (e) { } },
-    music(n) { play(n); },
+    music(n) { play(n && LANG === 'en' && SONGS['us_' + n] ? 'us_' + n : n); },
     refresh() { const c = cur; cur = null; play(c); },
   };
 })();

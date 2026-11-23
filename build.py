@@ -3,10 +3,10 @@
 import pathlib, re
 root = pathlib.Path(__file__).parent
 src = root / 'src'
-order = ['words.js', 'core.js', 'art.js', 'art2.js', 'monsters.js', 'portraits.js', 'ui.js', 'world.js', 'battle.js', 'story.js', 'places.js', 'sayings.js', 'mapview.js', 'main.js']
+order = ['words.js', 'words_en.js', 'core.js', 'art.js', 'art2.js', 'art_us.js', 'monsters.js', 'portraits.js', 'ui.js', 'world.js', 'world_us.js', 'battle.js', 'story.js', 'places.js', 'sayings.js', 'story_us.js', 'mapview.js', 'main.js']
 import base64
 def b64(name): return 'data:image/jpeg;base64,' + base64.b64encode((src / 'assets' / name).read_bytes()).decode()
-assets = "const TEA_IMG = { boy: '%s', girl: '%s' };\n" % (b64('tea-boy.jpg'), b64('tea-girl.jpg'))
+assets = "const TEA_IMG = { boy: '%s', girl: '%s', cafeBoy: '%s', cafeGirl: '%s' };\n" % (b64('tea-boy.jpg'), b64('tea-girl.jpg'), b64('cafe-boy.jpg'), b64('cafe-girl.jpg'))
 js = "'use strict';\n" + assets + '\n'.join((src / f).read_text().replace("'use strict';\n", '') for f in order)
 css = (src / 'style.css').read_text()
 html = (src / 'shell.html').read_text().replace('/*CSS*/', css).replace('/*JS*/', js)

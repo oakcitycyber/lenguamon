@@ -21,10 +21,10 @@ function makeQuestion(w, dir) {
     word: x, correct: x === w, forms: x[field],
     html: dir === 'en2fa' ? W(x) : `<span class="en">${esc(x.en0)}</span>`,
   }));
-  const prompt = dir === 'en2fa'
-    ? `How do you say <b>"${esc(w.en0)}"</b> in Persian?`
+  const prompt = LANG === 'en' ? `How do you say ${PF('«' + w.en0 + '»')} in English?<span class="en sm" dir="rtl">به انگلیسی چه می‌شود؟</span>` : dir === 'en2fa'
+    ? `How do you say <b>"${M(w)}"</b> in Persian?`
     : `What does ${W(w)} mean?`;
-  return { w, dir, prompt, opts, answerHtml: `${W(w)} = <b>${esc(w.en0)}</b>`, hint: dir === 'en2fa' ? 'Type the Persian (Latin letters)' : 'Type the English' };
+  return { w, dir, prompt, opts, answerHtml: LANG === 'en' ? `<b>${esc(w.tr0)}</b> = ${M(w)}` : `${W(w)} = <b>${M(w)}</b>`, hint: LANG === 'en' ? 'Type the English' : dir === 'en2fa' ? 'Type the Persian (Latin letters)' : 'Type the English' };
 }
 // grade typed text against the options: nearest option wins, within a typo tolerance
 function grade(q, typed) {
@@ -165,10 +165,10 @@ async function handleFaint() {
   BT.me = S.team[r]; bDraw(); await say(`Go! ${esc(monW(BT.me).name)}!`); return true;
 }
 async function blackout() {
-  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to the teahouse...`]);
+  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to the ${LANG === 'en' ? 'café' : 'teahouse'}...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
-  healTeam(); placePlayer(S.lastTea || 'teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say(`${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  healTeam(); placePlayer(S.lastTea || (LANG === 'en' ? 'diner1' : 'teahouse'), 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
+  await say(LANG === 'en' ? 'Oh, honey, you look exhausted. Sit down, have some coffee and pie.' : `${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
   await teaScene();
   await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
@@ -202,7 +202,7 @@ async function wildEncounter(route) {
     let r = 0;
     if (!first) {
       await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
-      r = await choose(['FIGHT', `DAFTAR x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
+      r = await choose(['FIGHT', `${DAF()} x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
       hideText(); menuIdx = r;
     }
     if (r === 0) {
@@ -224,7 +224,7 @@ async function wildEncounter(route) {
         if (crit) await say('Quick answer! A critical hit!');
         if (BT.foe.hp <= 0) {
           SND.fx('faint'); await anim('#b-foe-spr', 'faint', 600);
-          await say([`Wild ${esc(w.name)} fainted!`, `It was carrying the word ${W(w)} = "${esc(w.en0)}".`]);
+          await say([`Wild ${esc(w.name)} fainted!`, `It was carrying the word ${W(w)} = "${M(w)}".`]);
           await gainXp(BT.me, 4 + w.level * 3); break;
         }
       } else {
@@ -232,11 +232,11 @@ async function wildEncounter(route) {
       }
       if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
     } else if (r === 1) {
-      if (S.daftar <= 0) { await say(`You're out of DAFTARS! ${G('Agha Reza', 'Khanom Zari')} at the teahouse can give you more.`); continue; }
+      if (S.daftar <= 0) { await say(LANG === 'en' ? `You're out of NOTEBOOKS! The café, the gym and the elders can give you more.` : `You're out of DAFTARS! ${G('Agha Reza', 'Khanom Zari')} at the teahouse can give you more.`); continue; }
       S.daftar--;
-      await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
+      await say(`${esc(S.name)} opened a ${DAF()}! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
-      const res = await quiz(q, 'Write it in your DAFTAR');
+      const res = await quiz(q, `Write it in your ${DAF()}`);
       stat(w, res.ok);
       if (!res.ok) {
         await say([`The ink smudged! The word slipped off the page.`, `The answer was ${q.answerHtml}.`]);
@@ -249,7 +249,7 @@ async function wildEncounter(route) {
       for (let i = 0; i < shakes; i++) { SND.fx('shake'); await anim('#b-foe-spr', 'shake', 500); }
       if (shakes === 3) {
         SND.fx('caught'); S.caught[w.key] = true;
-        await say([`Gotcha! The wild ${B(w.name)} was caught!`, `Its word ${W(w)} = "${esc(w.en0)}" was written into your Lenguadex!`]);
+        await say([`Gotcha! The wild ${B(w.name)} was caught!`, `Its word ${W(w)} = "${M(w)}" was written into your Lenguadex!`]);
         if (S.team.length < 6 && !S.team.some(m => m.key === w.key)) { S.team.push(makeMon(w)); await say(`${esc(w.name)} joined your team!`); }
         else await say(`${esc(w.name)} was stored in your Lenguadex. (Swap it in from the Lenguadex menu.)`);
         await gainXp(BT.me, 2 + w.level * 2);
@@ -364,17 +364,20 @@ const BOSSES = {
 };
 function bossReplyWord(b, line) {
   const sub = s => s.replace(/\{NAME\}/g, S.name);
-  const tr = sub(line[4]);
+  const tr = sub(line[4] || line[3]);
   return { key: 'boss|' + norm(tr), tr0: tr, en0: sub(line[5]), fa: line[3].replace(/\{NAME\}/g, S.name), trForms: [norm(tr)], enForms: [norm(sub(line[5]))] };
 }
+const bossDef = id => (LANG === 'en' ? BOSSES_EN : BOSSES)[id];
 async function bossBattle(id) {
-  const b = BOSSES[id];
+  const b = bossDef(id);
+  const en = LANG === 'en', say1 = (fa, tr) => en ? E(fa, '') : F(fa, tr);
   BT.boss = { ...b, total: b.lines.length, left: b.lines.length };
   BT.foe = { w: WORD[WORDS[0].key], lvl: b.lvl, max: 1, hp: 1 };
   BT.me = lead();
   await battleIntro('boss');
   await say(`${b.name} wants to have a conversation! Answer each line in Persian.`);
-  if (b.showEn) await say(`(${b.name} will give you English hints. Type the best Persian reply.)`);
+  if (en) await say(b.showEn ? `(${b.name} talks fast! You'll get Persian hints. Type the best English reply.)` : `(No Persian hints this time. Listen to the English and reply!)`);
+  else if (b.showEn) await say(`(${b.name} will give you English hints. Type the best Persian reply.)`);
   else await say(`(No English hints this time. Listen to the Persian and reply!)`);
   await say(`Go! ${B(monW(BT.me).name)}!`);
   const queue = b.lines.map((l, i) => i);
@@ -384,18 +387,18 @@ async function bossBattle(id) {
     const ans = bossReplyWord(b, line);
     const others = shuffle(b.lines.filter((l, i) => i !== li)).slice(0, 3).map(l => bossReplyWord(b, l));
     const fx = s => s.replace(/\{NAME\}/g, S.name);
-    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: F(x.fa, x.tr0) + (b.optEn ? `<span class="en sm">${esc(x.en0)}</span>` : '') }));
+    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: say1(x.fa, x.tr0) + (b.optEn ? (en ? `<span class="en sm">${PF(x.en0)}</span>` : `<span class="en sm">${esc(x.en0)}</span>`) : '') }));
     const q = {
-      boss: true, w: ans, opts, hint: 'Type your reply (Latin letters)',
-      prompt: `<span class="who">${esc(b.name)}:</span> ${F(fx(line[0]), fx(line[1]))}${b.showEn ? `<span class="en sm">"${esc(fx(line[2]))}"</span>` : ''}`,
-      answerHtml: `${F(ans.fa, ans.tr0)} <small>"${esc(ans.en0)}"</small>`,
+      boss: true, w: ans, opts, hint: en ? 'Type your reply in English' : 'Type your reply (Latin letters)',
+      prompt: `<span class="who">${esc(b.name)}:</span> ${say1(fx(line[0]), fx(line[1]))}${b.showEn ? `<span class="en sm">${en ? PF(fx(line[2])) : `"${esc(fx(line[2]))}"`}</span>` : ''}`,
+      answerHtml: en ? `<b>${esc(ans.fa)}</b> <small>${PF(ans.en0)}</small>` : `${F(ans.fa, ans.tr0)} <small>"${esc(ans.en0)}"</small>`,
     };
     const res = await quiz(q, 'Your reply');
     if (res.ok) {
-      await say(`${esc(monW(BT.me).name)} replied: ${F(ans.fa, ans.tr0)}`);
+      await say(`${esc(monW(BT.me).name)} replied: ${say1(ans.fa, ans.tr0)}`);
       await strike('me', true, null);
       BT.boss.left--; bDraw();
-      if (!b.showEn) await say(`(${b.name} said: "${esc(fx(line[2]))}" · You said: "${esc(ans.en0)}")`);
+      if (!b.showEn) await say(en ? `(${esc(b.name)}: ${PF(fx(line[2]))} · ${PF(ans.en0)})` : `(${b.name} said: "${esc(fx(line[2]))}" · You said: "${esc(ans.en0)}")`);
       if (!BT.boss.left) break;
       if (!(await foeTurn(true, null))) { await blackout(); return false; }
     } else {
@@ -416,18 +419,18 @@ async function maybeEvolve(m) {
   const nx = evoTarget(m); if (!nx || m.evoTry === m.lvl) return false;
   m.evoTry = m.lvl;
   const before = monW(m), cur = WORD[m.key];
-  await say([`What? ${B(before.name)} is evolving!`, `Its word ${W(cur)} "${esc(cur.en0)}" wants to grow into a phrase. Type the phrase to help it!`]);
+  await say([`What? ${B(before.name)} is evolving!`, `Its word ${W(cur)} "${M(cur)}" wants to grow into a phrase. Type the phrase to help it!`]);
   hideText();
   const res = await quiz(makeQuestion(nx, 'en2fa'), `EVOLUTION · ${esc(before.name)}`);
   stat(nx, res.ok);
-  if (!res.ok) { await say([`The phrase was ${W(nx)} = <b>${esc(nx.en0)}</b>.`, `${esc(before.name)} stopped evolving. It will try again at its next level.`]); return false; }
+  if (!res.ok) { await say([`The phrase was ${W(nx)} = <b>${M(nx)}</b>.`, `${esc(before.name)} stopped evolving. It will try again at its next level.`]); return false; }
   m.base = m.base || m.key; m.key = nx.key; m.stage = (m.stage || 0) + 1;
   const after = monW(m);
   const p = $('#portrait');
   p.innerHTML = `<div class="evo"><img class="mon a" src="${monUrl(before)}"><img class="mon b" src="${monUrl(after)}"></div>`; p.classList.add('show');
   SND.fx('levelup'); await sleep(2600); SND.fx('badge');
   S.caught[nx.key] = true; S.seen[nx.key] = true;
-  await say([`Congratulations! ${esc(before.name)} evolved into ${B(after.name)}!`, `Its word grew into a phrase: ${W(nx)} = "${esc(nx.en0)}"`]);
+  await say([`Congratulations! ${esc(before.name)} evolved into ${B(after.name)}!`, `Its word grew into a phrase: ${W(nx)} = "${M(nx)}"`]);
   p.classList.remove('show'); p.innerHTML = '';
   if ($('#battle').classList.contains('show')) bDraw();
   writeSave(); return true;

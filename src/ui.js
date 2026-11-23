@@ -1,6 +1,12 @@
 // ===== LENGUAMON UI: text box, menus, fades, Persian markup =====
 const F = (fa, tr) => `<span class="fa"><span class="fs" dir="rtl" lang="fa">${esc(fa)}</span><span class="ft">${esc(tr)}</span></span>`;
-const W = w => F(w.fa, splitAlts(w.tr)[0]);
+// E(): an English phrase with its Persian meaning underneath (English mode); PF(): Persian text inline
+const E = (en, fa) => `<span class="fa en-w"><span class="es">${esc(en)}</span>${fa ? `<span class="ep" dir="rtl" lang="fa">${esc(fa)}</span>` : ''}</span>`;
+const PF = fa => `<span class="pi" dir="rtl" lang="fa">${esc(fa)}</span>`;
+const W = w => LANG === 'en' ? E(splitAlts(w.tr)[0], '') : F(w.fa, splitAlts(w.tr)[0]);
+// a word's meaning, as shown to the player (English for Persian learners, Persian for English learners)
+const M = w => LANG === 'en' ? PF(w.en0) : esc(w.en0);
+const DAF = () => (LANG === 'en' ? 'NOTEBOOK' : 'DAFTAR');
 const B = s => `<b>${esc(s)}</b>`;
 const nm = () => esc(S ? S.name : '');
 

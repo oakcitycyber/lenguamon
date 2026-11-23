@@ -215,7 +215,10 @@ function buildMaps() {
     MAPS[id] = m;
   }
 }
+// the American maps share their shape with the Persian ones
+const baseMap = id => ({ us: 'world', usnorth: 'north' })[id] || id;
 function regionOf(map, y) {
+  map = baseMap(map);
   if (map === 'north') return y <= 28 ? 6 : y <= 45 ? 5 : y <= 65 ? 0 : 4;
   if (map !== 'world') return 0; if (y >= 63 || y <= 12) return 0; if (y >= 48) return 1; if (y >= 26) return 2; return 3; }
 
@@ -239,8 +242,8 @@ function solidAt(m, x, y) {
   if (npcAt(m.id, x, y)) return true;
   return false;
 }
-function placePlayer(map, x, y, dir) { if (map.startsWith('teahouse')) S.lastTea = map; S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
-function musicForPlace() { markVisited(); const r = regionOf(S.map, S.y); SND.music(S.map === 'world' && S.y <= 12 ? 'end' : r === 0 ? 'town' : 'route'); }
+function placePlayer(map, x, y, dir) { if (map.startsWith('teahouse') || map.startsWith('diner')) S.lastTea = map; S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
+function musicForPlace() { markVisited(); const r = regionOf(S.map, S.y); SND.music(baseMap(S.map) === 'world' && S.y <= 12 ? 'end' : r === 0 ? 'town' : 'route'); }
 
 function drawWorld() {
   const c = cv().getContext('2d'); c.setTransform(SCALE, 0, 0, SCALE, 0, 0); c.imageSmoothingEnabled = true;
@@ -344,7 +347,7 @@ async function startMenu() {
   let idx = 0;
   while (true) {
     const items = [
-      { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'MAP', 'SAYINGS', 'DAFTAR', { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
+      { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'MAP', 'SAYINGS', DAF(), { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
     const r = await choose(items, { cls: 'startmenu', start: idx, startCloses: true });
     if (r < 0) return;
     if (r === 8) {
@@ -357,12 +360,13 @@ async function startMenu() {
     else if (r === 1) await teamScreen(false);
     else if (r === 2) { if ((await mapScreen()) === 'moved') return; }
     else if (r === 3) await sayingsScreen();
+    else if (r === 4 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
     else if (r === 4) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
-    else if (r === 5) await say([`${B(S.name)}${S.cyrus ? ' 👑' : ''}<br>KASHI BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
+    else if (r === 5) await say([`${B(S.name)}${S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
       [1, 2, 3].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       [4, 5, 6].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
-      `OLD PERSIAN SAYINGS: ${sayCount()} / ${SAYINGS.length}<br>Save fades in about ${hoursLeft(S)}h if you stop playing.`]);
-    else if (r === 6) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your save stays alive as long as you play at least once every 48 hours.']); }
+      `${LANG === 'en' ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS: ${sayCount()} / ${sayList().length}`]);
+    else if (r === 6) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your progress is saved on this device.']); }
     else if (r === 7) await optionsScreen();
   }
 }
@@ -387,7 +391,7 @@ function dexEntryHtml(w) {
   const caught = S.caught[w.key], seen = S.seen[w.key];
   if (!seen && !caught) return `<div class="dx-d"><div class="dx-q">?</div><div><b>-----</b><br>Not seen yet.<br><small>${ROUTE_NAMES[w.route]}</small></div></div>`;
   const st = S.stats[w.key] || [0, 0];
-  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.word)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)} <small>"${esc(w.en)}"</small><br><small>${esc(w.name)} ${F(speciesOf(w).fa, '')} · ${esc(speciesOf(w).name.toLowerCase())}${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
+  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.word)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)} <small>"${LANG === 'en' ? PF(w.en) : esc(w.en)}"</small><br><small>${esc(w.name)} ${F(speciesOf(w).fa, '')} · ${esc(speciesOf(w).name.toLowerCase())}${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
 }
 async function dexScreen() {
   const el = document.createElement('div'); el.className = 'layer dex show'; $('#screen').appendChild(el);
@@ -438,7 +442,7 @@ async function teamScreen(inBattle) {
       if (inBattle) return r;
       S.team.splice(r, 1); S.team.unshift(m); SND.fx('good'); await say(`${esc(w.name)} is now your lead Lenguamon.`); writeSave();
     } else if (sub === 1) {
-      await say([`${esc(w.name)} ${W(w)}<br>"${esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}${EVO[m.key] && (m.stage || 0) < 2 ? `<br>Grows into a phrase at Lv${WORD[EVO[m.key]].level}` : (m.stage || 0) >= 2 ? '<br>Fully evolved ★★' : ''}`]);
+      await say([`${esc(w.name)} ${W(w)}<br>"${LANG === 'en' ? PF(w.en) : esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}${EVO[m.key] && (m.stage || 0) < 2 ? `<br>Grows into a phrase at Lv${WORD[EVO[m.key]].level}` : (m.stage || 0) >= 2 ? '<br>Fully evolved ★★' : ''}`]);
     }
   }
 }

@@ -117,13 +117,16 @@ const SPECIES = [
 const SPECIES_BY_ID = Object.fromEntries(SPECIES.map(s => [s.id, s]));
 
 // assign animals: rank words by difficulty (length of the Persian, later routes harder), common animals first
-(function assignSpecies() {
+function assignSpecies() {
   const score = w => w.level + (w.route - 1) * 6;
   const ranked = WORDS.slice().sort((a, b) => score(a) - score(b) || a.idx - b.idx);
   ranked.forEach((w, i) => { w.sp = SPECIES[Math.min(SPECIES.length - 1, Math.floor(i * SPECIES.length / ranked.length))]; });
   const hello = WORDS.find(w => w.tr0 === 'salam'); if (hello) hello.sp = SPECIES_BY_ID.mouse;
-  for (const w of WORDS) { w.word = w.tr0.toUpperCase(); w.name = w.sp.tr.toUpperCase(); }
-})();
+  const salute = WORDS.find(w => w.tr0 === (LANG === 'en' ? "how's it going?" : 'salam')); if (salute) salute.sp = SPECIES_BY_ID.mouse;
+  // learning Persian: the monster has its Persian animal name; learning English: its English one
+  for (const w of WORDS) { w.word = w.tr0.toUpperCase(); w.name = (LANG === 'en' ? w.sp.name : w.sp.tr).toUpperCase(); }
+}
+assignSpecies();
 function speciesOf(w) { return w.sp || SPECIES[0]; }
 
 const OL = '#2b1d16';
@@ -444,7 +447,7 @@ function monsterSvg(w, flip = false) {
 }
 const MON_URL = {};
 function monUrl(w, flip = false) { const k = (w.viewKey || w.key) + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
-function monTag(w) { return `<div class="mon-tag">${esc(speciesOf(w).name)}</div>`; }
+function monTag(w) { return LANG === 'en' ? `<div class="mon-tag fs" dir="rtl">${esc(speciesOf(w).fa)}</div>` : `<div class="mon-tag">${esc(speciesOf(w).name)}</div>`; }
 function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, cls === 'me')}" alt="${esc(w.name)}">`; }
 
 // ===== evolution: a word grows into a phrase that uses it, and its animal grows stronger =====
@@ -452,7 +455,8 @@ function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, 
 // grow into a longer phrase of the same kind. Two evolutions at most.
 const EVO = {};
 const EN_STOP = new Set(['the', 'and', 'you', 'are', 'for', 'with', 'its', 'not', 'how', 'what', 'lit']);
-(function buildEvolutions() {
+function buildEvolutions() {
+  for (const k of Object.keys(EVO)) delete EVO[k];
   const toks = w => norm(w.tr0).split(' ').filter(Boolean);
   const T = new Map(WORDS.map(w => [w.key, toks(w)]));
   const contains = (big, small) => { for (let i = 0; i + small.length <= big.length; i++) if (small.every((t, j) => big[i + j] === t)) return true; return false; };
@@ -471,7 +475,8 @@ const EN_STOP = new Set(['the', 'and', 'you', 'are', 'for', 'with', 'its', 'not'
     const near = c.slice(0, 3);
     EVO[w.key] = near[hashStr(w.key) % near.length].key;
   }
-})();
+}
+buildEvolutions();
 const MON_VIEW = {};
 // what a team member looks like now: its current word, but the animal it was born as
 function monView(m) {
@@ -479,4 +484,13 @@ function monView(m) {
   if (!m.base || m.base === m.key) return w;
   const b = WORD[m.base] || w, stage = m.stage || 1, k = m.key + '>' + m.base + '>' + stage;
   return MON_VIEW[k] || (MON_VIEW[k] = { ...w, sp: b.sp, name: b.name + ' ' + '★'.repeat(stage), lookKey: b.key, palType: b.type, stage, viewKey: k });
+}
+
+// switch the whole game between learning Persian ('fa') and learning English ('en')
+function useLanguage(l) {
+  if (LANG === l && WORDS.length) return;
+  LANG = l; Object.assign(ROUTE_NAMES, ROUTE_NAMES_BY[l]);
+  parseWords(); assignSpecies(); buildEvolutions();
+  for (const o of [MON_URL, MON_VIEW]) for (const k of Object.keys(o)) delete o[k];
+  document.body.classList.toggle('learn-en', l === 'en');
 }

@@ -70,6 +70,59 @@ function portraitSvg(id) {
       <rect x="4" y="56" width="12" height="5" rx="1" fill="#f4f2ec" stroke="#2b1d16" stroke-width=".7"/><path d="M6,58 h8 M6,59.6 h6" stroke="#8a8a96" stroke-width=".6"/>
     </svg>`;
   }
+  if (id === 'trooper') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
+      <path d="M11,64 C11,47 20,41 32,41 C44,41 53,47 53,64 Z" fill="#8a7a5a" ${st}/><path d="M27,41 L32,49 L37,41" fill="#e8e0c8" ${st}/><path d="M31,42 L33,42 L33.6,52 L32,55 L30.4,52 Z" fill="#2a2a30"/>
+      <path d="M40,48 L46,47 L47,53 L43,56 L39,53 Z" fill="#e8c040" ${st}/><circle cx="43" cy="51" r="1.4" fill="#a87818"/>
+      <ellipse cx="32" cy="28" rx="13" ry="14.5" fill="${skin}" ${st}/>
+      <rect x="20.5" y="24" width="10" height="6" rx="2.6" fill="#2a2a30" ${st}/><rect x="33.5" y="24" width="10" height="6" rx="2.6" fill="#2a2a30" ${st}/><path d="M30.5,26 h3" stroke="#2b1d16" stroke-width="1.2"/><path d="M22,25.5 l3,-1" stroke="#8ab0d0" stroke-width="1"/>
+      <path d="M25,35 C28,32.6 36,32.6 39,35 C36,36.6 28,36.6 25,35 Z" fill="#5a3a1a" ${st}/><path d="M29,38.6 h6" stroke="#8a4a3a" stroke-width="1.2"/>
+      <path d="M8,20 C8,17 20,16 32,16 C44,16 56,17 56,20 C56,22 44,22 32,22 C20,22 8,22 8,20 Z" fill="#8a6a3a" ${st}/>
+      <path d="M20,18 C20,4 44,4 44,18 C40,15 24,15 20,18 Z" fill="#a8875a" ${st}/><path d="M26,8 L32,13 L38,8" fill="none" stroke="#6a4a2a" stroke-width="1.2"/>
+    </svg>`;
+  }
+  if (id === 'ceo') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
+      <path d="M10,64 C10,46 19,40 32,40 C45,40 54,46 54,64 Z" fill="#4a4e58" ${st}/><path d="M24,40 C24,46 40,46 40,40" fill="#3a3e48" ${st}/><path d="M27,48 L27,58 M37,48 L37,58" stroke="#d8dce4" stroke-width="1.2"/>
+      <rect x="44" y="44" width="9" height="13" rx="1.6" fill="#f4f0e8" ${st}/><rect x="44" y="47" width="9" height="4" fill="#5aa86a"/><path d="M45,44 L46,41 L51,41 L52,44" fill="#3a3a3a" ${st}/>
+      <ellipse cx="32" cy="27" rx="12.5" ry="14" fill="#f0c49c" ${st}/>
+      <path d="M19.6,24 C18,10 30,6 40,10 C46,13 46,20 44.4,24 C42,17 34,14 26,17 C23,18 21,20 19.6,24 Z" fill="#c89a5a" ${st}/><path d="M26,12 C32,6 42,8 44,14" fill="#d8aa6a" ${st}/>
+      ${'<ellipse cx="26.5" cy="27" rx="2" ry="2.4" fill="#1e1410"/><ellipse cx="37.5" cy="27" rx="2" ry="2.4" fill="#1e1410"/>'}
+      <path d="M22.5,22.5 Q26.5,20.5 30,22 M34,22 Q37.5,20.5 41.5,22.5" stroke="#8a6a3a" stroke-width="1.3" fill="none"/>
+      <path d="M26,34 Q32,39 38,34" stroke="#8a3a3a" stroke-width="1.3" fill="none"/>
+      <ellipse cx="19.4" cy="29" rx="1.6" ry="2.4" fill="#f4f4f0" ${st}/><ellipse cx="44.6" cy="29" rx="1.6" ry="2.4" fill="#f4f4f0" ${st}/>
+    </svg>`;
+  }
+  if (id === 'autocorrect') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <defs><radialGradient id="ag" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff4a6a" stop-opacity=".7"/><stop offset="1" stop-color="#ff4a6a" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.2)"/>
+      <path d="M12,64 C12,48 20,42 32,42 C44,42 52,48 52,64 Z" fill="#3a3e4a" ${st}/>
+      ${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5].map(c => `<rect x="${16 + c * 5.4}" y="${48 + r * 3.8}" width="4.4" height="2.8" rx=".6" fill="#5a5e6a"/>`).join('')).join('')}
+      <rect x="16" y="8" width="32" height="34" rx="5" fill="#2a2e38" ${st}/><rect x="19" y="12" width="26" height="24" rx="2" fill="#0c1018"/>
+      <path d="M22,20 q2,-2 4,0 t4,0 M34,20 q2,-2 4,0 t4,0" stroke="#ff3a5a" stroke-width="1.4" fill="none"/>
+      <circle cx="27" cy="22" r="6" fill="url(#ag)"/><circle cx="38" cy="22" r="6" fill="url(#ag)"/>
+      <text x="32" y="32" font-family="Verdana" font-weight="700" font-size="5" fill="#3ae0a0" text-anchor="middle">DUCK</text><path d="M22,33.4 q1.5,1.4 3,0 t3,0 t3,0 t3,0 t3,0 t3,0 t3,0" stroke="#ff3a5a" stroke-width=".9" fill="none"/>
+      <rect x="40.5" y="28" width="1.2" height="5" fill="#f4f4f0"/>
+      <path d="M32,8 L32,2" stroke="#8a8e96" stroke-width="1.6"/><circle cx="32" cy="2" r="1.8" fill="#ff3a5a"/>
+    </svg>`;
+  }
+  if (id === 'cabbie') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
+      <path d="M10,64 C10,47 19,41 32,41 C45,41 54,47 54,64 Z" fill="#2a2a30" ${st}/><path d="M18,50 h28" stroke="#f0c030" stroke-width="3"/>
+      ${[0, 1, 2, 3, 4, 5, 6].map(i => `<rect x="${18 + i * 4}" y="${(i % 2) ? 48.5 : 50}" width="2" height="1.5" fill="#1a1a1a"/>`).join('')}
+      <ellipse cx="32" cy="28" rx="13" ry="14.5" fill="#e0b088" ${st}/>
+      <path d="M19,30 C19,44 45,44 45,30 C42,36 38,38 32,38 C26,38 22,36 19,30 Z" fill="#5a5a5a" opacity=".55"/>
+      <ellipse cx="26.5" cy="27" rx="2" ry="2.4" fill="#1e1410"/><ellipse cx="37.5" cy="27" rx="2" ry="2.4" fill="#1e1410"/>
+      <path d="M22,22 L30,23.4 M42,22 L34,23.4" stroke="#2a2a2a" stroke-width="2"/>
+      <path d="M25,34 C28,31.6 36,31.6 39,34 C36,36 28,36 25,34 Z" fill="#3a3a3a" ${st}/><path d="M29,38 Q32,36.6 35,38" stroke="#8a4a3a" stroke-width="1.2" fill="none"/>
+      <path d="M17,20 C17,11 47,11 47,20 Z" fill="#3a3a3a" ${st}/><path d="M17,20 C22,22 40,22 52,19 L50,17 C40,19 24,18 17,17 Z" fill="#2a2a2a" ${st}/>
+      <rect x="48" y="4" width="14" height="7" rx="2" fill="#f0c030" ${st}/><text x="55" y="9.4" font-family="Verdana" font-weight="700" font-size="4.2" fill="#2a2a2a" text-anchor="middle">TAXI</text>
+    </svg>`;
+  }
   if (id === 'censor') {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff5a7a"/><stop offset="1" stop-color="#ff5a7a" stop-opacity="0"/></radialGradient></defs>
@@ -206,10 +259,79 @@ function teaSceneSvg(L, vest = '#6a4a3a') {
 </svg>`;
 }
 // tea scene: a hand-painted picture of the host serving you chai (one for each hero)
+// ---- English mode: coffee and pie at an American diner, in the same soft hand-drawn style ----
+function dinerSceneSvg(L) {
+  const ink = '#4a3428', s = `stroke="${ink}" stroke-width=".7" stroke-linejoin="round" stroke-linecap="round"`;
+  const hair = L.hair, long = L.hairStyle === 'long', skin = '#f4cfa8';
+  let checks = ''; for (let x = 0; x < 160; x += 6) for (let y = 78; y < 100; y += 6) if (((x + y) / 6) % 2 < 1) checks += `<rect x="${x}" y="${y}" width="6" height="6" fill="#2a2a30"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+  <defs>
+    <linearGradient id="dw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8ecd0"/><stop offset="1" stop-color="#e8cfa0"/></linearGradient>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0a860"/><stop offset=".6" stop-color="#f8d898"/><stop offset="1" stop-color="#fbe8c0"/></linearGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6fa"/><stop offset=".5" stop-color="#a8aeb8"/><stop offset="1" stop-color="#e0e4ea"/></linearGradient>
+    <radialGradient id="warm2" cx="45%" cy="40%" r="75%"><stop offset="0" stop-color="#fff2c8" stop-opacity=".3"/><stop offset="1" stop-color="#7a3a1a" stop-opacity=".28"/></radialGradient>
+    <filter id="soft2"><feGaussianBlur stdDeviation="1.2"/></filter>
+    <filter id="paper2"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .2  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+  </defs>
+  <rect width="160" height="100" fill="url(#dw)"/>
+  <rect x="8" y="8" width="56" height="34" rx="3" fill="url(#sky2)" stroke="#8a8e96" stroke-width="2"/>
+  <path d="M8,36 L20,24 L28,30 L40,18 L52,28 L64,22 L64,42 L8,42 Z" fill="#c0663a" opacity=".85"/><path d="M8,42 L64,42 L64,38 C50,36 30,39 8,37 Z" fill="#a8743a"/>
+  <circle cx="22" cy="17" r="5" fill="#fff2c0" opacity=".9"/><path d="M36,8 L36,42" stroke="#8a8e96" stroke-width="1.2"/>
+  <rect x="96" y="6" width="30" height="13" rx="3" fill="#2a2a3a"/><text x="111" y="16" font-family="Verdana" font-weight="700" font-size="9" fill="#ff5a8a" text-anchor="middle">EAT</text>
+  <text x="111" y="16" font-family="Verdana" font-weight="700" font-size="9" fill="#ff8ab0" text-anchor="middle" filter="url(#soft2)">EAT</text>
+  <rect x="134" y="30" width="20" height="34" rx="9" fill="#c8762a" ${s}/><rect x="137" y="35" width="14" height="10" rx="6" fill="#f6d860"/><path d="M137,50 h14 M137,53 h14" stroke="#e83a6a" stroke-width="1.2"/>
+  ${checks}
+  <rect y="76" width="160" height="2" fill="#c8323a"/>
+  <!-- counter -->
+  <rect x="0" y="58" width="132" height="5" rx="1.5" fill="url(#chrome)" ${s}/><rect x="0" y="63" width="132" height="13" fill="#c8323a" ${s}/><path d="M0,67 h132" stroke="#f4f0e8" stroke-width="1"/>
+  <!-- pie and mug -->
+  <ellipse cx="58" cy="57.6" rx="9" ry="2" fill="#f4f0e8" ${s}/><path d="M51,57 L58,51 L65,57 Z" fill="#e8b860" ${s}/><path d="M52.6,56.2 L58,52.4 L63.4,56.2 Z" fill="#b8262e"/>
+  <path d="M74,48 L82,48 L81,57 L75,57 Z" fill="#f8f6f0" ${s}/><path d="M82,50 C86,50 86,55 81.6,55" fill="none" stroke="${ink}" stroke-width=".9"/><ellipse cx="78" cy="48.6" rx="3.6" ry=".9" fill="#5a3418"/>
+  ${[0, 1, 2].map(i => `<path d="M${76 + i * 1.6},46 C${74 + i * 1.6},42 ${79 + i * 1.6},40 ${77 + i * 1.6},35" stroke="#fff" stroke-width="1" fill="none" opacity="${.7 - i * .15}" filter="url(#soft2)"/>`).join('')}
+  <!-- you, on a stool at the counter -->
+  <rect x="32" y="76" width="3" height="20" fill="#8a8e96"/><ellipse cx="33.5" cy="76" rx="8" ry="2.4" fill="#c8323a" ${s}/>
+  <g transform="translate(16 32)">
+    ${long ? `<path d="M3,10 C1,22 3,30 6,33 L18,33 C19,26 19,18 17,10 Z" fill="${hair}" ${s}/>` : ''}
+    <path d="M4,32 C3,26 6,22 12,22 C18,22 21,26 20,32 L20,44 L4,44 Z" fill="${L.top}" ${s}/>
+    ${L.tee ? `<path d="M10,22.4 L14,22.4 L13.3,44 L10.7,44 Z" fill="${L.tee}" stroke="${ink}" stroke-width=".5"/>` : ''}
+    <path d="M17,27 C24,28 30,27 36,24" stroke="${L.top}" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+    <ellipse cx="37" cy="23.6" rx="1.9" ry="1.6" fill="${skin}" ${s}/>
+    <ellipse cx="12" cy="13" rx="7.4" ry="8" fill="${skin}" ${s}/>
+    <path d="M4.6,13 C4,4 14,1.5 19,7 C20,9 20,11 19.4,13 C17,9.5 14,8.5 11,9.5 C9,8 6,9.5 4.6,13 Z" fill="${hair}" ${s}/>
+    ${L.hairStyle === 'swoop' ? `<path d="M6,8 C8,1 16,0 21,4 C18,4 16,5 15,7 C12,5 9,6 6,8 Z" fill="${hair}" ${s}/>` : ''}
+    ${L.shades ? `<ellipse cx="10.4" cy="6.6" rx="2.4" ry="1.4" fill="#18181e" ${s}/><ellipse cx="15.6" cy="6.2" rx="2.4" ry="1.4" fill="#18181e" ${s}/>` : ''}
+    <ellipse cx="15.4" cy="13.8" rx="1.25" ry="1.6" fill="#2a1a14"/><circle cx="15.8" cy="13.2" r=".45" fill="#fff"/>
+    <path d="M16.5,18.2 Q17.6,19 18.6,18.4" stroke="#a84a3a" stroke-width=".6" fill="none"/><ellipse cx="16.6" cy="16.6" rx="1.6" ry=".9" fill="#ff9a9a" opacity=".45"/>
+  </g>
+  <!-- the waitress pouring coffee -->
+  <g transform="translate(86 14)">
+    <path d="M14,40 C12,52 12,62 13,64 L37,64 C38,62 38,52 36,40 C32,36 18,36 14,40 Z" fill="#7ac8c0" ${s}/>
+    <path d="M18,42 L32,42 L31,64 L19,64 Z" fill="#fbf8f0" ${s}/><path d="M22,44 h6" stroke="#e8a0b0" stroke-width="1.2"/>
+    <path d="M15,44 C9,46 2,40 -3,36" stroke="#7ac8c0" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="-4" cy="35" rx="2.2" ry="1.8" fill="#f0c49c" ${s}/>
+    <!-- coffee pot -->
+    <path d="M-12,26 L-2,26 L-1,34 C-1,38 -13,38 -13,34 Z" fill="#e8f0f4" fill-opacity=".8" ${s}/><path d="M-12.6,30 L-1.4,30 L-1,34 C-1,38 -13,38 -13,34 Z" fill="#5a3418" opacity=".85"/>
+    <rect x="-11" y="22.6" width="8" height="3.6" rx="1" fill="#e8742a" ${s}/><path d="M-12,28 C-15,28 -15,33 -12.4,33" fill="none" stroke="${ink}" stroke-width=".8"/>
+    <path d="M-12,36 C-14,40 -12,44 -12.5,48" stroke="#5a3418" stroke-width="1.4" fill="none"/>
+    <ellipse cx="25" cy="24" rx="10" ry="11.5" fill="#f0c49c" ${s}/>
+    <path d="M14.6,24 C13,12 22,8 30,10 C36,12 37,18 35.6,24 C33,17 26,15 20,17 C17,18 15.6,20 14.6,24 Z" fill="#c8843a" ${s}/>
+    <ellipse cx="34" cy="12" rx="5" ry="5.4" fill="#c8843a" ${s}/>
+    <path d="M18.8,24 Q20.8,22.6 22.8,24 M27.2,24 Q29.2,22.6 31.2,24" stroke="#3a2418" stroke-width=".9" fill="none"/>
+    <ellipse cx="18.6" cy="28" rx="2.3" ry="1.3" fill="#f48a7a" opacity=".45"/><ellipse cx="31.4" cy="28" rx="2.3" ry="1.3" fill="#f48a7a" opacity=".45"/>
+    <path d="M21.6,31 Q25,33.6 28.4,31" stroke="#b83a4a" stroke-width=".9" fill="none"/>
+    <rect x="21" y="9" width="8" height="2.6" rx="1" fill="#fbf8f0" ${s}/>
+  </g>
+  <rect width="160" height="100" fill="url(#warm2)"/>
+  <rect width="160" height="100" fill="#fff" filter="url(#paper2)"/>
+</svg>`;
+}
 async function teaScene(vest, host = 'Agha Reza') {
   const p = $('#portrait');
-  const url = TEA_IMG[S && S.gender === 'girl' ? 'girl' : 'boy'];
-  p.innerHTML = `<div class="tea"><img src="${url}" alt="${host} serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
+  const en = LANG === 'en';
+  const girl = !!(S && S.gender === 'girl');
+  const url = en ? TEA_IMG[girl ? 'cafeGirl' : 'cafeBoy'] : TEA_IMG[girl ? 'girl' : 'boy'];
+  const cap = en ? E("Here's your coffee. Enjoy!", 'بفرمایید، قهوه‌تون. نوش جان!') : F('بفرمایید، چای!', 'befarmaid, chai!');
+  p.innerHTML = `<div class="tea${en ? ' us' : ''}"><img src="${url}" alt="${host} serving ${en ? 'coffee' : 'chai'}"><div class="tea-cap">${cap}</div></div>`;
   p.classList.add('show'); SND.fx('heal'); healTeam();
   await sleep(3000);
   p.classList.remove('show'); p.innerHTML = '';

@@ -40,11 +40,11 @@ function groundAt(m, x, y) {
   for (let r = 1; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
     if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
     const ch = m && m.grid[y + dy] && m.grid[y + dy][x + dx];
-    if (ch && ',≈¤░▓'.includes(ch)) return 'sand'; if (ch === '.' || ch === ':' || ch === '*') return 'grass';
+    if (ch === '▫' || ch === 'ǁ') return 'walk'; if (ch && ',≈¤░▓♣◭'.includes(ch)) return 'sand'; if (ch === '.' || ch === ':' || ch === '*') return 'grass';
   }
   return 'grass';
 }
-function gAuto(c, x, y, nb, m) { (groundAt(m, x, y) === 'sand' ? gSand : gGrass)(c, x, y); }
+function gAuto(c, x, y, nb, m) { const g = groundAt(m, x, y); (g === 'sand' ? gSand : g === 'walk' ? gWalk : gGrass)(c, x, y); }
 function domeTile(c, nb, col) {
   if (nb.R === nb.self) { R(c, 4, 6, 12, 10, col.d); R(c, 6, 4, 10, 12, col.d); R(c, 5, 7, 11, 9, col.b); R(c, 7, 5, 9, 11, col.b); R(c, 7, 8, 3, 4, col.l); R(c, 9, 6, 2, 2, col.l); P(c, [8, 13, 11, 10, 13, 13, 12, 7, 14, 10], col.p); R(c, 15, 0, 1, 5, C.gold); P(c, [14, 1], C.gold); }
   else { R(c, 0, 6, 12, 10, col.d); R(c, 0, 4, 10, 12, col.d); R(c, 0, 7, 11, 9, col.b); R(c, 0, 5, 9, 11, col.b); P(c, [2, 10, 4, 13, 6, 8, 3, 7, 7, 12], col.p); R(c, 0, 0, 1, 5, C.gold); P(c, [1, 1], C.gold); }
