@@ -1,6 +1,6 @@
 # Lenguamon: Persian Edition (v1)
 
-A tiny Game Boy Color style language game. Catch **Lenguamon** (language monsters): every monster is an English word or phrase, and you learn its Persian to catch it.
+A tiny Game Boy Color style language game set in Iran. Catch **Lenguamon** (language monsters): cartoon animals of Iran (Persian cats, Asiatic cheetahs, Caspian seals, hoopoes and more), each named after the Persian word it teaches.
 
 - Native language: English. Target language: Persian (Farsi). More languages later.
 - Runs in any browser. One self-contained file: `index.html` (about 120 KB, no network requests). Play it on GitHub Pages or open the file directly.
@@ -20,10 +20,10 @@ A tiny Game Boy Color style language game. Catch **Lenguamon** (language monster
 3. **FIGHT** = a quiz. You see 4 choices and type the answer. Right answer: your attack lands (fast answers are critical hits). Wrong answer: you miss and the wild word attacks you using the answer you needed.
 4. Use a **DAFTAR** (notebook) to catch a weakened word by typing its Persian.
 5. Enemy level = length of the Persian word or phrase, so long phrases are tougher.
-6. Each route ends with a gatekeeper who tests you with a real conversation in Persian. Catch 12 words on that route to challenge them.
-   - Dariush (Greetings Path): greetings and introductions, with English hints
-   - Leila (Bazaar Road): prices, age, family, time, days
-   - Shirin (Rose Garden): food, feelings, weather, daily life, no English hints
+6. The journey runs Yazd (windcatchers, Amir Chakhmaq) → Isfahan (bazaar, Shah Mosque, Si-o-se-pol) → Shiraz (gardens, tomb of Hafez). Each stage ends in a conversation battle in Persian. Catch 12 words in that area to take it on.
+   - Basij checkpoint outside Yazd (invented caricature): greetings and introductions, with English hints
+   - IRGC commander before Shiraz (invented caricature): age, family, time, days, prices
+   - Shirin at the tomb of Hafez: food, feelings, weather, daily life, no English hints
 7. Beat Shirin, then talk to Professor Haydeh for the ending.
 
 Options (START > OPTIONS): transliteration on/off, music, sound effects, text speed.
@@ -33,7 +33,8 @@ Options (START > OPTIONS): transliteration on/off, music, sound effects, text sp
 ```
 src/words.js    word bank (400 entries): translit | english | script | route | type
 src/core.js     utils, answer matching, options, 48h save, chiptune audio, input
-src/art.js      procedural pixel tiles, characters and monster sprites
+src/art.js      procedural pixel tiles and overworld characters
+src/monsters.js SVG animal caricatures (23 species) and character portraits
 src/ui.js       text box, menus, Persian markup
 src/world.js    maps, NPC placement, movement, start menu, Lenguadex, team
 src/battle.js   quiz battles, catching, conversation bosses

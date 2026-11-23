@@ -75,14 +75,14 @@ const WORD = {};
     if (WORD[key]) continue;
     const w = {
       key, tr, en, fa: fa.replace(/\+/g, '‌'), route: +route, type,
-      tr0, en0, name: en0.toUpperCase(), level: Math.max(2, tr0.replace(/[?!.'’,]/g, '').length),
+      tr0, en0, name: tr0.toUpperCase(), level: Math.max(2, tr0.replace(/[?!.'’,]/g, '').length),
       enForms: acceptForms(en), trForms: acceptForms(tr), idx: WORDS.length,
     };
     WORDS.push(w); WORD[key] = w;
   }
 })();
 const wordsOfRoute = r => WORDS.filter(w => w.route === r);
-const ROUTE_NAMES = { 1: 'GREETINGS PATH', 2: 'BAZAAR ROAD', 3: 'ROSE GARDEN WAY' };
+const ROUTE_NAMES = { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD' };
 
 // ---- options (kept separately from the 48h save) ----
 const OPT_KEY = 'lenguamon_opts_v1';

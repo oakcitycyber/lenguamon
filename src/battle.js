@@ -36,9 +36,10 @@ function grade(q, typed) {
   return { ok, chosen: best, exact: correctD === 0 };
 }
 // show the quiz panel; resolves {ok, ms, chosen}
-function quiz(q, title) {
+function quiz(q, title, o = {}) {
   return new Promise(res => {
     const el = $('#quiz');
+    $('#b-foe').classList.toggle('hidename', !!o.hideFoe);
     el.innerHTML = `<div class="box qz"><div class="qz-t">${title || ''}</div><div class="qz-p">${q.prompt}</div>
       <div class="qz-o${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
       <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}"><button>ENTER</button></form></div>`;
@@ -56,7 +57,7 @@ function quiz(q, title) {
       if (!g.ok && chi >= 0 && chi !== ci) el.querySelectorAll('.qo')[chi].classList.add('wrong');
       SND.fx(g.ok ? 'good' : 'bad');
       await sleep(g.ok ? 700 : 1300);
-      el.classList.remove('show'); el.innerHTML = ''; popH(block);
+      el.classList.remove('show'); el.innerHTML = ''; popH(block); $('#b-foe').classList.remove('hidename');
       res({ ok: g.ok, ms: performance.now() - t0, chosen: g.chosen });
     });
     inp.addEventListener('keydown', e => e.stopPropagation());
@@ -71,8 +72,8 @@ function bDraw() {
   const fw = f.w, mw = m ? monW(m) : null;
   $('#b-foe').innerHTML = BT.boss
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
-    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
-  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${charUrl(BT.boss.look)}">` : monImg(fw, 'foe');
+    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(fw.fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
+  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe');
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
     $('#b-me-spr').innerHTML = monImg(mw, 'me');
@@ -153,7 +154,7 @@ async function wildEncounter(route) {
   BT.foe = { w, lvl: w.level, max: maxHp(w.level), hp: maxHp(w.level) }; BT.me = lead(); BT.boss = null;
   await battleIntro('battle');
   await say(`A wild ${B(w.name)} appeared!`);
-  if (firstTime) await say([`NEW WORD! ${W(w)}`, `${B(w.name)} means "${esc(w.en)}".<br>In Persian you say: ${W(w)}`]);
+  if (firstTime) await say([`NEW WORD! ${W(w)}`, `${B(w.name)} means "${esc(w.en)}".<br>(This Lenguamon is a ${esc(speciesOf(w).en)}: ${F(speciesOf(w).fa, '')})`]);
   else if (S.caught[w.key]) await say(`(${W(w)} is already in your Lenguadex.)`);
   await say(`Go! ${B(monW(BT.me).name)}!`);
   let menuIdx = 0;
@@ -167,9 +168,9 @@ async function wildEncounter(route) {
       const rv = rand() < 0.4 ? reviewWord(w) : null;
       const qw = rv || w;
       const st = S.stats[qw.key] || [0, 0];
-      const dir = qw === w ? 'en2fa' : (st[0] === 0 ? 'fa2en' : (rand() < 0.5 ? 'en2fa' : 'fa2en'));
+      const dir = st[0] === 0 ? 'fa2en' : (rand() < 0.5 ? 'en2fa' : 'fa2en');
       const q = makeQuestion(qw, dir);
-      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
+      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`, { hideFoe: qw === w && dir === 'en2fa' });
       stat(qw, res.ok);
       if (res.ok) {
         const crit = res.ms < 5000;
@@ -192,7 +193,7 @@ async function wildEncounter(route) {
       S.daftar--;
       await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
-      const res = await quiz(q, 'Write it in your DAFTAR');
+      const res = await quiz(q, 'Write it in your DAFTAR', { hideFoe: true });
       stat(w, res.ok);
       if (!res.ok) {
         await say([`The ink smudged! The word slipped off the page.`, `The answer was ${q.answerHtml}.`]);
@@ -231,7 +232,9 @@ async function wildEncounter(route) {
 // each line: [npc Persian, npc translit, npc English, reply Persian, reply translit, reply English]
 const BOSSES = {
   b1: {
-    name: 'DARIUSH', look: 'dariush', lvl: 9, route: 1, need: 12, showEn: true, optEn: true,
+    name: 'BASIJI', look: 'basij', lvl: 9, route: 1, need: 12, showEn: true, optEn: true,
+    title: 'the BASIJ CHECKPOINT on the road out of Yazd',
+    intro: [`${F('ایست!', 'ist!')} HALT! This is a Basij checkpoint.`, 'Nobody leaves Yazd unless they can answer my questions in Persian!'],
     lines: [
       ['سلام!', 'salam!', 'Hello!', 'سلام، خوبی؟', 'salam, khubi?', 'Hello, how are you?'],
       ['مرسی، خوبم. تو چطوری؟', 'merci, khubam. to chetori?', "Thanks, I'm good. How are you?", 'من هم خوبم، مرسی', 'man ham khubam, merci', "I'm good too, thanks"],
@@ -239,27 +242,33 @@ const BOSSES = {
       ['خوشبختم!', 'khoshbakhtam!', 'Nice to meet you!', 'من هم خوشبختم', 'man ham khoshbakhtam', 'Nice to meet you too'],
       ['اهل کجایی؟', 'ahl-e kojayi?', 'Where are you from?', 'من اهل آمریکا هستم', 'man ahl-e amrika hastam', "I'm from America"],
       ['فارسی بلدی؟', 'farsi baladi?', 'Do you know Persian?', 'یه کم فارسی بلدم', 'ye kam farsi baladam', 'I know a little Persian'],
-      ['...!!! (Dariush says something very fast)', '...!!!', '(something very fast)', 'ببخشید، نمی‌فهمم. دوباره بگو', 'bebakhshid, nemifahmam. dobare begu', "Sorry, I don't understand. Say it again"],
+      ['...!!! (he shouts something very fast)', '...!!!', '(something very fast)', 'ببخشید، نمی‌فهمم. دوباره بگو', 'bebakhshid, nemifahmam. dobare begu', "Sorry, I don't understand. Say it again"],
       ['خسته نباشی!', 'khasteh nabashi!', 'Good work!', 'سلامت باشی', 'salamat bashi', 'Be well (thanks!)'],
       ['خداحافظ!', 'khodahafez!', 'Goodbye!', 'خداحافظ، روز خوبی داشته باشی', 'khodahafez, ruz-e khubi dashte bashi', 'Goodbye, have a nice day'],
     ],
+    beaten: `${F('باشه', 'bashe')}... fine. Your papers are in order. Go on to Isfahan.`,
   },
   b2: {
-    name: 'LEILA', look: 'leila', lvl: 16, route: 2, need: 12, showEn: true, optEn: false,
+    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: 12, showEn: true, optEn: false,
+    title: 'the IRGC COMMANDER guarding the road to Shiraz',
+    intro: [`${F('ایست!', 'ist!')} Stop right there, traveller.`, 'I am the IRGC COMMANDER. Nobody reaches Shiraz without passing my interrogation. In Persian!'],
     lines: [
-      ['سلام، خوش آمدید! بفرمایید.', 'salam, khosh amadid! befarmaid.', 'Hello, welcome! Go ahead.', 'سلام، این چنده؟', 'salam, in chande?', 'Hello, how much is this?'],
-      ['پنجاه هزار تومن.', 'panjah hezar toman.', '50,000 toman.', 'خیلی گرونه!', 'kheyli geroone!', "That's very expensive!"],
-      ['باشه، چهل هزار تومن.', 'bashe, chehel hezar toman.', 'Okay, 40,000 toman.', 'عالی! مرسی', "a'li! merci", 'Great! Thanks'],
+      ['ایست! اسمت چیه؟', 'ist! esmet chie?', "Halt! What's your name?", 'سلام، اسم من {NAME} است', 'salam, esm-e man {NAME} ast', 'Hello, my name is {NAME}'],
       ['چند سالته؟', 'chand saleteh?', 'How old are you?', 'من سی سال دارم', 'man si sal daram', "I'm thirty years old"],
       ['خواهر یا برادر داری؟', 'khahar ya baradar dari?', 'Do you have a sister or brother?', 'بله، یک خواهر دارم', 'baleh, yek khahar daram', 'Yes, I have one sister'],
       ['بچه داری؟', 'bache dari?', 'Do you have children?', 'نه، بچه ندارم', 'na, bache nadaram', "No, I don't have children"],
       ['ساعت چنده؟', 'saat chande?', 'What time is it?', 'ساعت سه بعد از ظهر است', "saat se-e ba'd az zohr ast", "It's 3 in the afternoon"],
       ['امروز چندشنبه است؟', 'emrooz chand shanbe ast?', 'What day is today?', 'امروز جمعه است', 'emrooz jomeh ast', 'Today is Friday'],
-      ['فردا میای بازار؟', 'farda miyay bazar?', 'Will you come to the bazaar tomorrow?', 'بله، فردا صبح', 'baleh, farda sobh', 'Yes, tomorrow morning'],
+      ['این چنده؟ (he points at your bag)', 'in chande?', 'How much is this?', 'پنجاه هزار تومن', 'panjah hezar toman', "It's 50,000 toman"],
+      ['فردا کجا میری؟', 'farda koja miri?', 'Where are you going tomorrow?', 'فردا به بازار می‌رم', 'farda be bazar miram', "Tomorrow I'm going to the bazaar"],
+      ['باشه، برو!', 'bashe, boro!', 'Okay, go!', 'مرسی، خداحافظ!', 'merci, khodahafez!', 'Thanks, goodbye!'],
     ],
+    beaten: `Hmph. ${F('برو', 'boro')}! Go! Shiraz is north. They say Shirin only speaks Persian.`,
   },
   b3: {
     name: 'SHIRIN', look: 'shirin', lvl: 24, route: 3, need: 12, showEn: false, optEn: false,
+    title: 'keeper of the tomb of Hafez',
+    intro: [`${F('سلام', 'salam')}! I am SHIRIN, keeper of the tomb of Hafez.`, 'Sit with me and talk, only in Persian.'],
     lines: [
       ['سلام! حالت چطوره؟', 'salam! halet chetore?', 'Hello! How are you doing?', 'خیلی خوبم، مرسی. تو چطوری؟', 'kheyli khubam, merci. to chetori?', "I'm very good, thanks. How are you?"],
       ['من کمی خسته‌ام.', 'man kami khasteh-am.', "I'm a little tired.", 'خسته نباشی!', 'khasteh nabashi!', 'Good work! (Don\'t be tired!)'],
@@ -272,6 +281,7 @@ const BOSSES = {
       ['فارسیت خیلی خوب شده! دمت گرم!', 'farsit kheyli khub shode! damet garm!', 'Your Persian got really good! Well done!', 'خیلی ممنون، من هم خوشحالم', 'kheyli mamnoon, man ham khoshhalam', "Thank you so much, I'm happy too"],
       ['خداحافظ، موفق باشی!', 'khodahafez, movafagh bashi!', 'Goodbye, good luck!', 'مرسی، خداحافظ!', 'merci, khodahafez!', 'Thanks, goodbye!'],
     ],
+    beaten: `${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}! Go tell Professor Haydeh!`,
   },
 };
 function bossReplyWord(b, line) {
@@ -317,7 +327,7 @@ async function bossBattle(id) {
     }
   }
   SND.fx('badge');
-  await say(`${b.name}: ${F('آفرین!', 'afarin!')} Bravo! That was a real conversation!`);
+  await say(`${b.name}: ${b.beaten}`);
   writeSave(); await battleOutro();
   return true;
 }

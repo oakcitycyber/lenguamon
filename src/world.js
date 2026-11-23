@@ -2,32 +2,40 @@
 const MAP_SRC = {
   world: {
     rows: [
-      'TTTTTTTTTTTTTTTTTTTT', 'T*.*..*..==..*..*.*T', 'T.~~~~...3=...~~~~.T', 'T.~~~~..*==*..~~~~.T', 'T*.......==.......*T',
-      'TP..**...==...**..PT', 'T........==...S....T', 'TTTTTTTT.==.TTTTTTTT', 'T::::*...==...*::::T', 'T::::....==....::::T',
-      'T..PP....==a...PP..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T', 'T*::::...==...::::*T', 'T...R....==....R...T',
-      'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T', 'T........==........T', 'T..S.....==.....o..T',
+      // SHIRAZ: Eram-style garden and the tomb of Hafez
+      'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T........3=........T', 'T.~~~~.T.==.T.~~~~.T',
+      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.....*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
+      'T*~~~~*..==..*~~~~*T', 'T........==........T', 'TTTTTTTT.==.TTTTTTTT',
+      // ROUTE 3: Shiraz road
+      'T::::*...==...*::::T', 'T::::....==....::::T', 'T..LL....==a...LL..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T',
+      'T*::::...==...::::*T', 'T...R....==....R...T', 'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T',
+      'T........==........T', 'T..S.....==.....o..T',
       'TFFFFFFFF2FFFFFFFFFT',
-      'T,,AAA,,,==,,,AAA,,T', 'T,,KKK,,q==,,,KKK,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,,,::::T', 'T::::,,R,==,R,,::::T',
-      'T::::,,,,==,,,,::::T', 'T,,,,,,,,==,,,,,,,,T', 'T,AAA,,,,==,,e,AAA,T', 'T,KKK,,,,==,,,,KKK,T', 'T,,,,::::==::::,,,,T',
-      'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,,,::::T', 'T::::,,S,==,,,,::::T',
-      'T::::,,,,==,,i,::::T', 'TT,,,,,,,==,,,,,,,TT',
+      // ISFAHAN: bazaar, Shah Mosque, Si-o-se-pol over the Zayandeh river
+      'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,,IVVI,,T',
+      'T::::,,,,==,,IVVI,,T', 'T,,,,,,S,==,,,,,,,,T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T',
+      'T,,,,,,,,==,,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
+      'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,i,::::T', 'T::::,,L,==,,,L::::T',
+      'TT,,,,,,,==,,,,,,,TT',
       'TFFFFFFFF1FFFFFFFFFT',
-      'T...P....==....P...T', 'T::::....==....::::T', 'T::::....==..g.::::T', 'T::::....==....::::T', 'T.....*..==..*.....T',
-      'TP..:::::==:::::..PT', 'T...:::::==:::::...T', 'T...:::::==:::::...T', 'T....R...==...R....T', 'T*.......==.......*T',
-      'T::::..v.==....::::T', 'T::::....==....::::T', 'T::::..S.==....::::T', 'T........==........T',
-      'TTTTTTTTT9TTTTTTTTTT',
-      'T....*...==...*....T', 'T........==........T', 'T..nn....==...nn...T', 'T.^^^^...==.^^^^^^.T', 'T.#hh#...==.#h##h#.T',
-      'T.#H##...==.##M###.T', 'T..=.....==...=....T', 'T..============....T', 'T.S......==....S...T', 'TP.......==..~~~..PT',
-      'T..s.....==..~~~...T', 'T........==........T', 'T........==...nn...T', 'T........==.^^^^^^.T', 'T.P......==.#h##h#.T',
-      'T........==.##C###.T', 'T.....*..==...=..*.T', 'T........=======...T', 'TTTTTTTTTTTTTTTTTTTT',
+      // ROUTE 1: Yazd desert road
+      'T,,,J,,,,==,,,,J,,,T', 'T::::,,,,==,,,,::::T', 'T::::,,,,==,,g,::::T', 'T::::,,,,==,,,,::::T', 'T,,,,,J,,==,,J,,,,,T',
+      'TJ,,:::::==:::::,,JT', 'T,,,:::::==:::::,,,T', 'T,,,:::::==:::::,,,T', 'T,,,,R,,,==,,,R,,,,T', 'TJ,,,,,,,==,,,,,,,JT',
+      'T::::,,v,==,,,,::::T', 'T::::,,,,==,,,,::::T', 'T::::,,S,==,,,,::::T', 'T,,,,,,,,==,,,,,,,,T',
+      'TFFFFFFFF9FFFFFFFFFT',
+      // YAZD: windcatchers and the Amir Chakhmaq complex
+      'T,,,,J,,,==,,,J,,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,Y,,,,,==,,,Y,,Y,T', 'T,QQQQ,,,==,QQQQQQ,T', 'T,#hh#,,,==,#h##h#,T',
+      'T,#H##,,,==,##M###,T', 'T,,=,,,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,,,,,,,==,,~~~,,JT',
+      'T,,s,,,,,==,,~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
+      'TIWWWWI,,==,##C###,T', 'T,,,,,,,,==,,,=,,,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
     ],
-    bases: { 1: '=', 2: '=', 3: '=', 9: '=', a: '.', o: '.', q: ',', e: ',', i: ',', g: '.', v: '.', s: '.' },
+    bases: { 1: '=', 2: '=', 3: '=', 9: '=', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
     signs: [
-      `ROSE GARDEN ${F('باغ گل‌ها', "bagh-e golha")}<br>Shirin waits by the pools. She speaks only Persian!`,
+      `SHIRAZ ${F('شیراز', 'shiraz')}<br>City of poets and gardens. Up ahead is the tomb of Hafez ${F('آرامگاه حافظ', 'aramgah-e hafez')}. Shirin waits there.`,
       `${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words bloom here.`,
-      `${ROUTE_NAMES[2]}<br>NUMBERS, FAMILY, TIME and BAZAAR words wander the stalls.`,
-      `${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the tall grass.`,
-      `GOLESTAN VILLAGE ${F('روستای گلستان', 'rousta-ye golestan')}<br>A village of flowers and first words.`,
+      `ISFAHAN ${F('اصفهان نصف جهان', 'esfahan nesf-e jahan')}<br>"Isfahan is half the world!" The Shah Mosque is to the east. Si-o-se-pol bridge crosses the Zayandeh river ahead.`,
+      `${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the desert brush.`,
+      `YAZD ${F('یزد', 'yazd')}<br>City of windcatchers ${F('بادگیر', 'badgir')}. The Amir Chakhmaq complex stands to the south-west.`,
       `PROFESSOR HAYDEH'S SCHOOL ${F('مدرسه', 'madreseh')}<br>Lenguamon research and Persian lessons.`,
     ],
     doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 } },
@@ -53,7 +61,7 @@ function buildMaps() {
     MAPS[id] = m;
   }
 }
-function regionOf(map, y) { if (map !== 'world') return 0; if (y >= 54) return 0; if (y >= 39) return 1; if (y >= 21) return 2; return 3; }
+function regionOf(map, y) { if (map !== 'world') return 0; if (y >= 63 || y <= 12) return 0; if (y >= 48) return 1; if (y >= 26) return 2; return 3; }
 
 // ---- NPCs ----
 const NPCS = [];
@@ -129,7 +137,6 @@ async function onStep() {
   // region change music
   musicForPlace();
   // guard / scripted tiles
-  if (curMap.id === 'world' && PL.y === 54 && PL.x === 9 && !S.flags.starter) { }
   if (TILE[ch] && TILE[ch].enc) {
     if (encounterCooldown > 0) { encounterCooldown--; return; }
     if (rand() < 0.13) { await run(() => wildEncounter(regionOf('world', PL.y))); encounterCooldown = 2; }
@@ -156,8 +163,7 @@ async function interact() {
   const n = npcAt(curMap.id, tx, ty);
   if (n) { const back = { up: 'down', down: 'up', left: 'right', right: 'left' }; const od = n.dir; n.dir = back[PL.dir]; await n.talk(n); if (!n.fixed) n.dir = n.keepDir ? od : n.dir; writeSave(); return; }
   const sg = (curMap.signs || []).find(s => s.x === tx && s.y === ty);
-  if (sg && PL.dir === 'up') { await say(sg.text); return; }
-  if (sg) { await say('The sign is facing the other way.'); }
+  if (sg) { await say(sg.text); return; }
 }
 
 // ---- team helpers ----
