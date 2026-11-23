@@ -3,7 +3,7 @@ const MAP_SRC = {
   world: {
     rows: [
       // SHIRAZ: Eram-style garden and the tomb of Hafez
-      'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T........3=........T', 'T.~~~~.T.==.T.~~~~.T',
+      'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T........3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
       'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.....*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
       'T*~~~~*..==..*~~~~*T', 'T........==........T', 'TTTTTTTT.==.TTTTTTTT',
       // ROUTE 3: Shiraz road
@@ -29,9 +29,9 @@ const MAP_SRC = {
       'T,,s,,,,,==,,~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
       'TIWWWWI,,==,##C###,T', 'T,,,,,,,,==,,,=,,,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
     ],
-    bases: { 1: '=', 2: '=', 3: '=', 9: '=', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
+    bases: { 1: '=', 2: '=', 3: '=', 9: '=', l: '.', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
     signs: [
-      `SHIRAZ ${F('شیراز', 'shiraz')}<br>City of poets and gardens. Up ahead is the tomb of Hafez ${F('آرامگاه حافظ', 'aramgah-e hafez')}. Shirin waits there.`,
+      `SHIRAZ ${F('شیراز', 'shiraz')}<br>City of poets and gardens. Up ahead is the tomb of Hafez ${F('آرامگاه حافظ', 'aramgah-e hafez')}, seized by THE CENSOR!`,
       `${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words bloom here.`,
       `ISFAHAN ${F('اصفهان نصف جهان', 'esfahan nesf-e jahan')}<br>"Isfahan is half the world!" The Shah Mosque is to the east. Si-o-se-pol bridge crosses the Zayandeh river ahead.`,
       `${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the desert brush.`,
@@ -213,7 +213,7 @@ function dexEntryHtml(w) {
   const caught = S.caught[w.key], seen = S.seen[w.key];
   if (!seen && !caught) return `<div class="dx-d"><div class="dx-q">?</div><div><b>-----</b><br>Not seen yet.<br><small>${ROUTE_NAMES[w.route]}</small></div></div>`;
   const st = S.stats[w.key] || [0, 0];
-  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.name)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)}<br><small>"${esc(w.en)}"${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
+  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.word)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)} <small>"${esc(w.en)}"</small><br><small>${esc(w.name)} · ${esc(speciesOf(w).tr)}${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
 }
 async function dexScreen() {
   const el = document.createElement('div'); el.className = 'layer dex show'; $('#screen').appendChild(el);
@@ -223,7 +223,7 @@ async function dexScreen() {
     let list = '';
     for (let i = start; i < start + per; i++) {
       const x = WORDS[i]; const c = S.caught[x.key], s = S.seen[x.key];
-      list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(3, '0')} ${c ? '◆' : s ? '◇' : ' '} ${c || s ? esc(x.name) : '-----'}</div>`;
+      list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(3, '0')} ${c ? '◆' : s ? '◇' : ' '} ${c || s ? esc(x.word) : '-----'}</div>`;
     }
     el.innerHTML = `<div class="box dx"><div class="dx-h">LENGUADEX <span>◆${caughtCount()} ◇${Object.keys(S.seen).length} / ${WORDS.length}</span></div>${dexEntryHtml(w)}<div class="dx-l">${list}</div><div class="dx-f">↑↓ move · ←→ page · A: add to team · B: back</div></div>`;
   };
@@ -254,7 +254,7 @@ async function dexScreen() {
 }
 async function teamScreen(inBattle) {
   while (true) {
-    const items = S.team.map((m, i) => ({ html: `<span class="tm">${monImg(monW(m), 'tiny')}<span>${esc(monW(m).name)}<br><small>Lv${m.lvl} ${hpBar(m, maxHp(m.lvl))} ${m.hp}/${maxHp(m.lvl)}</small></span></span>` }));
+    const items = S.team.map((m, i) => ({ html: `<span class="tm">${monImg(monW(m), 'tiny')}<span>${esc(monW(m).name)} <small>${esc(monW(m).word)}</small><br><small>Lv${m.lvl} ${hpBar(m, maxHp(m.lvl))} ${m.hp}/${maxHp(m.lvl)}</small></span></span>` }));
     const r = await choose(items, { cls: 'team' });
     if (r < 0) return null;
     const m = S.team[r], w = monW(m);

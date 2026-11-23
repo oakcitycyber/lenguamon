@@ -194,3 +194,10 @@ button { font: inherit; cursor: pointer; }
 .b-info .lv .fs { font-size: 1em; margin-left: .3em; }
 #b-foe.hidename .nm, #b-foe.hidename .lv .fs { visibility: hidden; }
 #b-foe.hidename .nm { visibility: visible; color: transparent; text-shadow: 0 0 calc(var(--u) * 2) #1c2234; }
+#battle.lair .b-bg { background:
+  radial-gradient(ellipse calc(var(--u) * 34) calc(var(--u) * 7) at calc(var(--u) * 120) calc(var(--u) * 50), #3a3a48 98%, transparent 100%),
+  radial-gradient(ellipse calc(var(--u) * 38) calc(var(--u) * 8) at calc(var(--u) * 38) calc(var(--u) * 95), #3a3a48 98%, transparent 100%),
+  linear-gradient(90deg, transparent 0 calc(var(--u) * 6), #1e4a58 calc(var(--u) * 6) calc(var(--u) * 30), transparent calc(var(--u) * 30)) 0 calc(var(--u) * 10) / 100% calc(var(--u) * 16) no-repeat,
+  linear-gradient(#141420, #22222e 70%, #2a2a36); }
+#battle.lair .b-info { color: #f0e8f0; border-color: #c8c0d0; }
+#battle.lair .b-info .lv small { color: #b8b0c8; }

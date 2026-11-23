@@ -4,7 +4,7 @@ function nextGoal() {
   if (!S.flags.starter) return 'Visit Professor Haydeh at the school.';
   if (!S.flags.b1) return `Catch at least ${BOSSES.b1.need} words on the ${ROUTE_NAMES[1]} (you have ${caughtInRoute(1)}), then get past the BASIJ CHECKPOINT on the way to Isfahan.`;
   if (!S.flags.b2) return `Catch at least ${BOSSES.b2.need} words in ${ROUTE_NAMES[2]} (you have ${caughtInRoute(2)}), then get past the IRGC COMMANDER on the road to Shiraz.`;
-  if (!S.flags.b3) return `Catch at least ${BOSSES.b3.need} words on the ${ROUTE_NAMES[3]} (you have ${caughtInRoute(3)}), then find SHIRIN at the tomb of Hafez in Shiraz.`;
+  if (!S.flags.b3) return `Catch at least ${BOSSES.b3.need} words on the ${ROUTE_NAMES[3]} (you have ${caughtInRoute(3)}), then defeat THE CENSOR at the tomb of Hafez in Shiraz.`;
   return `You beat the game! Keep filling your Lenguadex: ${caughtCount()} / ${WORDS.length}.`;
 }
 async function healScene(who) {
@@ -69,9 +69,12 @@ npc('o', { look: 'omid', dir: 'left', talk: async () => {
 npc('a', { look: 'parisa', dir: 'left', talk: async () => {
   await say([T('PARISA', `${F('هوا چطوره؟', 'hava chetore?')} means "how's the weather?"`), `Today it's ${F('آفتابی', 'aftabi')}: sunny! Shirin loves to talk about the weather.`]);
 } });
-npc('3', { look: 'shirin', talk: async () => {
-  if (S.flags.b3) { await say(T('SHIRIN', `${F('سلام', 'salam')}, ${nm()}! ${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}! Go tell Professor Haydeh!`)); return; }
+npc('3', { look: 'censor', hidden: () => !!S.flags.b3, talk: async () => {
   await gateBoss('b3');
+} });
+npc('l', { look: 'shirin', dir: 'left', talk: async () => {
+  if (S.flags.b3) { await say([T('SHIRIN', `${F('مرسی', 'merci')}! ${F('دمت گرم', 'damet garm')}! The tomb of Hafez is free again.`), `${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}: your Persian got really good! Go tell Professor Haydeh!`]); return; }
+  await say([T('SHIRIN', `${F('سلام', 'salam')}. I am Shirin. I look after the tomb of Hafez.`), 'THE CENSOR has taken it over and banned every word! He even banned poetry!', 'Only someone who can hold a real conversation in Persian can beat him. Please, try!']);
 } });
 
 async function gateBoss(id) {
@@ -90,7 +93,7 @@ async function gateBoss(id) {
   SND.fx('badge');
   await say([`${esc(S.name)} earned the ${B(['', 'YAZD', 'ISFAHAN', 'SHIRAZ'][+id[1]] + ' KASHI BADGE')}!`, `You found 5 DAFTARS, and your Lenguamon were healed.`]);
   writeSave();
-  if (id === 'b3') await say(T(name, `Now go back to Professor Haydeh. She will be so proud of you! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}!`));
+  if (id === 'b3') await say(T('SHIRIN', `You did it! Now go back to Professor Haydeh. She will be so proud of you! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}!`));
 }
 
 async function starterScene() {
@@ -98,16 +101,16 @@ async function starterScene() {
   await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
   const p = $('#portrait'); p.innerHTML = monImg(hello, 'big'); p.classList.add('show');
   SND.fx('caught');
-  await say([`${B(hello.name)} ${W(hello)}! It means "hello".`, `${esc(S.name)} received ${B(hello.name)}, a ${esc(speciesOf(hello).en)}!`]);
+  await say([`A little ${B('HOUSE MOUSE')}! Its Persian name, ${F('موش', 'moosh')}, is on its collar.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received the ${B('HOUSE MOUSE')}!`]);
   p.classList.remove('show');
   S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([
-    T('HAYDEH', 'Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz. Each one is an animal of Iran, named after the Persian word it teaches.'),
-    'When you battle, your attacks are quiz questions. You get 4 choices, and you TYPE the right answer.',
+    T('HAYDEH', 'Wild Lenguamon live in the brush along the road north to Isfahan and Shiraz. Each one is an animal of Iran, with its Persian name on its collar, and each one carries a secret word.'),
+    "A battle starts straight away with a quiz about the wild Lenguamon's word. You get 4 choices, and you TYPE the right answer.",
     'Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!',
     `Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`,
     'Long words and phrases are higher level and tougher. Short words are a good place to start.',
-    'On the way you will meet a Basij checkpoint, an IRGC commander, and finally Shirin in Shiraz. Each one tests you with a real conversation. Get past all three and you can hold a beginner conversation in Persian!',
+    'On the way you will meet a Basij checkpoint, an IRGC commander, and finally THE CENSOR, who has seized the tomb of Hafez in Shiraz. Each one tests you with a real conversation. Beat all three and you can hold a beginner conversation in Persian!',
     `One more thing: if you stop playing for 48 hours, your notebook ink fades and the journey starts over. Practice a little every day!`,
     T('HAYDEH', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`),
   ]);
@@ -118,7 +121,7 @@ async function endingScene() {
   SND.music('end');
   await say([
     T('HAYDEH', `${nm()}! Three KASHI BADGES! ${F('آفرین', 'afarin')}!`),
-    'You talked your way past the Basij checkpoint and the IRGC commander, and chatted with Shirin at the tomb of Hafez, all in Persian.',
+    'You talked your way past the Basij checkpoint and the IRGC commander, and you out-talked THE CENSOR at the tomb of Hafez, all in Persian.',
     'You can now hold a beginner conversation: greetings, names, where you are from, numbers, family, time, food, feelings, and the weather.',
     `${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`,
   ]);

@@ -164,6 +164,7 @@ const LOOKS = {
   parisa: { skin: '#f4c8a0', scarf: '#58a848', scarf2: '#88d070', top: '#f0e8d8', top2: '#c8c0a8', legs: '#3a4060' },
   basij: { skin: '#e8b890', hair: '#1a1410', top: '#8a8a58', top2: '#6a6a40', legs: '#4a4a38', stache: true, beard: true, kef: true },
   irgc: { skin: '#e8b890', hair: '#2a1a12', top: '#4b5a2e', top2: '#36421f', legs: '#36421f', stache: true, beard: true, cap: '#3d4a25' },
+  censor: { skin: '#d8a888', hair: '#7a7a88', top: '#5a1828', top2: '#2a0c14', legs: '#1a1a1a', stache: true, cyber: true },
   shirin: { skin: '#f4c8a0', scarf: '#e05888', scarf2: '#ff90b8', top: '#30a8a0', top2: '#187870', legs: '#303048', flower: true },
 };
 function drawChar(ctx, px, py, L, dir, step) {
@@ -202,6 +203,7 @@ function drawChar(ctx, px, py, L, dir, step) {
   }
   if (L.kef) { rr(4, 8 + s, 8, 2, '#f4f0e4'); P(ctx, [px + 5, py + 8 + s, px + 7, py + 9 + s, px + 9, py + 8 + s, px + 11, py + 9 + s], '#1a1a1a'); }
   if (L.cap) { rr(3, top - 2, 10, 4, o); rr(4, top - 1, 8, 2, L.cap); if (dir === 'down') { rr(3, top + 1, 10, 1, o); P(ctx, [px + 7, py + top - 1, px + 8, py + top - 1], C.gold); } }
+  if (L.cyber && dir === 'down') { rr(9, top + 4, 1, 1, '#ff2040'); rr(8, top + 3, 3, 1, '#4a4a58'); }
   if (L.flower) { rr(11, top - 1, 2, 2, '#fff070'); rr(12, top - 2, 1, 1, C.fruit2); }
 }
 

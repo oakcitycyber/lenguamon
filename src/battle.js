@@ -72,7 +72,7 @@ function bDraw() {
   const fw = f.w, mw = m ? monW(m) : null;
   $('#b-foe').innerHTML = BT.boss
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
-    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(fw.fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
+    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
   $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe');
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
@@ -101,6 +101,7 @@ function reviewWord(except) {
 
 async function battleIntro(music) {
   SND.music(music); SND.fx('encounter');
+  $('#battle').classList.toggle('lair', !!(BT.boss && BT.boss.lair));
   await flash(3); await fade(true, 150);
   bShow(true); bDraw(); hideText();
   await fade(false, 150);
@@ -135,11 +136,11 @@ async function blackout() {
 async function foeTurn(lastOk, lastQ) {
   const f = BT.foe, m = BT.me, fw = f.w;
   const name = BT.boss ? BT.boss.name : `Wild ${fw.name}`;
-  let hit = lastOk ? rand() < 0.35 : true;
+  let hit = lastOk ? rand() < (BT.boss ? 0.25 : 0.35) : true;
   let move = lastQ && !lastOk ? lastQ.answerHtml : BT.boss ? 'a rapid-fire question' : W(fw);
   await say(`${esc(name)} used ${move}!`);
   if (!hit) { SND.fx('miss'); await say(`${esc(name)}'s attack missed!`); return true; }
-  const dmg = dmgRoll((3 + (BT.boss ? BT.boss.lvl : f.lvl) * 0.7) * (lastOk ? 0.7 : 1));
+  const dmg = dmgRoll(BT.boss ? (3 + BT.boss.lvl * 0.5) * (lastOk ? 0.5 : 1) : (3 + f.lvl * 0.7) * (lastOk ? 0.7 : 1));
   SND.fx('hit'); await anim('#b-me-spr', 'hurt', 450);
   m.hp = Math.max(0, m.hp - dmg); bDraw();
   if (m.hp <= 0) return handleFaint();
@@ -154,23 +155,25 @@ async function wildEncounter(route) {
   BT.foe = { w, lvl: w.level, max: maxHp(w.level), hp: maxHp(w.level) }; BT.me = lead(); BT.boss = null;
   await battleIntro('battle');
   await say(`A wild ${B(w.name)} appeared!`);
-  if (firstTime) await say([`NEW WORD! ${W(w)}`, `${B(w.name)} means "${esc(w.en)}".<br>(This Lenguamon is a ${esc(speciesOf(w).en)}: ${F(speciesOf(w).fa, '')})`]);
-  else if (S.caught[w.key]) await say(`(${W(w)} is already in your Lenguadex.)`);
-  await say(`Go! ${B(monW(BT.me).name)}!`);
-  let menuIdx = 0;
+  await say(`Go! ${B(monW(BT.me).name)}! Show what you know!`);
+  let menuIdx = 0, first = true;
   while (true) {
     bDraw();
-    await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
-    const r = await choose(['FIGHT', `DAFTAR x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
-    hideText(); menuIdx = r;
+    let r = 0;
+    if (!first) {
+      await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
+      r = await choose(['FIGHT', `DAFTAR x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
+      hideText(); menuIdx = r;
+    }
     if (r === 0) {
-      // the attack is a typed quiz: the wild word (in Persian) or a review word
-      const rv = rand() < 0.4 ? reviewWord(w) : null;
+      // the attack is a typed quiz: the wild Lenguamon's own word, or sometimes a review word
+      const rv = !first && rand() < 0.35 ? reviewWord(w) : null;
+      first = false;
       const qw = rv || w;
       const st = S.stats[qw.key] || [0, 0];
       const dir = st[0] === 0 ? 'fa2en' : (rand() < 0.5 ? 'en2fa' : 'fa2en');
       const q = makeQuestion(qw, dir);
-      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`, { hideFoe: qw === w && dir === 'en2fa' });
+      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
       stat(qw, res.ok);
       if (res.ok) {
         const crit = res.ms < 5000;
@@ -181,7 +184,7 @@ async function wildEncounter(route) {
         if (crit) await say('Quick answer! A critical hit!');
         if (BT.foe.hp <= 0) {
           SND.fx('faint'); await anim('#b-foe-spr', 'faint', 600);
-          await say(`Wild ${esc(w.name)} fainted!`);
+          await say([`Wild ${esc(w.name)} fainted!`, `It was carrying the word ${W(w)} = "${esc(w.en0)}".`]);
           await gainXp(BT.me, 4 + w.level * 3); break;
         }
       } else {
@@ -193,7 +196,7 @@ async function wildEncounter(route) {
       S.daftar--;
       await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
-      const res = await quiz(q, 'Write it in your DAFTAR', { hideFoe: true });
+      const res = await quiz(q, 'Write it in your DAFTAR');
       stat(w, res.ok);
       if (!res.ok) {
         await say([`The ink smudged! The word slipped off the page.`, `The answer was ${q.answerHtml}.`]);
@@ -206,7 +209,7 @@ async function wildEncounter(route) {
       for (let i = 0; i < shakes; i++) { SND.fx('shake'); await anim('#b-foe-spr', 'shake', 500); }
       if (shakes === 3) {
         SND.fx('caught'); S.caught[w.key] = true;
-        await say(`Gotcha! ${B(w.name)} ${W(w)} was written into your Lenguadex!`);
+        await say([`Gotcha! The wild ${B(w.name)} was caught!`, `Its word ${W(w)} = "${esc(w.en0)}" was written into your Lenguadex!`]);
         if (S.team.length < 6 && !S.team.some(m => m.key === w.key)) { S.team.push(makeMon(w)); await say(`${esc(w.name)} joined your team!`); }
         else await say(`${esc(w.name)} was stored in your Lenguadex. (Swap it in from the Lenguadex menu.)`);
         await gainXp(BT.me, 2 + w.level * 2);
@@ -266,22 +269,22 @@ const BOSSES = {
     beaten: `Hmph. ${F('برو', 'boro')}! Go! Shiraz is north. They say Shirin only speaks Persian.`,
   },
   b3: {
-    name: 'SHIRIN', look: 'shirin', lvl: 24, route: 3, need: 12, showEn: false, optEn: false,
-    title: 'keeper of the tomb of Hafez',
-    intro: [`${F('سلام', 'salam')}! I am SHIRIN, keeper of the tomb of Hafez.`, 'Sit with me and talk, only in Persian.'],
+    name: 'THE CENSOR', look: 'censor', lvl: 26, route: 3, need: 12, showEn: false, optEn: false, lair: true,
+    title: 'the villain who seized the tomb of Hafez',
+    intro: [`So. You are the one collecting words. I am THE CENSOR ${F('سانسورچی', 'sansurchi')}.`, 'I have seized the tomb of Hafez and banned every word in Iran. Poems, jokes, greetings... all forbidden!', 'If you can still hold a conversation, prove it. In Persian. No English hints!'],
     lines: [
-      ['سلام! حالت چطوره؟', 'salam! halet chetore?', 'Hello! How are you doing?', 'خیلی خوبم، مرسی. تو چطوری؟', 'kheyli khubam, merci. to chetori?', "I'm very good, thanks. How are you?"],
-      ['من کمی خسته‌ام.', 'man kami khasteh-am.', "I'm a little tired.", 'خسته نباشی!', 'khasteh nabashi!', 'Good work! (Don\'t be tired!)'],
+      ['سلام. حالت چطوره؟', 'salam. halet chetore?', 'Hello. How are you doing?', 'خیلی خوبم، مرسی. تو چطوری؟', 'kheyli khubam, merci. to chetori?', "I'm very good, thanks. How are you?"],
+      ['فارسی بلد نیستی!', 'farsi balad nisti!', "You don't know Persian!", 'چرا، فارسی بلدم!', 'chera, farsi baladam!', 'Yes I do, I know Persian!'],
       ['گرسنه‌ای؟', 'gorosneh-i?', 'Are you hungry?', 'بله، خیلی گرسنه‌ام', 'baleh, kheyli gorosneh-am', "Yes, I'm very hungry"],
       ['چه غذایی دوست داری؟', 'che ghazayi doost dari?', 'What food do you like?', 'کباب کوبیده دوست دارم', 'kabab koobideh doost daram', 'I like kabab koobideh'],
-      ['بفرمایید، نوش جان!', 'befarmaid, noosh-e jan!', 'Here you go, enjoy!', 'مرسی، خیلی خوشمزه است!', 'merci, kheyli khoshmazeh ast!', "Thanks, it's very delicious!"],
+      ['غذا ممنوع است!', 'ghaza mamnu ast!', 'Food is forbidden!', 'چرا؟ من گرسنه‌ام!', 'chera? man gorosneh-am!', "Why? I'm hungry!"],
       ['هوا چطوره؟', 'hava chetore?', "How's the weather?", 'هوا آفتابی و گرمه', 'hava aftabi va garme', "It's sunny and warm"],
       ['امروز سر کار رفتی؟', 'emrooz sar-e kaar rafti?', 'Did you go to work today?', 'بله، صبح سر کار رفتم', 'baleh, sobh sar-e kaar raftam', 'Yes, I went to work this morning'],
-      ['چشم‌هات چه رنگیه؟', 'cheshmat che rangi-e?', 'What color are your eyes?', 'چشم‌های من قهوه‌ای است', 'cheshm-haye man ghahvei ast', 'My eyes are brown'],
-      ['فارسیت خیلی خوب شده! دمت گرم!', 'farsit kheyli khub shode! damet garm!', 'Your Persian got really good! Well done!', 'خیلی ممنون، من هم خوشحالم', 'kheyli mamnoon, man ham khoshhalam', "Thank you so much, I'm happy too"],
-      ['خداحافظ، موفق باشی!', 'khodahafez, movafagh bashi!', 'Goodbye, good luck!', 'مرسی، خداحافظ!', 'merci, khodahafez!', 'Thanks, goodbye!'],
+      ['چشم‌هات چه رنگیه؟ (his red eye scans you)', 'cheshmat che rangi-e?', 'What color are your eyes?', 'چشم‌های من قهوه‌ای است', 'cheshm-haye man ghahvei ast', 'My eyes are brown'],
+      ['کلمه‌ها ممنوع هستند!', 'kalameh-ha mamnu hastand!', 'Words are forbidden!', 'نه! من فارسی حرف می‌زنم!', 'na! man farsi harf mizanam!', 'No! I speak Persian!'],
+      ['نه! نه! خداحافظ!', 'na! na! khodahafez!', 'No! No! Goodbye!', 'خداحافظ، سانسورچی!', 'khodahafez, sansurchi!', 'Goodbye, Censor!'],
     ],
-    beaten: `${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}! Go tell Professor Haydeh!`,
+    beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} NOOO! (THE CENSOR fled. The words of Hafez are free again!)`,
   },
 };
 function bossReplyWord(b, line) {
