@@ -191,8 +191,18 @@ async function newGameIntro() {
   const g = await choose(en ? [{ html: `BOY ${PF('پسر')}` }, { html: `GIRL ${PF('دختر')}` }] : [{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
   pp.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`;
   await say(BI('And what is your name?', 'و اسمت چیست؟'), { keep: true });
-  const name = await textInput('YOUR NAME?', 16); hideText();
+  const name = await textInput('YOUR NAME?', 20); hideText();
   S = newState(name); S.gender = g === 1 ? 'girl' : 'boy';
+  if (isGeorgeName(name)) {
+    setupCyrus(); S.george = true; try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
+    SND.fx('badge');
+    await say([`GEORGE WASHINGTON?! ${PF('جورج واشنگتن')}!`,
+      BI('Mr. President! The first President of the United States, here in my school!', 'آقای رئیس‌جمهور! نخستین رئیس‌جمهور ایالات متحده، اینجا در مدرسه‌ی من!'),
+      BI('The whole country is yours to explore: every road is open, every gate is unlocked, and every Lenguamon is already in your Lenguadex.', 'همه‌ی کشور برای گشت‌وگذار شماست: همه‌ی جاده‌ها و دروازه‌ها باز است و همه‌ی لنگوامون‌ها از قبل در لنگودکس شما هستند.'),
+      BI('Wild Lenguamon will leave you in peace (you can change that in OPTIONS). Open the MAP from the START menu to travel to any city.', 'لنگوامون‌های وحشی مزاحمتان نمی‌شوند (می‌توانید این را در OPTIONS عوض کنید). از منوی START نقشه را باز کنید تا به هر شهری سفر کنید.'),
+      BI('Read the signs, drink coffee at the cafés, and collect the old sayings from the elders. Enjoy your trip, Mr. President!', 'تابلوها را بخوانید، در کافه‌ها قهوه بنوشید و ضرب‌المثل‌های قدیمی را از سالمندان یاد بگیرید. سفر خوش بگذره، آقای رئیس‌جمهور!')]);
+    p.classList.remove('show'); p.innerHTML = ''; S.map = 'ushouse'; S.x = 5; S.y = 5; S.dir = 'up'; return;
+  }
   if (isCyrusName(name)) {
     setupCyrus(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
     SND.fx('badge');

@@ -362,7 +362,7 @@ async function startMenu() {
     else if (r === 3) await sayingsScreen();
     else if (r === 4 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
     else if (r === 4) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
-    else if (r === 5) await say([`${B(S.name)}${S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
+    else if (r === 5) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
       [1, 2, 3].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       [4, 5, 6].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       `${LANG === 'en' ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS: ${sayCount()} / ${sayList().length}`]);

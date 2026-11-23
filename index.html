@@ -3754,7 +3754,7 @@ async function startMenu() {
     else if (r === 3) await sayingsScreen();
     else if (r === 4 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
     else if (r === 4) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
-    else if (r === 5) await say([`${B(S.name)}${S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
+    else if (r === 5) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
       [1, 2, 3].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       [4, 5, 6].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       `${LANG === 'en' ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS: ${sayCount()} / ${sayList().length}`]);
@@ -4742,8 +4742,18 @@ async function newGameIntro() {
   const g = await choose(en ? [{ html: `BOY ${PF('پسر')}` }, { html: `GIRL ${PF('دختر')}` }] : [{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
   pp.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`;
   await say(BI('And what is your name?', 'و اسمت چیست؟'), { keep: true });
-  const name = await textInput('YOUR NAME?', 16); hideText();
+  const name = await textInput('YOUR NAME?', 20); hideText();
   S = newState(name); S.gender = g === 1 ? 'girl' : 'boy';
+  if (isGeorgeName(name)) {
+    setupCyrus(); S.george = true; try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
+    SND.fx('badge');
+    await say([`GEORGE WASHINGTON?! ${PF('جورج واشنگتن')}!`,
+      BI('Mr. President! The first President of the United States, here in my school!', 'آقای رئیس‌جمهور! نخستین رئیس‌جمهور ایالات متحده، اینجا در مدرسه‌ی من!'),
+      BI('The whole country is yours to explore: every road is open, every gate is unlocked, and every Lenguamon is already in your Lenguadex.', 'همه‌ی کشور برای گشت‌وگذار شماست: همه‌ی جاده‌ها و دروازه‌ها باز است و همه‌ی لنگوامون‌ها از قبل در لنگودکس شما هستند.'),
+      BI('Wild Lenguamon will leave you in peace (you can change that in OPTIONS). Open the MAP from the START menu to travel to any city.', 'لنگوامون‌های وحشی مزاحمتان نمی‌شوند (می‌توانید این را در OPTIONS عوض کنید). از منوی START نقشه را باز کنید تا به هر شهری سفر کنید.'),
+      BI('Read the signs, drink coffee at the cafés, and collect the old sayings from the elders. Enjoy your trip, Mr. President!', 'تابلوها را بخوانید، در کافه‌ها قهوه بنوشید و ضرب‌المثل‌های قدیمی را از سالمندان یاد بگیرید. سفر خوش بگذره، آقای رئیس‌جمهور!')]);
+    p.classList.remove('show'); p.innerHTML = ''; S.map = 'ushouse'; S.x = 5; S.y = 5; S.dir = 'up'; return;
+  }
   if (isCyrusName(name)) {
     setupCyrus(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
     SND.fx('badge');
@@ -5378,7 +5388,7 @@ async function mapScreen() {
   SND.fx('select');
   const r = await new Promise(res => { const h = b => { if (b === 'b' || b === 'start' || (b === 'a' && !S.cyrus)) { popH(h); res(null); } else if (b === 'a') { popH(h); res('travel'); } }; pushH(h); });
   if (r === 'travel') {
-    await say('Where would Your Majesty like to go?', { keep: true });
+    await say(S.george ? BI('Where would you like to go, Mr. President?', 'کجا تشریف می‌برید، آقای رئیس‌جمهور؟') : 'Where would Your Majesty like to go?', { keep: true });
     const DL = LANG === 'en' ? DESTS_EN : DESTS;
     const i = await choose(DL.map(d => d[0]), { cls: 'travel' }); hideText();
     el.remove();
@@ -5390,6 +5400,8 @@ async function mapScreen() {
 
 // ---- Cyrus the Great: name your hero this to unlock every road, word and Lenguamon ----
 const isCyrusName = n => norm(n).replace(/\s/g, '') === 'cyrusthegreat';
+// the English game's version: George Washington unlocks all of America
+const isGeorgeName = n => LANG === 'en' && norm(n).replace(/\s/g, '') === 'georgewashington';
 function evolvedMon(w, lvl) {
   const m = { key: w.key, lvl, xp: 0, hp: maxHp(lvl) };
   for (let i = 0; i < 2 && EVO[m.key]; i++) { m.base = m.base || m.key; m.key = EVO[m.key]; m.stage = (m.stage || 0) + 1; }

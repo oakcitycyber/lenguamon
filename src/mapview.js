@@ -75,7 +75,7 @@ async function mapScreen() {
   SND.fx('select');
   const r = await new Promise(res => { const h = b => { if (b === 'b' || b === 'start' || (b === 'a' && !S.cyrus)) { popH(h); res(null); } else if (b === 'a') { popH(h); res('travel'); } }; pushH(h); });
   if (r === 'travel') {
-    await say('Where would Your Majesty like to go?', { keep: true });
+    await say(S.george ? BI('Where would you like to go, Mr. President?', 'کجا تشریف می‌برید، آقای رئیس‌جمهور؟') : 'Where would Your Majesty like to go?', { keep: true });
     const DL = LANG === 'en' ? DESTS_EN : DESTS;
     const i = await choose(DL.map(d => d[0]), { cls: 'travel' }); hideText();
     el.remove();
@@ -87,6 +87,8 @@ async function mapScreen() {
 
 // ---- Cyrus the Great: name your hero this to unlock every road, word and Lenguamon ----
 const isCyrusName = n => norm(n).replace(/\s/g, '') === 'cyrusthegreat';
+// the English game's version: George Washington unlocks all of America
+const isGeorgeName = n => LANG === 'en' && norm(n).replace(/\s/g, '') === 'georgewashington';
 function evolvedMon(w, lvl) {
   const m = { key: w.key, lvl, xp: 0, hp: maxHp(lvl) };
   for (let i = 0; i < 2 && EVO[m.key]; i++) { m.base = m.base || m.key; m.key = EVO[m.key]; m.stage = (m.stage || 0) + 1; }
