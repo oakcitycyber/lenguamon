@@ -6,7 +6,7 @@
 <title>Lenguamon: Persian Edition</title>
 <meta name="theme-color" content="#2a1f3d">
 <style>
-:root { --u: 3px; --ink: #1c2234; --paper: #fbf6e8; --tq: #1a8f8c; --gold: #e0b040; --navy: #233a7a; }
+:root { --u: 3px; --ink: #1c2234; --paper: #efe4c8; --tq: #1a8f8c; --gold: #e0b040; --navy: #233a7a; }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body {
@@ -118,9 +118,11 @@ button { font: inherit; cursor: pointer; }
 /* battle */
 #battle { z-index: 10; }
 .b-bg { position: absolute; inset: 0; background:
-  radial-gradient(ellipse calc(var(--u) * 34) calc(var(--u) * 7) at calc(var(--u) * 120) calc(var(--u) * 50), #a8d070 98%, transparent 100%),
-  radial-gradient(ellipse calc(var(--u) * 38) calc(var(--u) * 8) at calc(var(--u) * 38) calc(var(--u) * 95), #a8d070 98%, transparent 100%),
-  linear-gradient(#f8f0d8 0, #fdf8ec 60%, #f0e4c0 100%); }
+  var(--grain),
+  radial-gradient(ellipse calc(var(--u) * 34) calc(var(--u) * 7) at calc(var(--u) * 120) calc(var(--u) * 50), #9cb66a 92%, transparent 100%),
+  radial-gradient(ellipse calc(var(--u) * 38) calc(var(--u) * 8) at calc(var(--u) * 38) calc(var(--u) * 95), #9cb66a 92%, transparent 100%),
+  radial-gradient(ellipse at 50% 40%, transparent 50%, rgba(120,80,40,.18) 100%),
+  linear-gradient(#e9dcbc 0, #f1e7cf 55%, #dccaa0 100%); }
 .b-info { position: absolute; line-height: 1.2; }
 .b-info.foe { left: calc(var(--u) * 5); top: calc(var(--u) * 5); width: calc(var(--u) * 80); border-left: calc(var(--u) * 1) solid var(--ink); border-bottom: calc(var(--u) * 1) solid var(--ink); padding: 0 0 calc(var(--u) * 1.5) calc(var(--u) * 3); border-bottom-left-radius: calc(var(--u) * 2); }
 .b-info.me { right: calc(var(--u) * 4); top: calc(var(--u) * 60); width: calc(var(--u) * 80); border-right: calc(var(--u) * 1) solid var(--ink); border-bottom: calc(var(--u) * 1) solid var(--ink); padding: 0 calc(var(--u) * 3) calc(var(--u) * 1.5) 0; text-align: right; border-bottom-right-radius: calc(var(--u) * 2); }
@@ -244,6 +246,14 @@ button { font: inherit; cursor: pointer; }
 /* English species name under each monster */
 .mon-tag { position: absolute; left: 50%; bottom: calc(var(--u) * -1); transform: translateX(-50%); white-space: nowrap; background: var(--navy); color: #fff; font-family: Verdana, Arial, sans-serif; font-weight: 700; font-size: calc(var(--u) * 3.2); letter-spacing: .02em; padding: calc(var(--u) * .5) calc(var(--u) * 2); border-radius: calc(var(--u) * 3); border: calc(var(--u) * .5) solid var(--ink); z-index: 2; }
 #portrait .mon-tag { position: static; display: table; transform: none; margin: calc(var(--u) * 2) auto 0; font-size: calc(var(--u) * 4.2); }
+
+/* a lived-in finish: warmer grade, film grain, vignette, worn paper */
+#screen { filter: sepia(.12) saturate(.9) contrast(1.04); }
+#screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 60;
+  background: var(--grain), radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(35,18,6,.34) 100%); }
+.box { background-color: var(--paper); background-image: var(--grain), radial-gradient(ellipse at 50% 40%, transparent 60%, rgba(140,100,50,.14) 100%);
+  border-color: #283658; box-shadow: inset 0 0 0 calc(var(--u) * .7) #c9a24a, inset 0 0 0 calc(var(--u) * 1.4) var(--paper), 0 calc(var(--u) * .8) 0 rgba(0,0,0,.35); }
+#bezel { background-image: var(--grain), linear-gradient(#2a9a2a, #1e7a1e); }
 
 </style>
 </head>
@@ -1086,6 +1096,7 @@ function renderMap(m) {
     ctx.save(); ctx.translate(x * TS, y * TS);
     if (t.g) t.g(ctx, x, y, nb, m);
     if (t.d) t.d(ctx, x, y, nb, m);
+    if (typeof gritTile === 'function') gritTile(ctx, x, y, ch, nb, m);
     ctx.restore();
   }
   return cv;
@@ -1164,10 +1175,16 @@ function drawChar(ctx, px, py, L, dir, step) {
   const HX = 8, HY = 4.6, HR = 3.4;              // head centre and radius
   const la = step === 1 ? -.8 : 0, lb = step === 2 ? -.8 : 0;
   rrect(c, 6.15, 11.4 + la, 1.6, 4.1, .7, L.legs, true, .45); rrect(c, 8.25, 11.4 + lb, 1.6, 4.1, .7, L.legs, true, .45);
+  if (L.kicks) for (const [lx, d] of [[6.15, la], [8.25, lb]]) { rrect(c, lx - .3, 14.35 + d, 2.2, 1.3, .55, '#f2efe6', true, .35); c.fillStyle = L.kicks; c.fillRect(lx + .05, 14.7 + d, 1.5, .35); }
   if (st === 'long' && dir !== 'up') rrect(c, HX - 3.6, HY - .4, 7.2, 7.2, 2.6, hairC, true, .45);
   rrect(c, 5.2, 7.6, 5.6, 4.9, 1.8, L.top, true, .45);
   c.fillStyle = L.top2; c.fillRect(5.6, 11.4, 4.8, .7);
   if (L.coat) { c.fillStyle = L.top2; c.fillRect(7.75, 7.9, .5, 3.4); }
+  if (L.tee) {
+    if (dir === 'down') { c.beginPath(); c.moveTo(7, 7.75); c.lineTo(9, 7.75); c.lineTo(8.7, 11.35); c.lineTo(7.3, 11.35); c.closePath(); c.fillStyle = L.tee; c.fill(); c.strokeStyle = L.top2; c.lineWidth = .4; c.beginPath(); c.moveTo(7, 7.8); c.lineTo(7.3, 11.35); c.moveTo(9, 7.8); c.lineTo(8.7, 11.35); c.stroke();
+      c.fillStyle = L.top2; c.beginPath(); c.moveTo(5.8, 7.7); c.lineTo(7.2, 7.6); c.lineTo(6.6, 9.2); c.closePath(); c.moveTo(10.2, 7.7); c.lineTo(8.8, 7.6); c.lineTo(9.4, 9.2); c.closePath(); c.fill(); }
+    else if (dir === 'left') { c.fillStyle = L.tee; c.fillRect(5.35, 8, .9, 3.3); c.fillStyle = L.top2; c.fillRect(6.2, 7.8, .4, 3.6); }
+  }
   if (L.kef) { rrect(c, 5.3, 7.3, 5.4, 1.6, .7, '#f4f0e4', true, .4); c.fillStyle = '#1a1a1a'; for (let i = 0; i < 4; i++) c.fillRect(5.8 + i * 1.3, 7.7 + (i % 2) * .6, .45, .45); }
   if (dir === 'left') { rrect(c, 8.5, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, 9.2, 11.9, .6, .6, L.skin); }
   else { for (const ax of [4.3, 10.3]) { rrect(c, ax, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, ax + .7, 11.9, .6, .6, L.skin); } }
@@ -1177,6 +1194,7 @@ function drawChar(ctx, px, py, L, dir, step) {
     el(c, HX, HY - .2, HR + .15, HR + .1, st === 'bald' ? L.skin : hairC, O, .45);
     if (st === 'long') rrect(c, L0, HY, R0 - L0, 6.2, 2.4, hairC, true, .45);
     if (st === 'bun') el(c, HX, T0 + .2, 1.5, 1.3, hairC, O, .45);
+    if (L.shades) { c.strokeStyle = '#15161c'; c.lineWidth = .45; c.beginPath(); c.moveTo(L0 + .2, T0 + 2.6); c.quadraticCurveTo(HX, T0 + 1.2, R0 - .2, T0 + 2.6); c.strokeStyle = '#d4bd78'; c.stroke(); }
   } else if (dir === 'down') {
     if (st !== 'bald') {
       c.beginPath(); c.moveTo(L0, HY + .8); c.bezierCurveTo(L0 - .2, T0, R0 + .2, T0, R0, HY + .8);
@@ -1184,6 +1202,8 @@ function drawChar(ctx, px, py, L, dir, step) {
       c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
       if (st === 'long') { rrect(c, L0 - .3, HY - .8, 1.4, 6, .7, hairC, true, .4); rrect(c, R0 - 1.1, HY - .8, 1.4, 6, .7, hairC, true, .4); }
       if (st === 'bun') el(c, HX, T0 + .1, 1.5, 1.3, hairC, O, .45);
+      if (st === 'swoop') { c.beginPath(); c.moveTo(HX - 2.8, T0 + 1.9); c.quadraticCurveTo(HX - .6, T0 - 1.9, HX + 3.4, T0 + .2); c.quadraticCurveTo(HX + 1.4, T0 + .7, HX + .6, T0 + 2.4); c.quadraticCurveTo(HX - 1, T0 + 1.2, HX - 2.8, T0 + 1.9); c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke(); }
+      if (L.shades) { for (const sx of [-1.25, 1.25]) el(c, HX + sx, T0 + 2.1, 1, .62, '#2b3d50', '#d4bd78', .35); c.strokeStyle = '#d4bd78'; c.lineWidth = .4; c.beginPath(); c.moveTo(HX - .3, T0 + 2); c.lineTo(HX + .3, T0 + 2); c.stroke(); el(c, HX - 1.5, T0 + 1.9, .3, .15, 'rgba(255,255,255,.55)'); }
     } else { c.beginPath(); c.arc(HX, HY, HR, Math.PI * 1.1, Math.PI * 1.9); c.strokeStyle = hairC; c.lineWidth = .8; c.stroke(); }
     const ey = HY + .5;
     el(c, HX - 1.35, ey, .45, .58, '#1e1410'); el(c, HX + 1.35, ey, .45, .58, '#1e1410');
@@ -1201,6 +1221,8 @@ function drawChar(ctx, px, py, L, dir, step) {
       c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
       if (st === 'long') rrect(c, HX + 1, HY - .3, 3, 6.4, 1.4, hairC, true, .4);
       if (st === 'bun') el(c, HX + 2.2, T0 + .5, 1.4, 1.2, hairC, O, .45);
+      if (st === 'swoop') { c.beginPath(); c.moveTo(HX + 1.8, T0 + .8); c.quadraticCurveTo(HX - 1, T0 - 1.9, L0 - 1.1, T0 + 1.5); c.quadraticCurveTo(L0 + .6, T0 + 1.5, L0 + .9, HY - .9); c.quadraticCurveTo(HX, T0 + 1.6, HX + 1.8, T0 + .8); c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke(); }
+      if (L.shades) { el(c, HX - 1.7, T0 + 2.1, 1.05, .6, '#2b3d50', '#d4bd78', .35); c.strokeStyle = '#d4bd78'; c.lineWidth = .4; c.beginPath(); c.moveTo(HX - .7, T0 + 2); c.lineTo(HX + 2.2, T0 + 2.6); c.stroke(); }
     }
     const ey = HY + .5;
     el(c, HX - 2.1, ey, .45, .58, '#1e1410'); c.fillStyle = '#fff'; c.fillRect(HX - 2.25, ey - .38, .25, .25);
@@ -1215,6 +1237,7 @@ function drawChar(ctx, px, py, L, dir, step) {
     if (dir === 'down') { rrect(c, L0 - .5, HY - 1, R0 - L0 + 1, 1.1, .5, '#26301a', true, .35); el(c, HX, HY - 2.3, .65, .6, C.gold); }
     if (dir === 'left') rrect(c, L0 - 1.4, HY - 1, 4.2, 1, .5, '#26301a', true, .35);
   }
+  if (L.hoops && dir !== 'up') { c.strokeStyle = C.gold; c.lineWidth = .3; for (const hx of dir === 'down' ? [L0 + .15, R0 - .15] : [HX + 1.6]) { c.beginPath(); c.arc(hx, HY + 2, .55, 0, 7); c.stroke(); } }
   if (L.flower) { const fx = HX + 2.8, fy = T0 + 1.3; for (const [dx, dy] of [[0, -.7], [.7, 0], [0, .7], [-.7, 0]]) el(c, fx + dx, fy + dy, .55, .55, C.fruit2); el(c, fx, fy, .4, .4, '#fff070'); }
   c.restore();
 }
@@ -1281,8 +1304,13 @@ Object.assign(TILE['K'], { d(c, x) {
 
 // ---- looks: no headscarves; new hair styles; girl and boy players ----
 Object.assign(LOOKS, {
-  player: { skin: '#f4c8a0', hair: '#3a2818', hairStyle: 'short', top: '#2858a8', top2: '#183878', legs: '#303848' },
-  playerGirl: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#c83a6a', top2: '#8a1a44', legs: '#303848' },
+  // the hero: worn leather jacket over a tee, dark jeans, sneakers, shades pushed up
+  player: { skin: '#eebf96', hair: '#1e1612', hairStyle: 'swoop', top: '#6a4430', top2: '#3e2618', tee: '#e9e4d8', legs: '#2c3448', kicks: '#b8333a', shades: true },
+  playerGirl: { skin: '#eebf96', hair: '#22160f', hairStyle: 'long', top: '#2e2a2c', top2: '#141214', tee: '#c8913a', legs: '#2c3448', kicks: '#2f7f7a', shades: true, hoops: true },
+  hassan: { skin: '#e8b890', hair: '#a0a0a0', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a4a5a', stache: true },
+  karim: { skin: '#e4b48c', hair: '#8a8a8a', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a5a3a', stache: true },
+  morshed: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', stache: true, beard: true },
+  pahlevan: { skin: '#e0ac80', hair: '#1a120c', top: '#8a2a2a', top2: '#5a1a1a', legs: '#c89a3a', stache: true },
   haydeh: { skin: '#f0c49c', hair: '#6a4030', hairStyle: 'bun', top: '#f0ece0', top2: '#c8c0b0', legs: '#404058', glasses: true, coat: true },
   maman: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#5a8a4a', top2: '#3a6a30', legs: '#3a3040' },
   nasrin: { skin: '#f4c8a0', hair: '#2a1a10', hairStyle: 'bun', top: '#f0d070', top2: '#c8a040', legs: '#404058' },
@@ -1296,6 +1324,94 @@ Object.assign(LOOKS, {
   mahmoud: { skin: '#e0b088', hair: '#e0e0e0', hairStyle: 'bald', top: '#6a5a40', top2: '#4a3a28', legs: '#403020', stache: true, beard: true },
 });
 const playerLook = () => (S && S.gender === 'girl' ? LOOKS.playerGirl : LOOKS.player);
+
+// ---- teahouse and zurkhaneh (traditional gym) tiles ----
+function gymDoor(c, x, y, nb) {
+  doorDraw(c, x, y, nb);
+  rrect(c, 3, 3, 10, 13, 1.2, '#7a2a22', C.woodD, .6); c.fillStyle = '#5a1a14'; c.fillRect(7.6, 3.5, .8, 12.5);
+  el(c, 6.6, 9.5, .45, .45, C.gold); el(c, 9.4, 9.5, .45, .45, C.gold);
+  // two crossed meel clubs over the door
+  for (const s of [-1, 1]) { c.save(); c.translate(8, 2.2); c.rotate(s * .7); c.beginPath(); c.moveTo(-.35, -3); c.lineTo(.35, -3); c.lineTo(1, 1.8); c.quadraticCurveTo(0, 2.6, -1, 1.8); c.closePath(); c.fillStyle = C.woodL; c.fill(); c.strokeStyle = C.woodD; c.lineWidth = .35; c.stroke(); c.restore(); }
+}
+Object.assign(TILE, {
+  '4': { g: gAuto, door: true, d: gymDoor }, '6': { g: gAuto, door: true, d: gymDoor }, '8': { g: gAuto, door: true, d: gymDoor },
+  '5': { g: gAuto, door: true, d: doorDraw }, '7': { g: gAuto, door: true, d: doorDraw },
+  // the gowd: a sunken octagonal pit with a tiled rim
+  '@': { g: gFloor, solid: true, d(c, x, y, nb) {
+    const poly = (ins) => {
+      const l = nb.l ? 0 : ins, r = nb.r ? 16 : 16 - ins, t = nb.u ? 0 : ins, b = nb.d ? 16 : 16 - ins, k = 4 + ins * .4;
+      c.beginPath();
+      if (!nb.u && !nb.l) { c.moveTo(l, t + k); c.lineTo(l + k, t); } else c.moveTo(l, t);
+      if (!nb.u && !nb.r) { c.lineTo(r - k, t); c.lineTo(r, t + k); } else c.lineTo(r, t);
+      if (!nb.d && !nb.r) { c.lineTo(r, b - k); c.lineTo(r - k, b); } else c.lineTo(r, b);
+      if (!nb.d && !nb.l) { c.lineTo(l + k, b); c.lineTo(l, b - k); } else c.lineTo(l, b);
+      c.closePath();
+    };
+    poly(0); c.fillStyle = '#2a5a8a'; c.fill();
+    poly(1.4); c.fillStyle = '#e8d8b0'; c.fill();
+    poly(2.6); c.fillStyle = '#8a6440'; c.fill();
+    const r = rng(x * 31 + y * 7); c.fillStyle = 'rgba(60,36,20,.35)'; for (let i = 0; i < 5; i++) c.fillRect(2 + r() * 12, 2 + r() * 12, .8, .5);
+    if (!nb.u) { c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(0, 2.6, 16, 1.6); }
+  } },
+  // the sardam: raised alcove where the morshed drums (zarb) and rings the bell
+  '%': { g: gFloor, solid: true, d(c, x, y, nb) {
+    R(c, 0, 0, 16, 16, C.wallIn); R(c, 0, 0, 16, 3, C.wallInD);
+    const left = nb.R === '%', ax = left ? 3 : 0, aw = 13;
+    c.beginPath(); c.moveTo(ax, 16); c.lineTo(ax, 7); c.quadraticCurveTo(left ? 16 : 0, -1, left ? 16 : 13, 4); c.lineTo(left ? 16 : 13, 16); c.closePath();
+    c.fillStyle = '#2858a8'; c.fill(); c.strokeStyle = C.gold; c.lineWidth = .6; c.stroke();
+    R(c, 0, 12, 16, 4, C.woodD); R(c, 0, 12, 16, 1, C.woodL);
+    if (left) { // goblet drum
+      c.beginPath(); c.moveTo(6, 6.5); c.lineTo(12, 6.5); c.quadraticCurveTo(11, 10, 9.6, 10.4); c.lineTo(10.4, 12); c.lineTo(7.6, 12); c.lineTo(8.4, 10.4); c.quadraticCurveTo(7, 10, 6, 6.5); c.closePath();
+      c.fillStyle = '#b8742e'; c.fill(); c.strokeStyle = C.out; c.lineWidth = .4; c.stroke(); el(c, 9, 6.5, 3, .8, '#f0e0c0', C.out, .35);
+    } else { // brass bell on a chain
+      c.strokeStyle = C.brassD; c.lineWidth = .4; c.beginPath(); c.moveTo(6.5, 1.5); c.lineTo(6.5, 6); c.stroke();
+      c.beginPath(); c.moveTo(4.4, 10); c.quadraticCurveTo(4.6, 6, 6.5, 6); c.quadraticCurveTo(8.4, 6, 8.6, 10); c.closePath(); c.fillStyle = C.brass; c.fill(); c.strokeStyle = C.brassD; c.stroke(); el(c, 6.5, 10.4, .6, .6, C.brassD);
+    }
+  } },
+  // wall rack of meel clubs
+  '&': { g: gFloor, solid: true, d(c, x) {
+    TILE.w.d(c, x, 0);
+    R(c, 1, 12, 14, 1.2, C.woodD);
+    for (const [cx, h] of [[4, 8.5], [8, 9.5], [12, 8.5]]) { c.beginPath(); c.moveTo(cx - .6, 12 - h); c.lineTo(cx + .6, 12 - h); c.lineTo(cx + 1.7, 11); c.quadraticCurveTo(cx, 12.6, cx - 1.7, 11); c.closePath(); c.fillStyle = x % 2 ? '#a8643a' : '#c07a44'; c.fill(); c.strokeStyle = C.woodD; c.lineWidth = .4; c.stroke(); c.fillStyle = '#7a2a22'; c.fillRect(cx - 1.1, 8.6, 2.2, .7); }
+  } },
+});
+
+// ---- a lived-in look: earthier colors, dust, stains and wear ----
+Object.assign(C, {
+  grass: '#94b265', grass2: '#7c9a50', grassD: '#50783a', grassDD: '#37582c',
+  path: '#d9c497', path2: '#c0a677', sand: '#e0cc9d', sand2: '#c8ad7d',
+  water: '#4f9caf', water2: '#a2d0d6', rim: '#d8cbab', rim2: '#ae9a74',
+  adobe: '#cc9c66', adobe2: '#a47548', adobeL: '#dcb684',
+  cyp: '#36603e', cyp2: '#52824a', cypD: '#213f2a', tree: '#4d7d3e', tree2: '#6f9a50',
+  floor: '#b78655', floorD: '#91653b', wallIn: '#e4d4b3', wallInD: '#c6b08b',
+  dome: '#3c9c98', domeL: '#8ccdc4', kashi: '#2e5a98', white: '#efe8d6',
+});
+const GRIT_SKIP = new Set(['~', 'B', 'U', 'E']);
+function gritTile(c, x, y, ch, nb, m) {
+  if (GRIT_SKIP.has(ch)) return;
+  const r = rng(x * 911 + y * 37 + m.id.length * 101);
+  const wallish = '#hQF^WYI'.includes(ch) || (TILE[ch] && TILE[ch].door);
+  // dust specks and grit
+  for (let i = 0, n = 5 + (r() * 5 | 0); i < n; i++) { c.fillStyle = r() < .7 ? 'rgba(70,45,25,.2)' : 'rgba(255,245,220,.18)'; c.fillRect(r() * 16, r() * 16, .5 + r() * .5, .4 + r() * .4); }
+  // soft blotches so no two tiles look factory-fresh
+  if (r() < .45) { el(c, 2 + r() * 12, 2 + r() * 12, 2 + r() * 3.5, 1.2 + r() * 2, r() < .6 ? 'rgba(80,55,25,.08)' : 'rgba(255,240,200,.08)'); }
+  if (wallish) {
+    // rain streaks and a hairline crack now and then
+    for (let i = 0; i < 2; i++) { const sx = 1 + r() * 14, sy = r() * 6; c.fillStyle = 'rgba(70,40,20,.1)'; c.fillRect(sx, sy, .6, 4 + r() * 8); }
+    if (r() < .3) { c.strokeStyle = 'rgba(60,35,20,.35)'; c.lineWidth = .3; c.beginPath(); let px = 3 + r() * 10, py = 2 + r() * 4; c.moveTo(px, py); for (let k = 0; k < 3; k++) { px += (r() - .5) * 3; py += 1.5 + r() * 2; c.lineTo(px, py); } c.stroke(); }
+  } else if ((ch === '=' || ch === ',') && r() < .25) {
+    // a pebble or two on paths and sand
+    el(c, 2 + r() * 12, 2 + r() * 12, .8, .55, 'rgba(120,100,80,.55)', 'rgba(60,45,30,.4)', .25);
+  }
+}
+// fine film grain used over the whole screen and the paper boxes
+(function makeGrain() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128; const c = cv.getContext('2d'); const r = rng(7);
+  const img = c.createImageData(128, 128);
+  for (let i = 0; i < img.data.length; i += 4) { const v = r(); const dark = v < .5; img.data[i] = dark ? 40 : 255; img.data[i + 1] = dark ? 28 : 246; img.data[i + 2] = dark ? 16 : 224; img.data[i + 3] = (Math.abs(v - .5) * 2) ** 3 * 60; }
+  c.putImageData(img, 0, 0);
+  document.documentElement.style.setProperty('--grain', `url(${cv.toDataURL()})`);
+})();
 
 // ===== LENGUAMON monsters: smooth SVG caricatures of animals found in Iran =====
 // Ordered from the most common (home and farm) to the rarest. Easy words get common animals,
@@ -1831,7 +1947,7 @@ const PORTRAIT_URL = {};
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
 
 // ---- tea scene: Agha Reza serving you chai, painted in a soft, warm, hand-drawn style ----
-function teaSceneSvg(L) {
+function teaSceneSvg(L, vest = '#6a4a3a') {
   const ink = '#5a3a2a', lw = 'stroke-width=".7" stroke-linejoin="round" stroke-linecap="round"';
   const s = `stroke="${ink}" ${lw}`;
   const hair = L.hair, long = L.hairStyle === 'long', skin = '#f4cfa8';
@@ -1875,6 +1991,7 @@ function teaSceneSvg(L) {
   <g transform="translate(22 30)">
     ${long ? `<path d="M3,10 C1,22 3,30 6,33 L18,33 C19,26 19,18 17,10 Z" fill="${hair}" ${s}/>` : ''}
     <path d="M4,32 C3,26 6,22 12,22 C18,22 21,26 20,32 L20,34 L4,34 Z" fill="${L.top}" ${s}/>
+    ${L.tee ? `<path d="M10,22.4 L14,22.4 L13.3,34 L10.7,34 Z" fill="${L.tee}" stroke="${ink}" stroke-width=".5"/><path d="M8,22.6 L10.4,22.4 L10.6,26 Z M16,22.6 L13.6,22.4 L13.4,26 Z" fill="${L.top2}"/>` : ''}
     <path d="M6,33 C8,38 18,38 26,36 L30,37 L30,40 L24,41 C16,42 7,42 5,37 Z" fill="${L.legs}" ${s}/>
     <path d="M29,36.5 C31,36 33,37 33,39 L29.5,40 Z" fill="#3a2a22" ${s}/>
     <path d="M17,26 C22,27 26,26 30,23" stroke="${L.top}" stroke-width="3.6" stroke-linecap="round" fill="none"/><path d="M17,26 C22,27 26,26 30,23" stroke="${ink}" stroke-width="4.4" stroke-linecap="round" fill="none" opacity=".25"/>
@@ -1882,6 +1999,8 @@ function teaSceneSvg(L) {
     <ellipse cx="12" cy="13" rx="7.4" ry="8" fill="${skin}" ${s}/>
     <path d="M4.6,13 C4,4 14,1.5 19,7 C20,9 20,11 19.4,13 C17,9.5 14,8.5 11,9.5 C9,8 6,9.5 4.6,13 Z" fill="${hair}" ${s}/>
     ${long ? `<path d="M5,11 C4,16 4.5,20 5.5,22" stroke="${hair}" stroke-width="2.4" fill="none"/>` : ''}
+    ${L.hairStyle === 'swoop' ? `<path d="M6,8 C8,1 16,0 21,4 C18,4 16,5 15,7 C12,5 9,6 6,8 Z" fill="${hair}" ${s}/>` : ''}
+    ${L.shades ? `<ellipse cx="10.4" cy="6.6" rx="2.4" ry="1.4" fill="#18181e" ${s}/><ellipse cx="15.6" cy="6.2" rx="2.4" ry="1.4" fill="#18181e" ${s}/><ellipse cx="9.6" cy="6.1" rx=".8" ry=".35" fill="#fff" opacity=".5"/>` : ''}
     <ellipse cx="15.4" cy="13.8" rx="1.25" ry="1.6" fill="#2a1a14"/><circle cx="15.8" cy="13.2" r=".45" fill="#fff"/>
     <path d="M13.6,11.2 Q15.3,10.4 17,11.1" stroke="${hair}" stroke-width=".7" fill="none"/>
     <path d="M18.8,15.2 L19.6,16 L18.8,16.4" stroke="#c88a6a" stroke-width=".5" fill="none"/>
@@ -1891,10 +2010,10 @@ function teaSceneSvg(L) {
   <!-- Agha Reza, leaning in with the tray -->
   <g transform="translate(76 18)">
     <path d="M14,40 C12,52 12,64 13,82 L37,82 C38,64 38,52 36,40 C32,36 18,36 14,40 Z" fill="#fbf6ee" ${s}/>
-    <path d="M15,42 C14,52 14,64 15,82 L22,82 L22,44 C20,42 17,41 15,42 Z M35,42 C36,52 36,64 35,82 L28,82 L28,44 C30,42 33,41 35,42 Z" fill="#6a4a3a" ${s}/>
+    <path d="M15,42 C14,52 14,64 15,82 L22,82 L22,44 C20,42 17,41 15,42 Z M35,42 C36,52 36,64 35,82 L28,82 L28,44 C30,42 33,41 35,42 Z" fill="${vest}" ${s}/>
     <path d="M22,46 L28,46 M22,52 L28,52" stroke="#d8cbb8" stroke-width=".5"/>
     <path d="M16,44 C10,48 4,50 -1,51" stroke="#fbf6ee" stroke-width="5.4" stroke-linecap="round" fill="none"/><path d="M16,44 C10,48 4,50 -1,51" stroke="${ink}" stroke-width="6.2" stroke-linecap="round" fill="none" opacity=".18"/>
-    <path d="M34,45 C28,50 18,52 6,52" stroke="#6a4a3a" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M34,45 C28,50 18,52 6,52" stroke="${vest}" stroke-width="5" stroke-linecap="round" fill="none"/>
     <ellipse cx="-1.5" cy="51.2" rx="2.2" ry="1.8" fill="#eebf98" ${s}/><ellipse cx="5" cy="52.4" rx="2.2" ry="1.8" fill="#eebf98" ${s}/>
     <!-- head -->
     <ellipse cx="25" cy="24" rx="10.5" ry="12" fill="#eebf98" ${s}/>
@@ -1922,10 +2041,10 @@ function teaSceneSvg(L) {
   <rect width="160" height="100" fill="#fff" filter="url(#paper)"/>
 </svg>`;
 }
-async function teaScene() {
+async function teaScene(vest, host = 'Agha Reza') {
   const p = $('#portrait');
-  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook()));
-  p.innerHTML = `<div class="tea"><img src="${url}" alt="Agha Reza serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook(), vest));
+  p.innerHTML = `<div class="tea"><img src="${url}" alt="${host} serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
   p.classList.add('show'); SND.fx('heal'); healTeam();
   await sleep(3000);
   p.classList.remove('show'); p.innerHTML = '';
@@ -2057,13 +2176,15 @@ function textInput(label, max = 10) {
 }
 
 // ===== LENGUAMON world: maps, NPCs, movement, menus =====
+// zurkhaneh interior: morshed by the drum alcove, an athlete in the sunken pit (gowd)
+function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffffffffw', 'wwwwEwwwww']; }
 const MAP_SRC = {
   world: {
     rows: [
       // SHIRAZ: Eram-style garden and the tomb of Hafez
       'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T......S.3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
-      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
-      'T*~~~~*..==..*~~~~*T', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
+      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.^^^^^.S==..QQQQQ.T', 'T.#h#h#..==..#h#h#.T',
+      'TS##7##..==..##8##ST', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
       // ROUTE 3: Shiraz road
       'T::::*...==...*::::T', 'T::::....==....::::T', 'T..LL....==a...LL..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T',
       'T*::::...==...::::*T', 'T...R....==....R...T', 'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T',
@@ -2073,7 +2194,7 @@ const MAP_SRC = {
       'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,S,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,SIVVI,,T',
       'T::::,,,,==,,IVVI,,T', 'T,,,,,,S,==,,,,,,,,T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T',
       'T,,,,,,,,==S,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
-      'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,i,::::T', 'T::::,,L,==,,,L::::T',
+      'T,^^^^^,,==,,QQQQQ,T', 'T,#h#h#,,==,,#h#h#,T', 'TS##5##,,==,,##6##ST', 'T:::,,,,,==,,i,,:::T', 'T::::,,L,==,,,L::::T',
       'TT,,,,,,,==,,,,,,,TT',
       'TFFFFFFFF1FFFFFFFFFT',
       // ROUTE 1: Yazd desert road
@@ -2083,8 +2204,8 @@ const MAP_SRC = {
       'TFFFFFFFF9FFFFFFFFFT',
       // YAZD: windcatchers and the Amir Chakhmaq complex
       'T,,,,J,,,==,,,J,,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,Y,,S,,==,,,Y,,Y,T', 'T,QQQQ,,,==,QQQQQQ,T', 'T,#hh#,,,==,#h##h#,T',
-      'T,#H##,,,==,##M###,T', 'T,,=,S,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,,,,,,,==,,~~~,,JT',
-      'T,,s,,,,,==,S~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
+      'T,#H##,,,==,##M###,T', 'T,,=,S,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,QQQQQ,==,,~~~,,JT',
+      'Ts,#h#h#,==,S~~~,,,T', 'T,S##4##,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
       'TIWWWWIS,==,##C###,T', 'T,,,,,,,,==,,,=,S,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
     ],
     bases: { 1: '=', 2: '=', 3: '=', 9: '=', l: '.', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
@@ -2107,12 +2228,23 @@ const MAP_SRC = {
       '12,73': [`COURTYARD POOL ${F('حوض', 'hoz')}`, 'Water is precious in the desert, so Persian homes and gardens are built around a pool that cools the air and reflects the sky.'],
       '7,78': [`AMIR CHAKHMAQ COMPLEX ${F('امیر چخماق', 'amir chakhmaq')}<br>Yazd.`, 'A 15th-century square, mosque and bazaar, famous for its tall façade of arched niches.', 'It is one of the best-known landmarks of Yazd and a gathering place on holidays.'],
       '16,79': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}`, 'Tea is the heart of Iranian hospitality, served strong in small glasses with sugar cubes (ghand).', 'In teahouses friends talk, read poetry and play backgammon (takhte-nard).'],
+      '1,10': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}<br>Shiraz.`, 'Shirazis love to sit in the garden with tea, poetry and fresh faloodeh (a rosewater noodle sorbet).', 'Talk to the owner for a glass of chai. It will refresh your Lenguamon.'],
+      '18,10': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Shiraz.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', `Talk to the morshed inside to train on the words of the ${ROUTE_NAMES[3]}.`],
+      '1,43': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}<br>Isfahan.`, 'Isfahan is famous for its teahouses, like the old ones under the arches of its bridges.', 'Talk to the owner for a glass of chai. It will refresh your Lenguamon.'],
+      '18,43': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Isfahan.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', 'Talk to the morshed inside to train on the words of ISFAHAN.'],
+      '2,74': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Yazd.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', `Talk to the morshed inside to train on the words of the ${ROUTE_NAMES[1]}.`],
     },
-    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 } },
+    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 },
+      4: { to: 'gym1', tx: 4, ty: 6 }, 5: { to: 'teahouse2', tx: 4, ty: 6 }, 6: { to: 'gym2', tx: 4, ty: 6 }, 7: { to: 'teahouse3', tx: 4, ty: 6 }, 8: { to: 'gym3', tx: 4, ty: 6 } },
   },
   house: { rows: ['wwwwwwwwww', 'wbbfffffmw', 'wfcccccffw', 'wfcktkcfxw', 'wfcccccffw', 'wffffffffw', 'wpffffffpw', 'wwwwEwwwww'], bases: { x: 'f' }, exit: { to: 'world', door: 'H' } },
   school: { rows: ['wwwwwwwwww', 'wZZZZbbbpw', 'wfffyffffw', 'wffffffffw', 'wdfdfdfdfw', 'wffffffzfw', 'wdfdfdffpw', 'wwwwEwwwww'], bases: { y: 'f', z: 'f' }, exit: { to: 'world', door: 'M' } },
   teahouse: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffrfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcjw', 'wccccccccw', 'wwwwEwwwww'], bases: { r: 'f', j: 'c' }, exit: { to: 'world', door: 'C' } },
+  teahouse2: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff!fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '!': 'f' }, exit: { to: 'world', door: '5' } },
+  teahouse3: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff$fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '$': 'f' }, exit: { to: 'world', door: '7' } },
+  gym1: { rows: GYM_ROWS('<', '|'), bases: { '<': 'f', '|': '@' }, exit: { to: 'world', door: '4' } },
+  gym2: { rows: GYM_ROWS('>', '_'), bases: { '>': 'f', '_': '@' }, exit: { to: 'world', door: '6' } },
+  gym3: { rows: GYM_ROWS('?', ';'), bases: { '?': 'f', ';': '@' }, exit: { to: 'world', door: '8' } },
 };
 const MAPS = {};
 const NPC_POS = {}; // marker -> {map,x,y}
@@ -2904,6 +3036,84 @@ async function enterWorld() {
   await fade(false, 300);
   if (!S.flags.starter && S.map === 'house') await run(() => say(T('MAMAN', `${nm()} jan! Come here, talk to me.`)));
 }
+
+// ===== LENGUAMON places: a teahouse and a zurkhaneh (traditional gym) in every city =====
+
+// ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers ----
+async function teaHost(name, vest, lines) {
+  await say(lines.map(l => T(name, l)));
+  await teaScene(vest, name); await say(['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some DAFTARS too. You now have 5.`); }
+}
+npc('!', { look: 'hassan', talk: () => teaHost('AGHA HASSAN', '#3a5a7a', [
+  `${F('خوش اومدی', 'khosh oomadi')}! Welcome! I am Agha Hassan, Agha Reza's big brother.`,
+  'Everyone in Isfahan says we look exactly alike. I say I am the handsome one!',
+  `Sit, sit. A glass of ${F('چای', 'chai')}?`]) });
+npc('$', { look: 'karim', talk: () => teaHost('AGHA KARIM', '#2f5a3a', [
+  `${F('سلام', 'salam')}, traveller! I am Agha Karim. My brothers Reza and Hassan pour tea in Yazd and Isfahan.`,
+  'But only Shiraz has tea this good. The roses make the air sweet!',
+  `${F('بفرمایید', 'befarmaid')}, have a glass.`]) });
+
+// ---- zurkhanehs: train on the words of each city ----
+const GYMS = {
+  '<': { route: 1, city: 'YAZD', name: 'MORSHED JAMSHID' },
+  '>': { route: 2, city: 'ISFAHAN', name: 'MORSHED SOHRAB' },
+  '?': { route: 3, city: 'SHIRAZ', name: 'MORSHED ROSTAM' },
+};
+const GYM_ROUNDS = 8;
+function gymWords(route) {
+  const pool = WORDS.filter(w => w.route === route);
+  // words you have met first, and the ones you keep missing most of all
+  const scored = pool.map(w => { const s = S.stats[w.key] || [0, 0]; const met = S.seen[w.key] || S.caught[w.key]; return { w, s: (met ? 4 : 0) + s[1] * 3 - s[0] + rand() * 4 }; });
+  return shuffle(scored.sort((a, b) => b.s - a.s).slice(0, GYM_ROUNDS).map(x => x.w));
+}
+async function gymXp(m, amt) {
+  const w = monW(m); m.xp += amt;
+  while (m.xp >= m.lvl * 8) {
+    m.xp -= m.lvl * 8; const oldMax = maxHp(m.lvl); m.lvl++; m.hp += maxHp(m.lvl) - oldMax;
+    SND.fx('levelup'); await say(`${esc(w.name)} grew to level ${m.lvl}!`);
+  }
+}
+async function gymDrill(g) {
+  const words = gymWords(g.route);
+  let score = 0;
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i]; hideText();
+    const res = await quiz(makeQuestion(w, 'en2fa'), `${g.city} ZURKHANEH · ROUND ${i + 1}/${words.length} · ${score} ✓`);
+    stat(w, res.ok); S.seen[w.key] = true;
+    if (res.ok) { score++; if (i < words.length - 1 && rand() < 0.35) await say(T(g.name, `${F('آفرین', 'afarin')}! Well done!`)); }
+    else await say(`${T(g.name, 'Not quite. Remember:')} ${W(w)} = <b>${esc(w.en0)}</b>`);
+  }
+  const perfect = score === words.length;
+  SND.fx(perfect ? 'badge' : 'good');
+  await say([`You got ${B(score + ' / ' + words.length)}!`,
+    perfect ? T(g.name, `*rings the bell* ${F('آفرین، پهلوان', 'afarin, pahlevan')}! A perfect round, champion!`)
+      : score >= words.length / 2 ? T(g.name, 'Good strength. Come back and train again!') : T(g.name, `${F('آروم آروم', 'aroom aroom')}: slowly, slowly. Every champion started weak.`)]);
+  const amt = score * 2 + (perfect ? 6 : 0);
+  if (amt && S.team.length) {
+    await say(`Your Lenguamon trained alongside you and gained ${amt} EXP. Points each!`);
+    for (const m of S.team) await gymXp(m, amt);
+  }
+  if (perfect) { S.daftar += 2; await say(`${g.name} gave you 2 DAFTARS. You now have ${S.daftar}.`); }
+  writeSave();
+}
+async function gymTalk(g) {
+  const met = 'gym' + g.route;
+  if (!S.flags[met]) {
+    await say([T(g.name, `${F('خوش آمدید', 'khosh amadid')}! Welcome to the ${F('زورخانه', 'zoorkhaneh')}, the house of strength.`),
+      'Here athletes swing the heavy meel clubs while I beat the drum and sing the Shahnameh, the Book of Kings.',
+      `But you, young ${F('پهلوان', 'pahlevan')}, will train your WORDS.`]);
+    S.flags[met] = true;
+  }
+  if (!S.team.length) { await say(T(g.name, 'First get a Lenguamon from Professor Haydeh. Then come train!')); return; }
+  if (!(await ask(`${g.name}: Train on the words of ${esc(ROUTE_NAMES[g.route])}? ${GYM_ROUNDS} rounds.`))) { await say(T(g.name, `${F('باشه', 'bashe')}. The pit will be waiting.`)); return; }
+  await say(T(g.name, '*BOOM, ba-da BOOM* goes the drum. Begin!'));
+  await gymDrill(g);
+}
+for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', talk: () => gymTalk(g) });
+npc('|', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('KAVEH', `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
+npc('_', { look: 'pahlevan', dir: 'right', talk: async () => { await say([T('BIZHAN', `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
+npc(';', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('GIV', `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });
 
 // ===== LENGUAMON boot =====
 function layout() {

@@ -46,10 +46,16 @@ function drawChar(ctx, px, py, L, dir, step) {
   const HX = 8, HY = 4.6, HR = 3.4;              // head centre and radius
   const la = step === 1 ? -.8 : 0, lb = step === 2 ? -.8 : 0;
   rrect(c, 6.15, 11.4 + la, 1.6, 4.1, .7, L.legs, true, .45); rrect(c, 8.25, 11.4 + lb, 1.6, 4.1, .7, L.legs, true, .45);
+  if (L.kicks) for (const [lx, d] of [[6.15, la], [8.25, lb]]) { rrect(c, lx - .3, 14.35 + d, 2.2, 1.3, .55, '#f2efe6', true, .35); c.fillStyle = L.kicks; c.fillRect(lx + .05, 14.7 + d, 1.5, .35); }
   if (st === 'long' && dir !== 'up') rrect(c, HX - 3.6, HY - .4, 7.2, 7.2, 2.6, hairC, true, .45);
   rrect(c, 5.2, 7.6, 5.6, 4.9, 1.8, L.top, true, .45);
   c.fillStyle = L.top2; c.fillRect(5.6, 11.4, 4.8, .7);
   if (L.coat) { c.fillStyle = L.top2; c.fillRect(7.75, 7.9, .5, 3.4); }
+  if (L.tee) {
+    if (dir === 'down') { c.beginPath(); c.moveTo(7, 7.75); c.lineTo(9, 7.75); c.lineTo(8.7, 11.35); c.lineTo(7.3, 11.35); c.closePath(); c.fillStyle = L.tee; c.fill(); c.strokeStyle = L.top2; c.lineWidth = .4; c.beginPath(); c.moveTo(7, 7.8); c.lineTo(7.3, 11.35); c.moveTo(9, 7.8); c.lineTo(8.7, 11.35); c.stroke();
+      c.fillStyle = L.top2; c.beginPath(); c.moveTo(5.8, 7.7); c.lineTo(7.2, 7.6); c.lineTo(6.6, 9.2); c.closePath(); c.moveTo(10.2, 7.7); c.lineTo(8.8, 7.6); c.lineTo(9.4, 9.2); c.closePath(); c.fill(); }
+    else if (dir === 'left') { c.fillStyle = L.tee; c.fillRect(5.35, 8, .9, 3.3); c.fillStyle = L.top2; c.fillRect(6.2, 7.8, .4, 3.6); }
+  }
   if (L.kef) { rrect(c, 5.3, 7.3, 5.4, 1.6, .7, '#f4f0e4', true, .4); c.fillStyle = '#1a1a1a'; for (let i = 0; i < 4; i++) c.fillRect(5.8 + i * 1.3, 7.7 + (i % 2) * .6, .45, .45); }
   if (dir === 'left') { rrect(c, 8.5, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, 9.2, 11.9, .6, .6, L.skin); }
   else { for (const ax of [4.3, 10.3]) { rrect(c, ax, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, ax + .7, 11.9, .6, .6, L.skin); } }
@@ -59,6 +65,7 @@ function drawChar(ctx, px, py, L, dir, step) {
     el(c, HX, HY - .2, HR + .15, HR + .1, st === 'bald' ? L.skin : hairC, O, .45);
     if (st === 'long') rrect(c, L0, HY, R0 - L0, 6.2, 2.4, hairC, true, .45);
     if (st === 'bun') el(c, HX, T0 + .2, 1.5, 1.3, hairC, O, .45);
+    if (L.shades) { c.strokeStyle = '#15161c'; c.lineWidth = .45; c.beginPath(); c.moveTo(L0 + .2, T0 + 2.6); c.quadraticCurveTo(HX, T0 + 1.2, R0 - .2, T0 + 2.6); c.strokeStyle = '#d4bd78'; c.stroke(); }
   } else if (dir === 'down') {
     if (st !== 'bald') {
       c.beginPath(); c.moveTo(L0, HY + .8); c.bezierCurveTo(L0 - .2, T0, R0 + .2, T0, R0, HY + .8);
@@ -66,6 +73,8 @@ function drawChar(ctx, px, py, L, dir, step) {
       c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
       if (st === 'long') { rrect(c, L0 - .3, HY - .8, 1.4, 6, .7, hairC, true, .4); rrect(c, R0 - 1.1, HY - .8, 1.4, 6, .7, hairC, true, .4); }
       if (st === 'bun') el(c, HX, T0 + .1, 1.5, 1.3, hairC, O, .45);
+      if (st === 'swoop') { c.beginPath(); c.moveTo(HX - 2.8, T0 + 1.9); c.quadraticCurveTo(HX - .6, T0 - 1.9, HX + 3.4, T0 + .2); c.quadraticCurveTo(HX + 1.4, T0 + .7, HX + .6, T0 + 2.4); c.quadraticCurveTo(HX - 1, T0 + 1.2, HX - 2.8, T0 + 1.9); c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke(); }
+      if (L.shades) { for (const sx of [-1.25, 1.25]) el(c, HX + sx, T0 + 2.1, 1, .62, '#2b3d50', '#d4bd78', .35); c.strokeStyle = '#d4bd78'; c.lineWidth = .4; c.beginPath(); c.moveTo(HX - .3, T0 + 2); c.lineTo(HX + .3, T0 + 2); c.stroke(); el(c, HX - 1.5, T0 + 1.9, .3, .15, 'rgba(255,255,255,.55)'); }
     } else { c.beginPath(); c.arc(HX, HY, HR, Math.PI * 1.1, Math.PI * 1.9); c.strokeStyle = hairC; c.lineWidth = .8; c.stroke(); }
     const ey = HY + .5;
     el(c, HX - 1.35, ey, .45, .58, '#1e1410'); el(c, HX + 1.35, ey, .45, .58, '#1e1410');
@@ -83,6 +92,8 @@ function drawChar(ctx, px, py, L, dir, step) {
       c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
       if (st === 'long') rrect(c, HX + 1, HY - .3, 3, 6.4, 1.4, hairC, true, .4);
       if (st === 'bun') el(c, HX + 2.2, T0 + .5, 1.4, 1.2, hairC, O, .45);
+      if (st === 'swoop') { c.beginPath(); c.moveTo(HX + 1.8, T0 + .8); c.quadraticCurveTo(HX - 1, T0 - 1.9, L0 - 1.1, T0 + 1.5); c.quadraticCurveTo(L0 + .6, T0 + 1.5, L0 + .9, HY - .9); c.quadraticCurveTo(HX, T0 + 1.6, HX + 1.8, T0 + .8); c.fillStyle = hairC; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke(); }
+      if (L.shades) { el(c, HX - 1.7, T0 + 2.1, 1.05, .6, '#2b3d50', '#d4bd78', .35); c.strokeStyle = '#d4bd78'; c.lineWidth = .4; c.beginPath(); c.moveTo(HX - .7, T0 + 2); c.lineTo(HX + 2.2, T0 + 2.6); c.stroke(); }
     }
     const ey = HY + .5;
     el(c, HX - 2.1, ey, .45, .58, '#1e1410'); c.fillStyle = '#fff'; c.fillRect(HX - 2.25, ey - .38, .25, .25);
@@ -97,6 +108,7 @@ function drawChar(ctx, px, py, L, dir, step) {
     if (dir === 'down') { rrect(c, L0 - .5, HY - 1, R0 - L0 + 1, 1.1, .5, '#26301a', true, .35); el(c, HX, HY - 2.3, .65, .6, C.gold); }
     if (dir === 'left') rrect(c, L0 - 1.4, HY - 1, 4.2, 1, .5, '#26301a', true, .35);
   }
+  if (L.hoops && dir !== 'up') { c.strokeStyle = C.gold; c.lineWidth = .3; for (const hx of dir === 'down' ? [L0 + .15, R0 - .15] : [HX + 1.6]) { c.beginPath(); c.arc(hx, HY + 2, .55, 0, 7); c.stroke(); } }
   if (L.flower) { const fx = HX + 2.8, fy = T0 + 1.3; for (const [dx, dy] of [[0, -.7], [.7, 0], [0, .7], [-.7, 0]]) el(c, fx + dx, fy + dy, .55, .55, C.fruit2); el(c, fx, fy, .4, .4, '#fff070'); }
   c.restore();
 }
@@ -163,8 +175,13 @@ Object.assign(TILE['K'], { d(c, x) {
 
 // ---- looks: no headscarves; new hair styles; girl and boy players ----
 Object.assign(LOOKS, {
-  player: { skin: '#f4c8a0', hair: '#3a2818', hairStyle: 'short', top: '#2858a8', top2: '#183878', legs: '#303848' },
-  playerGirl: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#c83a6a', top2: '#8a1a44', legs: '#303848' },
+  // the hero: worn leather jacket over a tee, dark jeans, sneakers, shades pushed up
+  player: { skin: '#eebf96', hair: '#1e1612', hairStyle: 'swoop', top: '#6a4430', top2: '#3e2618', tee: '#e9e4d8', legs: '#2c3448', kicks: '#b8333a', shades: true },
+  playerGirl: { skin: '#eebf96', hair: '#22160f', hairStyle: 'long', top: '#2e2a2c', top2: '#141214', tee: '#c8913a', legs: '#2c3448', kicks: '#2f7f7a', shades: true, hoops: true },
+  hassan: { skin: '#e8b890', hair: '#a0a0a0', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a4a5a', stache: true },
+  karim: { skin: '#e4b48c', hair: '#8a8a8a', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a5a3a', stache: true },
+  morshed: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', stache: true, beard: true },
+  pahlevan: { skin: '#e0ac80', hair: '#1a120c', top: '#8a2a2a', top2: '#5a1a1a', legs: '#c89a3a', stache: true },
   haydeh: { skin: '#f0c49c', hair: '#6a4030', hairStyle: 'bun', top: '#f0ece0', top2: '#c8c0b0', legs: '#404058', glasses: true, coat: true },
   maman: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#5a8a4a', top2: '#3a6a30', legs: '#3a3040' },
   nasrin: { skin: '#f4c8a0', hair: '#2a1a10', hairStyle: 'bun', top: '#f0d070', top2: '#c8a040', legs: '#404058' },
@@ -178,3 +195,91 @@ Object.assign(LOOKS, {
   mahmoud: { skin: '#e0b088', hair: '#e0e0e0', hairStyle: 'bald', top: '#6a5a40', top2: '#4a3a28', legs: '#403020', stache: true, beard: true },
 });
 const playerLook = () => (S && S.gender === 'girl' ? LOOKS.playerGirl : LOOKS.player);
+
+// ---- teahouse and zurkhaneh (traditional gym) tiles ----
+function gymDoor(c, x, y, nb) {
+  doorDraw(c, x, y, nb);
+  rrect(c, 3, 3, 10, 13, 1.2, '#7a2a22', C.woodD, .6); c.fillStyle = '#5a1a14'; c.fillRect(7.6, 3.5, .8, 12.5);
+  el(c, 6.6, 9.5, .45, .45, C.gold); el(c, 9.4, 9.5, .45, .45, C.gold);
+  // two crossed meel clubs over the door
+  for (const s of [-1, 1]) { c.save(); c.translate(8, 2.2); c.rotate(s * .7); c.beginPath(); c.moveTo(-.35, -3); c.lineTo(.35, -3); c.lineTo(1, 1.8); c.quadraticCurveTo(0, 2.6, -1, 1.8); c.closePath(); c.fillStyle = C.woodL; c.fill(); c.strokeStyle = C.woodD; c.lineWidth = .35; c.stroke(); c.restore(); }
+}
+Object.assign(TILE, {
+  '4': { g: gAuto, door: true, d: gymDoor }, '6': { g: gAuto, door: true, d: gymDoor }, '8': { g: gAuto, door: true, d: gymDoor },
+  '5': { g: gAuto, door: true, d: doorDraw }, '7': { g: gAuto, door: true, d: doorDraw },
+  // the gowd: a sunken octagonal pit with a tiled rim
+  '@': { g: gFloor, solid: true, d(c, x, y, nb) {
+    const poly = (ins) => {
+      const l = nb.l ? 0 : ins, r = nb.r ? 16 : 16 - ins, t = nb.u ? 0 : ins, b = nb.d ? 16 : 16 - ins, k = 4 + ins * .4;
+      c.beginPath();
+      if (!nb.u && !nb.l) { c.moveTo(l, t + k); c.lineTo(l + k, t); } else c.moveTo(l, t);
+      if (!nb.u && !nb.r) { c.lineTo(r - k, t); c.lineTo(r, t + k); } else c.lineTo(r, t);
+      if (!nb.d && !nb.r) { c.lineTo(r, b - k); c.lineTo(r - k, b); } else c.lineTo(r, b);
+      if (!nb.d && !nb.l) { c.lineTo(l + k, b); c.lineTo(l, b - k); } else c.lineTo(l, b);
+      c.closePath();
+    };
+    poly(0); c.fillStyle = '#2a5a8a'; c.fill();
+    poly(1.4); c.fillStyle = '#e8d8b0'; c.fill();
+    poly(2.6); c.fillStyle = '#8a6440'; c.fill();
+    const r = rng(x * 31 + y * 7); c.fillStyle = 'rgba(60,36,20,.35)'; for (let i = 0; i < 5; i++) c.fillRect(2 + r() * 12, 2 + r() * 12, .8, .5);
+    if (!nb.u) { c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(0, 2.6, 16, 1.6); }
+  } },
+  // the sardam: raised alcove where the morshed drums (zarb) and rings the bell
+  '%': { g: gFloor, solid: true, d(c, x, y, nb) {
+    R(c, 0, 0, 16, 16, C.wallIn); R(c, 0, 0, 16, 3, C.wallInD);
+    const left = nb.R === '%', ax = left ? 3 : 0, aw = 13;
+    c.beginPath(); c.moveTo(ax, 16); c.lineTo(ax, 7); c.quadraticCurveTo(left ? 16 : 0, -1, left ? 16 : 13, 4); c.lineTo(left ? 16 : 13, 16); c.closePath();
+    c.fillStyle = '#2858a8'; c.fill(); c.strokeStyle = C.gold; c.lineWidth = .6; c.stroke();
+    R(c, 0, 12, 16, 4, C.woodD); R(c, 0, 12, 16, 1, C.woodL);
+    if (left) { // goblet drum
+      c.beginPath(); c.moveTo(6, 6.5); c.lineTo(12, 6.5); c.quadraticCurveTo(11, 10, 9.6, 10.4); c.lineTo(10.4, 12); c.lineTo(7.6, 12); c.lineTo(8.4, 10.4); c.quadraticCurveTo(7, 10, 6, 6.5); c.closePath();
+      c.fillStyle = '#b8742e'; c.fill(); c.strokeStyle = C.out; c.lineWidth = .4; c.stroke(); el(c, 9, 6.5, 3, .8, '#f0e0c0', C.out, .35);
+    } else { // brass bell on a chain
+      c.strokeStyle = C.brassD; c.lineWidth = .4; c.beginPath(); c.moveTo(6.5, 1.5); c.lineTo(6.5, 6); c.stroke();
+      c.beginPath(); c.moveTo(4.4, 10); c.quadraticCurveTo(4.6, 6, 6.5, 6); c.quadraticCurveTo(8.4, 6, 8.6, 10); c.closePath(); c.fillStyle = C.brass; c.fill(); c.strokeStyle = C.brassD; c.stroke(); el(c, 6.5, 10.4, .6, .6, C.brassD);
+    }
+  } },
+  // wall rack of meel clubs
+  '&': { g: gFloor, solid: true, d(c, x) {
+    TILE.w.d(c, x, 0);
+    R(c, 1, 12, 14, 1.2, C.woodD);
+    for (const [cx, h] of [[4, 8.5], [8, 9.5], [12, 8.5]]) { c.beginPath(); c.moveTo(cx - .6, 12 - h); c.lineTo(cx + .6, 12 - h); c.lineTo(cx + 1.7, 11); c.quadraticCurveTo(cx, 12.6, cx - 1.7, 11); c.closePath(); c.fillStyle = x % 2 ? '#a8643a' : '#c07a44'; c.fill(); c.strokeStyle = C.woodD; c.lineWidth = .4; c.stroke(); c.fillStyle = '#7a2a22'; c.fillRect(cx - 1.1, 8.6, 2.2, .7); }
+  } },
+});
+
+// ---- a lived-in look: earthier colors, dust, stains and wear ----
+Object.assign(C, {
+  grass: '#94b265', grass2: '#7c9a50', grassD: '#50783a', grassDD: '#37582c',
+  path: '#d9c497', path2: '#c0a677', sand: '#e0cc9d', sand2: '#c8ad7d',
+  water: '#4f9caf', water2: '#a2d0d6', rim: '#d8cbab', rim2: '#ae9a74',
+  adobe: '#cc9c66', adobe2: '#a47548', adobeL: '#dcb684',
+  cyp: '#36603e', cyp2: '#52824a', cypD: '#213f2a', tree: '#4d7d3e', tree2: '#6f9a50',
+  floor: '#b78655', floorD: '#91653b', wallIn: '#e4d4b3', wallInD: '#c6b08b',
+  dome: '#3c9c98', domeL: '#8ccdc4', kashi: '#2e5a98', white: '#efe8d6',
+});
+const GRIT_SKIP = new Set(['~', 'B', 'U', 'E']);
+function gritTile(c, x, y, ch, nb, m) {
+  if (GRIT_SKIP.has(ch)) return;
+  const r = rng(x * 911 + y * 37 + m.id.length * 101);
+  const wallish = '#hQF^WYI'.includes(ch) || (TILE[ch] && TILE[ch].door);
+  // dust specks and grit
+  for (let i = 0, n = 5 + (r() * 5 | 0); i < n; i++) { c.fillStyle = r() < .7 ? 'rgba(70,45,25,.2)' : 'rgba(255,245,220,.18)'; c.fillRect(r() * 16, r() * 16, .5 + r() * .5, .4 + r() * .4); }
+  // soft blotches so no two tiles look factory-fresh
+  if (r() < .45) { el(c, 2 + r() * 12, 2 + r() * 12, 2 + r() * 3.5, 1.2 + r() * 2, r() < .6 ? 'rgba(80,55,25,.08)' : 'rgba(255,240,200,.08)'); }
+  if (wallish) {
+    // rain streaks and a hairline crack now and then
+    for (let i = 0; i < 2; i++) { const sx = 1 + r() * 14, sy = r() * 6; c.fillStyle = 'rgba(70,40,20,.1)'; c.fillRect(sx, sy, .6, 4 + r() * 8); }
+    if (r() < .3) { c.strokeStyle = 'rgba(60,35,20,.35)'; c.lineWidth = .3; c.beginPath(); let px = 3 + r() * 10, py = 2 + r() * 4; c.moveTo(px, py); for (let k = 0; k < 3; k++) { px += (r() - .5) * 3; py += 1.5 + r() * 2; c.lineTo(px, py); } c.stroke(); }
+  } else if ((ch === '=' || ch === ',') && r() < .25) {
+    // a pebble or two on paths and sand
+    el(c, 2 + r() * 12, 2 + r() * 12, .8, .55, 'rgba(120,100,80,.55)', 'rgba(60,45,30,.4)', .25);
+  }
+}
+// fine film grain used over the whole screen and the paper boxes
+(function makeGrain() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128; const c = cv.getContext('2d'); const r = rng(7);
+  const img = c.createImageData(128, 128);
+  for (let i = 0; i < img.data.length; i += 4) { const v = r(); const dark = v < .5; img.data[i] = dark ? 40 : 255; img.data[i + 1] = dark ? 28 : 246; img.data[i + 2] = dark ? 16 : 224; img.data[i + 3] = (Math.abs(v - .5) * 2) ** 3 * 60; }
+  c.putImageData(img, 0, 0);
+  document.documentElement.style.setProperty('--grain', `url(${cv.toDataURL()})`);
+})();

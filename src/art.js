@@ -138,6 +138,7 @@ function renderMap(m) {
     ctx.save(); ctx.translate(x * TS, y * TS);
     if (t.g) t.g(ctx, x, y, nb, m);
     if (t.d) t.d(ctx, x, y, nb, m);
+    if (typeof gritTile === 'function') gritTile(ctx, x, y, ch, nb, m);
     ctx.restore();
   }
   return cv;

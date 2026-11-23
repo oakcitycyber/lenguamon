@@ -1,11 +1,13 @@
 // ===== LENGUAMON world: maps, NPCs, movement, menus =====
+// zurkhaneh interior: morshed by the drum alcove, an athlete in the sunken pit (gowd)
+function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffffffffw', 'wwwwEwwwww']; }
 const MAP_SRC = {
   world: {
     rows: [
       // SHIRAZ: Eram-style garden and the tomb of Hafez
       'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T......S.3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
-      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
-      'T*~~~~*..==..*~~~~*T', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
+      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.^^^^^.S==..QQQQQ.T', 'T.#h#h#..==..#h#h#.T',
+      'TS##7##..==..##8##ST', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
       // ROUTE 3: Shiraz road
       'T::::*...==...*::::T', 'T::::....==....::::T', 'T..LL....==a...LL..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T',
       'T*::::...==...::::*T', 'T...R....==....R...T', 'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T',
@@ -15,7 +17,7 @@ const MAP_SRC = {
       'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,S,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,SIVVI,,T',
       'T::::,,,,==,,IVVI,,T', 'T,,,,,,S,==,,,,,,,,T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T',
       'T,,,,,,,,==S,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
-      'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,i,::::T', 'T::::,,L,==,,,L::::T',
+      'T,^^^^^,,==,,QQQQQ,T', 'T,#h#h#,,==,,#h#h#,T', 'TS##5##,,==,,##6##ST', 'T:::,,,,,==,,i,,:::T', 'T::::,,L,==,,,L::::T',
       'TT,,,,,,,==,,,,,,,TT',
       'TFFFFFFFF1FFFFFFFFFT',
       // ROUTE 1: Yazd desert road
@@ -25,8 +27,8 @@ const MAP_SRC = {
       'TFFFFFFFF9FFFFFFFFFT',
       // YAZD: windcatchers and the Amir Chakhmaq complex
       'T,,,,J,,,==,,,J,,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,Y,,S,,==,,,Y,,Y,T', 'T,QQQQ,,,==,QQQQQQ,T', 'T,#hh#,,,==,#h##h#,T',
-      'T,#H##,,,==,##M###,T', 'T,,=,S,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,,,,,,,==,,~~~,,JT',
-      'T,,s,,,,,==,S~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
+      'T,#H##,,,==,##M###,T', 'T,,=,S,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,QQQQQ,==,,~~~,,JT',
+      'Ts,#h#h#,==,S~~~,,,T', 'T,S##4##,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
       'TIWWWWIS,==,##C###,T', 'T,,,,,,,,==,,,=,S,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
     ],
     bases: { 1: '=', 2: '=', 3: '=', 9: '=', l: '.', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
@@ -49,12 +51,23 @@ const MAP_SRC = {
       '12,73': [`COURTYARD POOL ${F('حوض', 'hoz')}`, 'Water is precious in the desert, so Persian homes and gardens are built around a pool that cools the air and reflects the sky.'],
       '7,78': [`AMIR CHAKHMAQ COMPLEX ${F('امیر چخماق', 'amir chakhmaq')}<br>Yazd.`, 'A 15th-century square, mosque and bazaar, famous for its tall façade of arched niches.', 'It is one of the best-known landmarks of Yazd and a gathering place on holidays.'],
       '16,79': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}`, 'Tea is the heart of Iranian hospitality, served strong in small glasses with sugar cubes (ghand).', 'In teahouses friends talk, read poetry and play backgammon (takhte-nard).'],
+      '1,10': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}<br>Shiraz.`, 'Shirazis love to sit in the garden with tea, poetry and fresh faloodeh (a rosewater noodle sorbet).', 'Talk to the owner for a glass of chai. It will refresh your Lenguamon.'],
+      '18,10': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Shiraz.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', `Talk to the morshed inside to train on the words of the ${ROUTE_NAMES[3]}.`],
+      '1,43': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}<br>Isfahan.`, 'Isfahan is famous for its teahouses, like the old ones under the arches of its bridges.', 'Talk to the owner for a glass of chai. It will refresh your Lenguamon.'],
+      '18,43': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Isfahan.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', 'Talk to the morshed inside to train on the words of ISFAHAN.'],
+      '2,74': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Yazd.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', `Talk to the morshed inside to train on the words of the ${ROUTE_NAMES[1]}.`],
     },
-    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 } },
+    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 },
+      4: { to: 'gym1', tx: 4, ty: 6 }, 5: { to: 'teahouse2', tx: 4, ty: 6 }, 6: { to: 'gym2', tx: 4, ty: 6 }, 7: { to: 'teahouse3', tx: 4, ty: 6 }, 8: { to: 'gym3', tx: 4, ty: 6 } },
   },
   house: { rows: ['wwwwwwwwww', 'wbbfffffmw', 'wfcccccffw', 'wfcktkcfxw', 'wfcccccffw', 'wffffffffw', 'wpffffffpw', 'wwwwEwwwww'], bases: { x: 'f' }, exit: { to: 'world', door: 'H' } },
   school: { rows: ['wwwwwwwwww', 'wZZZZbbbpw', 'wfffyffffw', 'wffffffffw', 'wdfdfdfdfw', 'wffffffzfw', 'wdfdfdffpw', 'wwwwEwwwww'], bases: { y: 'f', z: 'f' }, exit: { to: 'world', door: 'M' } },
   teahouse: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffrfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcjw', 'wccccccccw', 'wwwwEwwwww'], bases: { r: 'f', j: 'c' }, exit: { to: 'world', door: 'C' } },
+  teahouse2: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff!fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '!': 'f' }, exit: { to: 'world', door: '5' } },
+  teahouse3: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff$fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '$': 'f' }, exit: { to: 'world', door: '7' } },
+  gym1: { rows: GYM_ROWS('<', '|'), bases: { '<': 'f', '|': '@' }, exit: { to: 'world', door: '4' } },
+  gym2: { rows: GYM_ROWS('>', '_'), bases: { '>': 'f', '_': '@' }, exit: { to: 'world', door: '6' } },
+  gym3: { rows: GYM_ROWS('?', ';'), bases: { '?': 'f', ';': '@' }, exit: { to: 'world', door: '8' } },
 };
 const MAPS = {};
 const NPC_POS = {}; // marker -> {map,x,y}

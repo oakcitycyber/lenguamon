@@ -92,7 +92,7 @@ const PORTRAIT_URL = {};
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
 
 // ---- tea scene: Agha Reza serving you chai, painted in a soft, warm, hand-drawn style ----
-function teaSceneSvg(L) {
+function teaSceneSvg(L, vest = '#6a4a3a') {
   const ink = '#5a3a2a', lw = 'stroke-width=".7" stroke-linejoin="round" stroke-linecap="round"';
   const s = `stroke="${ink}" ${lw}`;
   const hair = L.hair, long = L.hairStyle === 'long', skin = '#f4cfa8';
@@ -136,6 +136,7 @@ function teaSceneSvg(L) {
   <g transform="translate(22 30)">
     ${long ? `<path d="M3,10 C1,22 3,30 6,33 L18,33 C19,26 19,18 17,10 Z" fill="${hair}" ${s}/>` : ''}
     <path d="M4,32 C3,26 6,22 12,22 C18,22 21,26 20,32 L20,34 L4,34 Z" fill="${L.top}" ${s}/>
+    ${L.tee ? `<path d="M10,22.4 L14,22.4 L13.3,34 L10.7,34 Z" fill="${L.tee}" stroke="${ink}" stroke-width=".5"/><path d="M8,22.6 L10.4,22.4 L10.6,26 Z M16,22.6 L13.6,22.4 L13.4,26 Z" fill="${L.top2}"/>` : ''}
     <path d="M6,33 C8,38 18,38 26,36 L30,37 L30,40 L24,41 C16,42 7,42 5,37 Z" fill="${L.legs}" ${s}/>
     <path d="M29,36.5 C31,36 33,37 33,39 L29.5,40 Z" fill="#3a2a22" ${s}/>
     <path d="M17,26 C22,27 26,26 30,23" stroke="${L.top}" stroke-width="3.6" stroke-linecap="round" fill="none"/><path d="M17,26 C22,27 26,26 30,23" stroke="${ink}" stroke-width="4.4" stroke-linecap="round" fill="none" opacity=".25"/>
@@ -143,6 +144,8 @@ function teaSceneSvg(L) {
     <ellipse cx="12" cy="13" rx="7.4" ry="8" fill="${skin}" ${s}/>
     <path d="M4.6,13 C4,4 14,1.5 19,7 C20,9 20,11 19.4,13 C17,9.5 14,8.5 11,9.5 C9,8 6,9.5 4.6,13 Z" fill="${hair}" ${s}/>
     ${long ? `<path d="M5,11 C4,16 4.5,20 5.5,22" stroke="${hair}" stroke-width="2.4" fill="none"/>` : ''}
+    ${L.hairStyle === 'swoop' ? `<path d="M6,8 C8,1 16,0 21,4 C18,4 16,5 15,7 C12,5 9,6 6,8 Z" fill="${hair}" ${s}/>` : ''}
+    ${L.shades ? `<ellipse cx="10.4" cy="6.6" rx="2.4" ry="1.4" fill="#18181e" ${s}/><ellipse cx="15.6" cy="6.2" rx="2.4" ry="1.4" fill="#18181e" ${s}/><ellipse cx="9.6" cy="6.1" rx=".8" ry=".35" fill="#fff" opacity=".5"/>` : ''}
     <ellipse cx="15.4" cy="13.8" rx="1.25" ry="1.6" fill="#2a1a14"/><circle cx="15.8" cy="13.2" r=".45" fill="#fff"/>
     <path d="M13.6,11.2 Q15.3,10.4 17,11.1" stroke="${hair}" stroke-width=".7" fill="none"/>
     <path d="M18.8,15.2 L19.6,16 L18.8,16.4" stroke="#c88a6a" stroke-width=".5" fill="none"/>
@@ -152,10 +155,10 @@ function teaSceneSvg(L) {
   <!-- Agha Reza, leaning in with the tray -->
   <g transform="translate(76 18)">
     <path d="M14,40 C12,52 12,64 13,82 L37,82 C38,64 38,52 36,40 C32,36 18,36 14,40 Z" fill="#fbf6ee" ${s}/>
-    <path d="M15,42 C14,52 14,64 15,82 L22,82 L22,44 C20,42 17,41 15,42 Z M35,42 C36,52 36,64 35,82 L28,82 L28,44 C30,42 33,41 35,42 Z" fill="#6a4a3a" ${s}/>
+    <path d="M15,42 C14,52 14,64 15,82 L22,82 L22,44 C20,42 17,41 15,42 Z M35,42 C36,52 36,64 35,82 L28,82 L28,44 C30,42 33,41 35,42 Z" fill="${vest}" ${s}/>
     <path d="M22,46 L28,46 M22,52 L28,52" stroke="#d8cbb8" stroke-width=".5"/>
     <path d="M16,44 C10,48 4,50 -1,51" stroke="#fbf6ee" stroke-width="5.4" stroke-linecap="round" fill="none"/><path d="M16,44 C10,48 4,50 -1,51" stroke="${ink}" stroke-width="6.2" stroke-linecap="round" fill="none" opacity=".18"/>
-    <path d="M34,45 C28,50 18,52 6,52" stroke="#6a4a3a" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M34,45 C28,50 18,52 6,52" stroke="${vest}" stroke-width="5" stroke-linecap="round" fill="none"/>
     <ellipse cx="-1.5" cy="51.2" rx="2.2" ry="1.8" fill="#eebf98" ${s}/><ellipse cx="5" cy="52.4" rx="2.2" ry="1.8" fill="#eebf98" ${s}/>
     <!-- head -->
     <ellipse cx="25" cy="24" rx="10.5" ry="12" fill="#eebf98" ${s}/>
@@ -183,10 +186,10 @@ function teaSceneSvg(L) {
   <rect width="160" height="100" fill="#fff" filter="url(#paper)"/>
 </svg>`;
 }
-async function teaScene() {
+async function teaScene(vest, host = 'Agha Reza') {
   const p = $('#portrait');
-  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook()));
-  p.innerHTML = `<div class="tea"><img src="${url}" alt="Agha Reza serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook(), vest));
+  p.innerHTML = `<div class="tea"><img src="${url}" alt="${host} serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
   p.classList.add('show'); SND.fx('heal'); healTeam();
   await sleep(3000);
   p.classList.remove('show'); p.innerHTML = '';
