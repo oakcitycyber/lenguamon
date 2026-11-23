@@ -128,8 +128,8 @@ function doorDraw(c, x, y, nb) { wall(c, x, y, nb); R(c, 2, 2, 12, 14, C.kashiT)
 
 // render a whole map into an offscreen canvas
 function renderMap(m) {
-  const cv = document.createElement('canvas'); cv.width = m.w * TS; cv.height = m.h * TS;
-  const ctx = cv.getContext('2d');
+  const cv = document.createElement('canvas'); cv.width = m.w * TS * SCALE; cv.height = m.h * TS * SCALE;
+  const ctx = cv.getContext('2d'); ctx.scale(SCALE, SCALE);
   for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
     const ch = m.grid[y][x], t = TILE[ch] || TILE['.'];
     const at = (xx, yy) => (m.grid[yy] && m.grid[yy][xx]) || ' ';
@@ -146,66 +146,24 @@ function renderMap(m) {
 // ---- characters ----
 const LOOKS = {
   player: { skin: '#f4c8a0', hair: '#3a2818', top: '#2858a8', top2: '#183878', legs: '#303848' },
-  haydeh: { skin: '#f0c49c', scarf: '#7a3a8a', scarf2: '#a860b8', top: '#f0ece0', top2: '#c8c0b0', legs: '#404058', glasses: true },
-  maman: { skin: '#f0c49c', scarf: '#c84858', scarf2: '#e87888', top: '#5a8a4a', top2: '#3a6a30', legs: '#3a3040' },
+  haydeh: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#f0ece0', top2: '#c8c0b0', legs: '#404058', glasses: true },
+  maman: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#5a8a4a', top2: '#3a6a30', legs: '#3a3040' },
   reza: { skin: '#e8b890', hair: '#909090', top: '#f0f0f0', top2: '#c8c8c8', legs: '#5a3a20', stache: true },
   mahmoud: { skin: '#e0b088', hair: '#e0e0e0', top: '#6a5a40', top2: '#4a3a28', legs: '#403020', stache: true },
   babak: { skin: '#e8b890', hair: '#201810', top: '#806040', top2: '#5a4028', legs: '#302820', stache: true },
-  nasrin: { skin: '#f4c8a0', scarf: '#2f8a8a', scarf2: '#58b8b0', top: '#f0d070', top2: '#c8a040', legs: '#404058' },
+  nasrin: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#f0d070', top2: '#c8a040', legs: '#404058' },
   arash: { skin: '#f0c49c', hair: '#2a1a10', top: '#d83040', top2: '#a01828', legs: '#283048' },
   farhad: { skin: '#e8b890', hair: '#1a1008', top: '#48a060', top2: '#287040', legs: '#383020' },
-  golnaz: { skin: '#f4c8a0', scarf: '#e07830', scarf2: '#f8a860', top: '#3a5aa8', top2: '#283c78', legs: '#303040' },
+  golnaz: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#3a5aa8', top2: '#283c78', legs: '#303040' },
   dariush: { skin: '#e0b088', hair: '#181010', top: '#1a8a8a', top2: '#0c5c5c', legs: '#202030', stache: true, beard: true },
   kian: { skin: '#f4c8a0', hair: '#5a3818', top: '#f0c020', top2: '#c89000', legs: '#3858a8', small: true },
-  maryam: { skin: '#f0c49c', scarf: '#3858b8', scarf2: '#6888e0', top: '#a83a5a', top2: '#782040', legs: '#303040' },
+  maryam: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#a83a5a', top2: '#782040', legs: '#303040' },
   navid: { skin: '#e8b890', hair: '#3a2818', top: '#c87830', top2: '#8a4a18', legs: '#403020' },
-  leila: { skin: '#f0c49c', scarf: '#f0a020', scarf2: '#ffd060', top: '#c83038', top2: '#901820', legs: '#2a2a3a' },
+  leila: { skin: '#f0c49c', hair: '#3a2418', hairStyle: 'long', top: '#c83038', top2: '#901820', legs: '#2a2a3a' },
   omid: { skin: '#e8b890', hair: '#2a1a10', top: '#8858c8', top2: '#5a3090', legs: '#302838' },
-  parisa: { skin: '#f4c8a0', scarf: '#58a848', scarf2: '#88d070', top: '#f0e8d8', top2: '#c8c0a8', legs: '#3a4060' },
+  parisa: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#f0e8d8', top2: '#c8c0a8', legs: '#3a4060' },
   basij: { skin: '#e8b890', hair: '#1a1410', top: '#8a8a58', top2: '#6a6a40', legs: '#4a4a38', stache: true, beard: true, kef: true },
   irgc: { skin: '#e8b890', hair: '#2a1a12', top: '#4b5a2e', top2: '#36421f', legs: '#36421f', stache: true, beard: true, cap: '#3d4a25' },
   censor: { skin: '#d8a888', hair: '#7a7a88', top: '#5a1828', top2: '#2a0c14', legs: '#1a1a1a', stache: true, cyber: true },
-  shirin: { skin: '#f4c8a0', scarf: '#e05888', scarf2: '#ff90b8', top: '#30a8a0', top2: '#187870', legs: '#303048', flower: true },
+  shirin: { skin: '#f4c8a0', hair: '#3a2418', hairStyle: 'long', top: '#30a8a0', top2: '#187870', legs: '#303048', flower: true },
 };
-function drawChar(ctx, px, py, L, dir, step) {
-  const o = C.out, s = L.small ? 1 : 0;
-  const top = 1 + s * 2;
-  const rr = (x, y, w, h, c) => R(ctx, px + x, py + y, w, h, c);
-  // legs
-  const legY = 13;
-  const lA = step === 1 ? -1 : 0, lB = step === 2 ? -1 : 0;
-  rr(4, legY + lA, 4, 3 - lA, o); rr(8, legY + lB, 4, 3 - lB, o);
-  rr(5, legY + lA, 2, 2 - lA, L.legs); rr(9, legY + lB, 2, 2 - lB, L.legs);
-  // body
-  rr(3, 8 + s, 10, 6 - s, o); rr(4, 9 + s, 8, 4 - s, L.top); rr(4, 12, 8, 1, L.top2);
-  if (dir === 'down' || dir === 'up') { rr(3, 10 + s, 1, 2, L.skin); rr(12, 10 + s, 1, 2, L.skin); }
-  else rr(dir === 'left' ? 9 : 6, 10 + s, 1, 2, L.skin);
-  // head
-  rr(3, top - 1, 10, 9, o);
-  const hc = L.scarf || L.hair;
-  rr(4, top, 8, 7, hc);
-  if (dir === 'down') {
-    rr(5, top + 2, 6, 5, L.skin); if (!L.scarf) rr(5, top + 2, 6, 1, hc);
-    rr(6, top + 4, 1, 1, o); rr(9, top + 4, 1, 1, o);
-    if (L.glasses) { rr(5, top + 3, 3, 1, o); rr(8, top + 3, 3, 1, o); }
-    if (L.stache) rr(6, top + 6, 4, 1, L.hair);
-    if (L.beard) rr(5, top + 6, 6, 1, L.hair);
-    if (L.scarf) { rr(4, top + 6, 1, 2, hc); rr(11, top + 6, 1, 2, hc); rr(5, top, 6, 1, L.scarf2); }
-  } else if (dir === 'up') {
-    if (L.scarf) { rr(5, top + 1, 6, 1, L.scarf2); rr(4, top + 6, 8, 2, hc); }
-  } else {
-    const L2 = dir === 'left';
-    rr(L2 ? 4 : 6, top + 2, 6, 5, L.skin); rr(L2 ? 9 : 4, top + 1, 3, 6, hc);
-    rr(L2 ? 5 : 10, top + 4, 1, 1, o);
-    if (L.glasses) rr(L2 ? 4 : 9, top + 3, 3, 1, o);
-    if (L.stache) rr(L2 ? 4 : 9, top + 6, 3, 1, L.hair);
-    if (L.scarf) rr(L2 ? 9 : 4, top + 6, 3, 2, hc);
-  }
-  if (L.kef) { rr(4, 8 + s, 8, 2, '#f4f0e4'); P(ctx, [px + 5, py + 8 + s, px + 7, py + 9 + s, px + 9, py + 8 + s, px + 11, py + 9 + s], '#1a1a1a'); }
-  if (L.cap) { rr(3, top - 2, 10, 4, o); rr(4, top - 1, 8, 2, L.cap); if (dir === 'down') { rr(3, top + 1, 10, 1, o); P(ctx, [px + 7, py + top - 1, px + 8, py + top - 1], C.gold); } }
-  if (L.cyber && dir === 'down') { rr(9, top + 4, 1, 1, '#ff2040'); rr(8, top + 3, 3, 1, '#4a4a58'); }
-  if (L.flower) { rr(11, top - 1, 2, 2, '#fff070'); rr(12, top - 2, 1, 1, C.fruit2); }
-}
-
-const CHAR_URL = {};
-function charUrl(look, dir = 'down') { const k = look + dir; if (CHAR_URL[k]) return CHAR_URL[k]; const cv = document.createElement('canvas'); cv.width = 16; cv.height = 16; drawChar(cv.getContext('2d'), 0, 0, LOOKS[look], dir, 0); return (CHAR_URL[k] = cv.toDataURL()); }

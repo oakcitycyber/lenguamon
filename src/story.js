@@ -163,9 +163,14 @@ async function newGameIntro() {
   await choose(['ENGLISH', { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
   await say('And which language would you like to learn?', { keep: true });
   await choose([{ html: `PERSIAN ${F('فارسی', 'farsi')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
-  await say([`${F('فارسی', 'farsi')}! Wonderful choice.`, 'Now, tell me. What is your name?'], { keep: true });
+  await say(`${F('فارسی', 'farsi')}! Wonderful choice.`);
+  const pp = $('#portrait'); pp.innerHTML = `<div class="gender"><img class="mon" src="${charUrl('player')}"><img class="mon" src="${charUrl('playerGirl')}"></div>`;
+  await say('Now, are you a boy or a girl?', { keep: true });
+  const g = await choose([{ html: `BOY ${F('پسر', 'pesar')}` }, { html: `GIRL ${F('دختر', 'dokhtar')}` }], { cls: 'yn', cancel: false }); hideText();
+  pp.innerHTML = `<img class="mon big" src="${portraitUrl('haydeh')}">`;
+  await say('And what is your name?', { keep: true });
   const name = await textInput('YOUR NAME?', 10); hideText();
-  S = newState(name); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
+  S = newState(name); S.gender = g === 1 ? 'girl' : 'boy'; try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
   await say([`${esc(name)}! What a great name.`, `In Persian you introduce yourself like this: ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`, 'Your very own LENGUAMON adventure is about to begin!', 'A world of words awaits. Let\'s go!']);
   p.classList.remove('show'); p.innerHTML = '';
   S.map = 'house'; S.x = 5; S.y = 5; S.dir = 'up';

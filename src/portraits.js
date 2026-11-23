@@ -42,9 +42,9 @@ function portraitSvg(id) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
       <path d="M12,64 C12,48 20,42 32,42 C44,42 52,48 52,64 Z" fill="#30a8a0" ${st}/>
-      <path d="M14,40 C10,20 20,6 32,6 C44,6 54,20 50,40 C46,46 18,46 14,40 Z" fill="#e05888" ${st}/>
+      <path d="M17,44 C12,30 14,10 32,9 C50,10 52,30 47,44 C42,47 22,47 17,44 Z" fill="#2a1810" ${st}/>
       <ellipse cx="32" cy="27" rx="12" ry="13.5" fill="${skin}" ${st}/>
-      <path d="M21,20 C24,13 40,13 43,20 C38,17 26,17 21,20 Z" fill="#3a2418"/>
+      <path d="M20,24 C19,12 45,12 44,24 C40,17 34,16 32,19 C30,16 24,17 20,24 Z" fill="#2a1810" ${st}/>
       ${eyes(false)}<path d="M27,34 Q32,38.5 37,34" fill="none" stroke="#a83a4a" stroke-width="1.6"/>
       <ellipse cx="23" cy="32" rx="2.4" ry="1.4" fill="#ff8a9a" opacity=".5"/><ellipse cx="41" cy="32" rx="2.4" ry="1.4" fill="#ff8a9a" opacity=".5"/>
       <circle cx="46" cy="14" r="3.4" fill="#ff90b8" ${st}/><circle cx="46" cy="14" r="1.3" fill="#fff070"/>
@@ -79,10 +79,10 @@ function portraitSvg(id) {
   // haydeh
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
     <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
-    <path d="M12,64 C12,48 20,42 32,42 C44,42 52,48 52,64 Z" fill="#f4f0e6" ${st}/><path d="M29,42 L32,56 L35,42" fill="#7a3a8a" ${st}/>
-    <path d="M14,40 C10,20 20,6 32,6 C44,6 54,20 50,40 C46,46 18,46 14,40 Z" fill="#7a3a8a" ${st}/>
+    <path d="M12,64 C12,48 20,42 32,42 C44,42 52,48 52,64 Z" fill="#f4f0e6" ${st}/><path d="M29,42 L32,56 L35,42" fill="#2858a8" ${st}/>
+    <circle cx="32" cy="9" r="6" fill="#6a4030" ${st}/>
     <ellipse cx="32" cy="27" rx="12" ry="13.5" fill="${skin}" ${st}/>
-    <path d="M21,20 C24,13 40,13 43,20 C38,17 26,17 21,20 Z" fill="#5a3a2a"/>
+    <path d="M20,26 C18,12 46,12 44,26 C42,18 36,16 32,18 C28,16 22,18 20,26 Z" fill="#6a4030" ${st}/>
     ${eyes(false)}<circle cx="26" cy="27" r="4.6" fill="none" stroke="#2b1d16" stroke-width="1.4"/><circle cx="38" cy="27" r="4.6" fill="none" stroke="#2b1d16" stroke-width="1.4"/><path d="M30.6,27 h2.8" stroke="#2b1d16" stroke-width="1.4"/>
     <path d="M27,34 Q32,38 37,34" fill="none" stroke="#a83a4a" stroke-width="1.6"/>
     <rect x="40" y="48" width="9" height="12" rx="1" fill="#2858a8" ${st}/>

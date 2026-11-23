@@ -82,10 +82,10 @@ function solidAt(m, x, y) {
   return false;
 }
 function placePlayer(map, x, y, dir) { S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
-function musicForPlace() { const r = regionOf(S.map, S.y); SND.music(r === 0 ? 'town' : 'route'); }
+function musicForPlace() { const r = regionOf(S.map, S.y); SND.music(S.map === 'world' && S.y <= 12 ? 'end' : r === 0 ? 'town' : 'route'); }
 
 function drawWorld() {
-  const c = cv().getContext('2d'); c.imageSmoothingEnabled = false;
+  const c = cv().getContext('2d'); c.setTransform(SCALE, 0, 0, SCALE, 0, 0); c.imageSmoothingEnabled = true;
   R(c, 0, 0, 160, 144, '#101018');
   if (!curMap) return;
   let px = PL.x * TS, py = PL.y * TS;
@@ -94,16 +94,16 @@ function drawWorld() {
   let cx = px - 72, cy = py - 64;
   cx = mw <= 160 ? (mw - 160) / 2 : clamp(cx, 0, mw - 160);
   cy = mh <= 144 ? (mh - 144) / 2 : clamp(cy, 0, mh - 144);
-  cx = Math.round(cx); cy = Math.round(cy);
-  c.drawImage(curMap.canvas, -cx, -cy);
+  cx = Math.round(cx * SCALE) / SCALE; cy = Math.round(cy * SCALE) / SCALE;
+  c.drawImage(curMap.canvas, -cx, -cy, mw, mh);
   const ents = [];
   for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[n.look], n.dir, 0) }); }
   let step = 0; if (PL.moving) { const k = (performance.now() - PL.t0) / MOVE_MS; step = k < 0.5 ? (PL.walkPh ? 1 : 2) : 0; }
-  ents.push({ y: py, draw: () => drawChar(c, Math.round(px - cx), Math.round(py - cy - 2), LOOKS.player, PL.dir, step) });
+  ents.push({ y: py, draw: () => drawChar(c, px - cx, py - cy - 2, playerLook(), PL.dir, step) });
   ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
   // tall grass over feet
   const t = curMap.grid[PL.y] && curMap.grid[PL.y][PL.x];
-  if (t === ':' && !PL.moving) { c.save(); c.beginPath(); c.rect(px - cx, py - cy + 10, 16, 6); c.clip(); c.drawImage(curMap.canvas, -cx, -cy); c.restore(); }
+  if (t === ':' && !PL.moving) { c.save(); c.beginPath(); c.rect(px - cx, py - cy + 10, 16, 6); c.clip(); c.drawImage(curMap.canvas, -cx, -cy, mw, mh); c.restore(); }
 }
 let rafOn = false;
 function loop() {

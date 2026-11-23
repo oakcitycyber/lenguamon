@@ -139,6 +139,10 @@ const SND = (() => {
     g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
     o.connect(g); g.connect(dest); o.start(t0); o.stop(t0 + dur + 0.02);
   }
+  function noiseTo(t0, dur, vol, dest) {
+    if (!ac) return; const s = ac.createBufferSource(), g = ac.createGain(), hp = ac.createBiquadFilter(); s.buffer = noiseBuf; hp.type = 'highpass'; hp.frequency.value = 3000;
+    g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur); s.connect(hp); hp.connect(g); g.connect(dest); s.start(t0); s.stop(t0 + dur + .01);
+  }
   function noise(t0, dur, vol = 1) {
     if (!ac) return; const s = ac.createBufferSource(), g = ac.createGain(); s.buffer = noiseBuf;
     g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur); s.connect(g); g.connect(sfxGain); s.start(t0); s.stop(t0 + dur);
@@ -162,14 +166,36 @@ const SND = (() => {
     faint() { tone(500, ac.currentTime, 0.6, 'square', 0.5, sfxGain, 0.2); },
     badge() { const t = ac.currentTime; [[67, 0], [72, .15], [76, .3], [79, .45], [84, .65], [88, .85]].forEach(([n, d]) => tone(N(n), t + d, 0.2)); },
   };
-  // Music: original loops in Persian-flavoured modes (Chahargah / Shur / Homayun colours)
-  const _ = -1;
+  // Music: original 8-bit loops in classical Persian modes (dastgah), with quarter-tones
+  // (koron = x.5 semitones), a 6/8 dance rhythm, and tonbak-style drums (D = dum, t = tak).
+  const _ = -99;
+  const bars = (...b) => b.flat();
   const SONGS = {
-    town: { bpm: 104, root: 60, lead: [7, _, 8, 7, 4, _, 5, 4, 1, _, 0, _, 4, _, _, _, 7, _, 8, 11, 12, _, 11, 8, 7, _, 5, 4, 5, _, _, _], bass: [0, _, _, _, 7, _, _, _, 1, _, _, _, 0, _, _, _, 5, _, _, _, 4, _, _, _, 7, _, _, _, 0, _, _, _] },
-    route: { bpm: 132, root: 62, lead: [0, 3, 5, 7, 8, _, 7, 5, 3, _, 1, 3, 0, _, _, _, 7, 8, 10, 12, 10, 8, 7, 5, 3, 5, 3, 1, 0, _, _, _], bass: [0, _, 0, _, 7, _, 7, _, 5, _, 5, _, 0, _, 0, _, 3, _, 3, _, 5, _, 5, _, 7, _, 7, _, 0, _, 0, _] },
-    battle: { bpm: 156, root: 64, lead: [12, _, 13, 12, 10, 8, 7, _, 8, _, 7, 5, 4, _, 1, _, 0, 1, 4, 5, 7, _, 8, 7, 5, 4, 1, 4, 0, _, _, _], bass: [0, 12, 0, 12, 0, 12, 0, 12, 1, 13, 1, 13, 1, 13, 1, 13, 5, 17, 5, 17, 4, 16, 4, 16, 1, 13, 1, 13, 0, 12, 0, 12] },
-    boss: { bpm: 150, root: 62, lead: [0, _, 1, _, 4, _, 5, 7, 8, _, 7, _, 5, 4, 5, _, 7, 8, 11, 12, 11, 8, 7, 5, 4, _, 1, _, 0, _, _, _], bass: [0, 0, 12, 0, 0, 12, 0, 12, 5, 5, 17, 5, 4, 16, 4, 16, 8, 8, 20, 8, 7, 19, 7, 19, 1, 13, 1, 13, 0, 12, 0, 12] },
-    end: { bpm: 96, root: 60, lead: [12, _, 11, 8, 7, _, 8, _, 7, 5, 4, _, 5, _, _, _, 4, 5, 7, 8, 11, _, 12, _, 11, 8, 7, 5, 4, _, 0, _], bass: [0, _, _, _, 5, _, _, _, 4, _, _, _, 0, _, _, _, 1, _, _, _, 5, _, _, _, 7, _, _, _, 0, _, _, _] },
+    // Mahur (bright, like a major scale): Yazd and the title
+    town: { bpm: 116, root: 60, wave: 'square',
+      lead: bars([7, _, 9, 7, 5, 4], [5, _, 4, 2, _, _], [4, 5, 7, 9, _, 7], [5, 4, 2, 0, _, _], [12, _, 11, 9, _, 7], [9, 7, 5, 4, 2, 0], [2, 4, 5, 4, 2, -1], [0, _, _, _, _, _]),
+      bass: bars([0, _, _, 7, _, _], [7, _, _, 2, _, _], [0, _, _, 7, _, _], [7, _, _, 0, _, _], [5, _, _, 0, _, _], [5, _, _, 0, _, _], [7, _, _, 2, _, _], [0, _, _, 7, _, _]),
+      drums: 'D.tDt.D.tDt.D.tDt.D.tDt.D.tDt.D.tDt.D.tDt.D.tDtt' },
+    // Esfahan mode: the roads
+    route: { bpm: 132, root: 62, wave: 'square',
+      lead: bars([0, 2, 3, 5, _, 3], [2, _, 0, -1, _, _], [3, 5, 7, 8, _, 7], [5, _, 3, 2, _, _], [7, 8, 11, 12, _, 11], [8, 7, 5, 3, _, 2], [3, 2, 0, -1, 2, 3], [0, _, _, _, _, _]),
+      bass: bars([0, _, 7, 0, _, 7], [0, _, 7, -1, _, 7], [5, _, 12, 5, _, 12], [5, _, 12, 7, _, 14], [7, _, 14, 7, _, 14], [8, _, 15, 5, _, 12], [7, _, 14, 7, _, 14], [0, _, 7, 0, _, _]),
+      drums: 'DttDttDttDttDttDttDttDttDttDttDttDttDttDttDttDtDt' },
+    // Chahargah (with its quarter-tone 2nd and 6th): wild battles
+    battle: { bpm: 162, root: 64, wave: 'square',
+      lead: bars([12, 11, 8.5, 7, 8.5, 7], [5, 4, 1.5, 4, _, _], [0, 1.5, 4, 5, 7, 5], [4, 1.5, 0, 1.5, _, _], [7, 8.5, 11, 12, 11, 12], [8.5, 7, 5, 4, 5, 7], [8.5, 7, 5, 4, 1.5, 4], [0, _, 0, _, 0, _]),
+      bass: bars([0, 12, 0, 12, 0, 12], [0, 12, 0, 12, 0, 12], [5, 17, 5, 17, 5, 17], [1.5, 13.5, 1.5, 13.5, 1.5, 13.5], [7, 19, 7, 19, 7, 19], [5, 17, 5, 17, 4, 16], [1.5, 13.5, 1.5, 13.5, 1.5, 13.5], [0, 12, 0, 12, 0, 12]),
+      drums: 'DtDDttDtDDttDtDDttDtDDttDtDDttDtDDttDtDDttDtDtDt' },
+    // Shur (the most Persian of the modes, quarter-tone 2nd): bosses
+    boss: { bpm: 150, root: 62, wave: 'square',
+      lead: bars([7, _, 8, 7, 5, 3], [1.5, 3, 1.5, 0, _, _], [0, 1.5, 3, 5, 3, 1.5], [3, _, 1.5, 0, _, _], [12, 10, 8, 7, 8, 10], [8, 7, 5, 3, 5, 7], [5, 3, 1.5, 3, 1.5, 0], [0, _, -2, 0, _, _]),
+      bass: bars([0, 0, 12, 0, 0, 12], [0, 0, 12, 0, 0, 12], [0, 0, 12, 0, 0, 12], [-2, -2, 10, 0, 0, 12], [8, 8, 20, 8, 8, 20], [5, 5, 17, 3, 3, 15], [1.5, 1.5, 13.5, 1.5, 1.5, 13.5], [0, 0, 12, 0, 0, 12]),
+      drums: 'DttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDttDDtDtDtDD' },
+    // Homayoun (stately, used for poetry): Shiraz and the ending
+    end: { bpm: 96, root: 60, wave: 'triangle',
+      lead: bars([7, _, 8, 10, _, 8], [7, _, 5, 4, _, _], [4, 5, 7, 8, 7, 5], [4, _, 1.5, 0, _, _], [0, 1.5, 4, 5, _, 7], [8, _, 7, 5, 4, 5], [4, _, 1.5, 1.5, 0, _], [0, _, _, _, _, _]),
+      bass: bars([0, _, _, 7, _, _], [5, _, _, 0, _, _], [8, _, _, 5, _, _], [1.5, _, _, 0, _, _], [0, _, _, 7, _, _], [5, _, _, 8, _, _], [1.5, _, _, 7, _, _], [0, _, _, _, _, _]),
+      drums: 'D..t..D..t..D..t..D..t..D..t..D..t..D..t..D.....' },
   };
   let cur = null, step = 0, nextT = 0, timer = null;
   function play(name) {
@@ -182,8 +208,17 @@ const SND = (() => {
       const dt = 60 / song.bpm / 2;
       while (nextT < ac.currentTime + 0.2) {
         const i = step % song.lead.length;
-        if (song.lead[i] >= 0) tone(N(song.root + 12 + song.lead[i]), nextT, dt * 1.6, 'square', 0.5, musicGain);
-        if (song.bass[i] >= 0) tone(N(song.root - 12 + song.bass[i]), nextT, dt * 0.9, 'triangle', 0.9, musicGain);
+        const ln = song.lead[i];
+        if (ln > -50) {
+          // a held note gets a santur-like double strike
+          const held = song.lead[(i + 1) % song.lead.length] <= -50;
+          tone(N(song.root + 12 + ln), nextT, dt * (held ? .9 : 1.4), song.wave, 0.5, musicGain);
+          if (held) tone(N(song.root + 12 + ln), nextT + dt * .5, dt * 1.3, song.wave, 0.32, musicGain);
+        }
+        if (song.bass[i] > -50) tone(N(song.root - 12 + song.bass[i]), nextT, dt * 0.9, 'triangle', 0.9, musicGain);
+        const d = song.drums[i % song.drums.length];
+        if (d === 'D') tone(120, nextT, 0.14, 'sine', 1.1, musicGain, 0.45);
+        if (d === 't') noiseTo(nextT, 0.035, 0.45, musicGain);
         step++; nextT += dt;
       }
     }, 60);
