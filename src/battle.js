@@ -22,7 +22,7 @@ function makeQuestion(w, dir) {
     html: dir === 'en2fa' ? W(x) : `<span class="en">${esc(x.en0)}</span>`,
   }));
   const prompt = dir === 'en2fa'
-    ? `How do you say <b>${esc(w.en0)}</b> in Persian?`
+    ? `How do you say <b>"${esc(w.en0)}"</b> in Persian?`
     : `What does ${W(w)} mean?`;
   return { w, dir, prompt, opts, answerHtml: `${W(w)} = <b>${esc(w.en0)}</b>`, hint: dir === 'en2fa' ? 'Type the Persian (Latin letters)' : 'Type the English' };
 }
