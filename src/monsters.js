@@ -464,7 +464,7 @@ function buildEvolutions() {
     const wt = T.get(w.key), lvl = w.level;
     let c = WORDS.filter(p => p !== w && p.level > lvl && T.get(p.key).length > wt.length && contains(T.get(p.key), wt));
     if (c.length) { c.sort((a, b) => a.level - b.level || a.idx - b.idx); EVO[w.key] = c[0].key; continue; }
-    if (!c.length) { // a phrase whose meaning uses this word's meaning (water -> I want water)
+    if (!c.length && LANG !== 'en') { // a phrase whose meaning uses this word's meaning (water -> I want water)
       const ew = norm(w.en0).split(' ').filter(t => t.length > 2 && !EN_STOP.has(t));
       if (ew.length) c = WORDS.filter(p => p !== w && p.level > lvl && T.get(p.key).length > 1 && ew.every(t => norm(p.en0).split(' ').includes(t)));
     }

@@ -8,7 +8,9 @@ function makeQuestion(w, dir) {
   const tiers = [WORDS.filter(x => x.route === w.route && x.type === w.type), WORDS.filter(x => x.route === w.route), WORDS];
   const picks = [];
   for (const tier of tiers) {
-    for (const x of shuffle(tier)) {
+    // wrong answers of a similar length, so a long phrase doesn't stand out among short words
+    const L0 = w.tr0.length, near = shuffle(tier).map(x => ({ x, d: Math.abs(x.tr0.length - L0) + rand() * 6 })).sort((a, b) => a.d - b.d).map(o => o.x);
+    for (const x of near) {
       if (picks.length >= 3) break;
       if (overlaps(x, w) || picks.some(p => overlaps(p, x))) continue;
       // prefer distractors of similar length so long phrases are not giveaways
