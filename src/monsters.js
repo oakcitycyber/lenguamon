@@ -1,6 +1,6 @@
 // ===== LENGUAMON monsters: smooth SVG caricatures of animals found in Iran =====
 // Ordered from the most common (home and farm) to the rarest. Easy words get common animals,
-// hard words get rare ones. Each animal is called by its Persian name and wears a collar with its English name.
+// hard words get rare ones. Each animal is called by its Persian name and has its English name written underneath.
 const SP = (id, name, tr, fa, kind, fur, fur2, dark, o = {}) => ({ id, name, tr, fa, kind, fur, fur2, dark, ears: 'none', muzzle: 'none', extra: [], ...o });
 const SPECIES = [
   // --- home and farm ---
@@ -425,20 +425,8 @@ function monsterSvg(w, flip = false) {
   }
   if (X.has('beard')) front += sh('path', { d: 'M29.5,40 L32,47 L34.5,40 Z', fill: sp.dark, stroke: OL, 'stroke-width': 1 });
 
-  // ================= collar with the animal's Persian name (phonetic) =================
-  let collar = '';
-  const label = esc(sp.name);
-  if (collarW > 0) {
-    const x1 = 32 - collarW / 2, x2 = 32 + collarW / 2, y = collarY, sag = Math.min(3.5, collarW / 9);
-    collar += sh('path', { d: `M${x1},${y} Q32,${y + sag * 2} ${x2},${y} L${x2},${y + 5.4} Q32,${y + 5.4 + sag * 2} ${x1},${y + 5.4} Z`, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    const len = Math.min(collarW - 2, sp.name.length * 2.1);
-    const q = (len / collarW) ** 2, ye = y + 4.1 + sag * (1 - q);
-    collar += sh('path', { id: 'cp', d: `M${(32 - len / 2).toFixed(2)},${ye.toFixed(2)} Q32,${(ye + 2 * sag * q).toFixed(2)} ${(32 + len / 2).toFixed(2)},${ye.toFixed(2)}`, fill: 'none' });
-    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="3.7" fill="#ffffff"><textPath href="#cp" textLength="${len.toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</textPath></text>`;
-  } else {
-    collar += sh('rect', { x: 8, y: 50, width: 44, height: 7, rx: 3.5, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}x="${flip ? 34 : 30}" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.name.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
-  }
+  // The English name is shown as a label under the monster (monTag), not on the art.
+  const collar = '';
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);
   const order = isFish ? back + head + body + front + face + collar : longBill ? back + body + head + face + front + collar : back + body + collar + head + face + front;
@@ -447,4 +435,5 @@ function monsterSvg(w, flip = false) {
 }
 const MON_URL = {};
 function monUrl(w, flip = false) { const k = w.key + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
+function monTag(w) { return `<div class="mon-tag">${esc(speciesOf(w).name)}</div>`; }
 function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, cls === 'me')}" alt="${esc(w.name)}">`; }

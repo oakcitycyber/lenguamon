@@ -99,9 +99,9 @@ async function gateBoss(id) {
 async function starterScene() {
   const hello = WORD[WORDS.find(w => w.tr0 === 'salam').key];
   await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
-  const p = $('#portrait'); p.innerHTML = monImg(hello, 'big'); p.classList.add('show');
+  const p = $('#portrait'); p.innerHTML = monImg(hello, 'big') + monTag(hello); p.classList.add('show');
   SND.fx('caught');
-  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is on its collar.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
+  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is written underneath.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
   p.classList.remove('show');
   S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([

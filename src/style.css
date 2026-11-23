@@ -232,3 +232,7 @@ button { font: inherit; cursor: pointer; }
 .fx.dmg.miss { color: #ffffff; }
 .fx.dmg.crit { color: #ffb020; font-size: 1.05em; margin-top: calc(var(--u) * -10); }
 @keyframes floatUp { 0% { transform: translate(-50%, -30%) scale(.6); opacity: 0; } 20% { transform: translate(-50%, -70%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%, -190%) scale(1); opacity: 0; } }
+
+/* English species name under each monster */
+.mon-tag { position: absolute; left: 50%; bottom: calc(var(--u) * -1); transform: translateX(-50%); white-space: nowrap; background: var(--navy); color: #fff; font-family: Verdana, Arial, sans-serif; font-weight: 700; font-size: calc(var(--u) * 3.2); letter-spacing: .02em; padding: calc(var(--u) * .5) calc(var(--u) * 2); border-radius: calc(var(--u) * 3); border: calc(var(--u) * .5) solid var(--ink); z-index: 2; }
+#portrait .mon-tag { position: static; display: table; transform: none; margin: calc(var(--u) * 2) auto 0; font-size: calc(var(--u) * 4.2); }

@@ -241,6 +241,10 @@ button { font: inherit; cursor: pointer; }
 .fx.dmg.crit { color: #ffb020; font-size: 1.05em; margin-top: calc(var(--u) * -10); }
 @keyframes floatUp { 0% { transform: translate(-50%, -30%) scale(.6); opacity: 0; } 20% { transform: translate(-50%, -70%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%, -190%) scale(1); opacity: 0; } }
 
+/* English species name under each monster */
+.mon-tag { position: absolute; left: 50%; bottom: calc(var(--u) * -1); transform: translateX(-50%); white-space: nowrap; background: var(--navy); color: #fff; font-family: Verdana, Arial, sans-serif; font-weight: 700; font-size: calc(var(--u) * 3.2); letter-spacing: .02em; padding: calc(var(--u) * .5) calc(var(--u) * 2); border-radius: calc(var(--u) * 3); border: calc(var(--u) * .5) solid var(--ink); z-index: 2; }
+#portrait .mon-tag { position: static; display: table; transform: none; margin: calc(var(--u) * 2) auto 0; font-size: calc(var(--u) * 4.2); }
+
 </style>
 </head>
 <body>
@@ -1295,7 +1299,7 @@ const playerLook = () => (S && S.gender === 'girl' ? LOOKS.playerGirl : LOOKS.pl
 
 // ===== LENGUAMON monsters: smooth SVG caricatures of animals found in Iran =====
 // Ordered from the most common (home and farm) to the rarest. Easy words get common animals,
-// hard words get rare ones. Each animal is called by its Persian name and wears a collar with its English name.
+// hard words get rare ones. Each animal is called by its Persian name and has its English name written underneath.
 const SP = (id, name, tr, fa, kind, fur, fur2, dark, o = {}) => ({ id, name, tr, fa, kind, fur, fur2, dark, ears: 'none', muzzle: 'none', extra: [], ...o });
 const SPECIES = [
   // --- home and farm ---
@@ -1720,20 +1724,8 @@ function monsterSvg(w, flip = false) {
   }
   if (X.has('beard')) front += sh('path', { d: 'M29.5,40 L32,47 L34.5,40 Z', fill: sp.dark, stroke: OL, 'stroke-width': 1 });
 
-  // ================= collar with the animal's Persian name (phonetic) =================
-  let collar = '';
-  const label = esc(sp.name);
-  if (collarW > 0) {
-    const x1 = 32 - collarW / 2, x2 = 32 + collarW / 2, y = collarY, sag = Math.min(3.5, collarW / 9);
-    collar += sh('path', { d: `M${x1},${y} Q32,${y + sag * 2} ${x2},${y} L${x2},${y + 5.4} Q32,${y + 5.4 + sag * 2} ${x1},${y + 5.4} Z`, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    const len = Math.min(collarW - 2, sp.name.length * 2.1);
-    const q = (len / collarW) ** 2, ye = y + 4.1 + sag * (1 - q);
-    collar += sh('path', { id: 'cp', d: `M${(32 - len / 2).toFixed(2)},${ye.toFixed(2)} Q32,${(ye + 2 * sag * q).toFixed(2)} ${(32 + len / 2).toFixed(2)},${ye.toFixed(2)}`, fill: 'none' });
-    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="3.7" fill="#ffffff"><textPath href="#cp" textLength="${len.toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</textPath></text>`;
-  } else {
-    collar += sh('rect', { x: 8, y: 50, width: 44, height: 7, rx: 3.5, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}x="${flip ? 34 : 30}" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.name.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
-  }
+  // The English name is shown as a label under the monster (monTag), not on the art.
+  const collar = '';
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);
   const order = isFish ? back + head + body + front + face + collar : longBill ? back + body + head + face + front + collar : back + body + collar + head + face + front;
@@ -1742,6 +1734,7 @@ function monsterSvg(w, flip = false) {
 }
 const MON_URL = {};
 function monUrl(w, flip = false) { const k = w.key + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
+function monTag(w) { return `<div class="mon-tag">${esc(speciesOf(w).name)}</div>`; }
 function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, cls === 'me')}" alt="${esc(w.name)}">`; }
 
 // ===== LENGUAMON portraits: invented caricatures for bosses and the professor =====
@@ -2426,10 +2419,10 @@ function bDraw() {
   $('#b-foe').innerHTML = BT.boss
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
     : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
-  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe');
+  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe') + monTag(fw);
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
-    $('#b-me-spr').innerHTML = monImg(mw, 'me');
+    $('#b-me-spr').innerHTML = monImg(mw, 'me') + monTag(mw);
   }
 }
 async function anim(sel, cls, ms = 400) { const e = $(sel); if (!e) return; e.classList.remove(cls); void e.offsetWidth; e.classList.add(cls); await sleep(ms); e.classList.remove(cls); }
@@ -2828,9 +2821,9 @@ async function gateBoss(id) {
 async function starterScene() {
   const hello = WORD[WORDS.find(w => w.tr0 === 'salam').key];
   await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
-  const p = $('#portrait'); p.innerHTML = monImg(hello, 'big'); p.classList.add('show');
+  const p = $('#portrait'); p.innerHTML = monImg(hello, 'big') + monTag(hello); p.classList.add('show');
   SND.fx('caught');
-  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is on its collar.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
+  await say([`A little ${B('MOOSH')} ${F('موش', 'moosh')}! That is Persian for mouse. Its English name is written underneath.`, `It carries the first word everyone learns: ${W(hello)} = "hello".`, `${esc(S.name)} received ${B('MOOSH')}!`]);
   p.classList.remove('show');
   S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
   await say([

@@ -73,10 +73,10 @@ function bDraw() {
   $('#b-foe').innerHTML = BT.boss
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
     : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
-  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe');
+  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe') + monTag(fw);
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
-    $('#b-me-spr').innerHTML = monImg(mw, 'me');
+    $('#b-me-spr').innerHTML = monImg(mw, 'me') + monTag(mw);
   }
 }
 async function anim(sel, cls, ms = 400) { const e = $(sel); if (!e) return; e.classList.remove(cls); void e.offsetWidth; e.classList.add(cls); await sleep(ms); e.classList.remove(cls); }
