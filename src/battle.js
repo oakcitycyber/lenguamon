@@ -164,10 +164,10 @@ async function handleFaint() {
   BT.me = S.team[r]; bDraw(); await say(`Go! ${esc(monW(BT.me).name)}!`); return true;
 }
 async function blackout() {
-  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to Agha Reza's teahouse...`]);
+  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to ${G('Agha Reza', 'Khanom Zari')}'s teahouse...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
   healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say(`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  await say(`${G('AGHA REZA', 'KHANOM ZARI')}: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
   await teaScene();
   await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
@@ -231,7 +231,7 @@ async function wildEncounter(route) {
       }
       if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
     } else if (r === 1) {
-      if (S.daftar <= 0) { await say("You're out of DAFTARS! Agha Reza at the teahouse can give you more."); continue; }
+      if (S.daftar <= 0) { await say(`You're out of DAFTARS! ${G('Agha Reza', 'Khanom Zari')} at the teahouse can give you more.`); continue; }
       S.daftar--;
       await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');

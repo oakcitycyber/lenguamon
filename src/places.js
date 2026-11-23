@@ -1,25 +1,31 @@
 // ===== LENGUAMON places: a teahouse and a zurkhaneh (traditional gym) in every city =====
 
-// ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers ----
+// ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers (or, for a girl hero, the brothers' wives) ----
 async function teaHost(name, vest, lines) {
   await say(lines.map(l => T(name, l)));
   await teaScene(vest, name); await say(['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some DAFTARS too. You now have 5.`); }
 }
-npc('!', { look: 'hassan', talk: () => teaHost('AGHA HASSAN', '#3a5a7a', [
+npc('!', { look: 'hassan', lookG: 'parvin', talk: () => isGirl() ? teaHost('KHANOM PARVIN', null, [
+  `${F('خوش اومدی', 'khosh oomadi')}, ${F('عزیزم', 'azizam')}! Welcome, dear! I am Khanom Parvin.`,
+  'My sister-in-law Zari pours tea in Yazd. Mine is better, but do not tell her!',
+  `A glass of ${F('چای', 'chai')} with ${F('گز', 'gaz')}, the nougat Isfahan is famous for?`]) : teaHost('AGHA HASSAN', null, [
   `${F('خوش اومدی', 'khosh oomadi')}! Welcome! I am Agha Hassan, Agha Reza's big brother.`,
   'Everyone in Isfahan says we look exactly alike. I say I am the handsome one!',
   `Sit, sit. A glass of ${F('چای', 'chai')}?`]) });
-npc('$', { look: 'karim', talk: () => teaHost('AGHA KARIM', '#2f5a3a', [
+npc('$', { look: 'karim', lookG: 'shahla', talk: () => isGirl() ? teaHost('KHANOM SHAHLA', null, [
+  `${F('سلام', 'salam')}, ${F('دخترم', 'dokhtaram')}! I am Khanom Shahla. My sisters-in-law Zari and Parvin pour tea in Yazd and Isfahan.`,
+  'But here in Shiraz I put a little rosewater in the pot. Smell that!',
+  `${F('بفرمایید', 'befarmaid')}, have a glass.`]) : teaHost('AGHA KARIM', null, [
   `${F('سلام', 'salam')}, traveller! I am Agha Karim. My brothers Reza and Hassan pour tea in Yazd and Isfahan.`,
   'But only Shiraz has tea this good. The roses make the air sweet!',
   `${F('بفرمایید', 'befarmaid')}, have a glass.`]) });
 
 // ---- zurkhanehs: train on the words of each city ----
 const GYMS = {
-  '<': { route: 1, city: 'YAZD', name: 'MORSHED JAMSHID' },
-  '>': { route: 2, city: 'ISFAHAN', name: 'MORSHED SOHRAB' },
-  '?': { route: 3, city: 'SHIRAZ', name: 'MORSHED ROSTAM' },
+  '<': { route: 1, city: 'YAZD', boy: 'MORSHED JAMSHID', girl: 'MORSHED GORDAFARID' },
+  '>': { route: 2, city: 'ISFAHAN', boy: 'MORSHED SOHRAB', girl: 'MORSHED TAHMINEH' },
+  '?': { route: 3, city: 'SHIRAZ', boy: 'MORSHED ROSTAM', girl: 'MORSHED RUDABEH' },
 };
 const GYM_ROUNDS = 8;
 function gymWords(route) {
@@ -58,11 +64,13 @@ async function gymDrill(g) {
   if (perfect) { S.daftar += 2; await say(`${g.name} gave you 2 DAFTARS. You now have ${S.daftar}.`); }
   writeSave();
 }
-async function gymTalk(g) {
+async function gymTalk(g0) {
+  const g = { ...g0, name: G(g0.boy, g0.girl) };
   const met = 'gym' + g.route;
   if (!S.flags[met]) {
     await say([T(g.name, `${F('خوش آمدید', 'khosh amadid')}! Welcome to the ${F('زورخانه', 'zoorkhaneh')}, the house of strength.`),
       'Here athletes swing the heavy meel clubs while I beat the drum and sing the Shahnameh, the Book of Kings.',
+      ...(isGirl() ? ['I am named for Gordafarid, Tahmineh and Rudabeh, the brave women of the Shahnameh. This pit trains women too!'] : []),
       `But you, young ${F('پهلوان', 'pahlevan')}, will train your WORDS.`]);
     S.flags[met] = true;
   }
@@ -71,7 +79,7 @@ async function gymTalk(g) {
   await say(T(g.name, '*BOOM, ba-da BOOM* goes the drum. Begin!'));
   await gymDrill(g);
 }
-for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', talk: () => gymTalk(g) });
-npc('|', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('KAVEH', `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
-npc('_', { look: 'pahlevan', dir: 'right', talk: async () => { await say([T('BIZHAN', `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
-npc(';', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('GIV', `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });
+for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', lookG: 'morshedF', talk: () => gymTalk(g) });
+npc('|', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('KAVEH', 'KATAYOUN'), `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
+npc('_', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'right', talk: async () => { await say([T(G('BIZHAN', 'MANIZHEH'), `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
+npc(';', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('GIV', 'FARANGIS'), `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });

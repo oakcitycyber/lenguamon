@@ -22,26 +22,24 @@ npc('y', { look: 'haydeh', talk: async () => {
   await say([T('HAYDEH', `${F('سلام', 'salam')}, ${nm()}! How is your Lenguadex?`), `You have caught ${B(caughtCount())} words.`, `NEXT: ${nextGoal()}`]);
   if (S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('HAYDEH: Take some fresh DAFTARS. You now have 5.'); }
 } });
-npc('z', { look: 'arash', dir: 'up', talk: async () => {
-  await say([T('ARASH', `I'm practising for the Basij checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
+npc('z', { look: 'arash', lookG: 'ava', dir: 'up', talk: async () => {
+  await say([T(G('ARASH', 'AVA'), `I'm practising for the Basij checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
 } });
-npc('r', { look: 'reza', talk: async () => {
-  await say(T('AGHA REZA', `${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`));
-  await teaScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
-  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('AGHA REZA: And here, take some DAFTARS for your journey. You now have 5.'); }
+npc('r', { look: 'reza', lookG: 'zari', talk: () => isGirl()
+  ? teaHost('KHANOM ZARI', null, [`${F('بفرمایید', 'befarmaid')}, ${F('دخترم', 'dokhtaram')}! Come in, my daughter!`, `I am Khanom Zari, Agha Reza's wife. He is at the bazaar, so today I pour the ${F('چای', 'chai')}.`, 'Sit, sit. You look like you need a glass.'])
+  : teaHost('AGHA REZA', null, [`${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`]) });
+npc('j', { look: 'mahmoud', lookG: 'grandma', dir: 'left', talk: async () => {
+  await say([T(G('AGHA MAHMOUD', 'MAMAN BOZORG'), G('An old Persian saying:', `I am everyone's ${F('مامان بزرگ', 'maman bozorg')}, grandma! Here is an old Persian saying:`)), F('قطره قطره جمع گردد، وانگهی دریا شود', 'ghatreh ghatreh jam gardad, vangahi darya shavad'), '"Drop by drop it gathers, and then it becomes a sea." Learn a few words every day!']);
 } });
-npc('j', { look: 'mahmoud', dir: 'left', talk: async () => {
-  await say([T('AGHA MAHMOUD', 'An old Persian saying:'), F('قطره قطره جمع گردد، وانگهی دریا شود', 'ghatreh ghatreh jam gardad, vangahi darya shavad'), '"Drop by drop it gathers, and then it becomes a sea." Learn a few words every day!']);
-} });
-npc('9', { look: 'babak', where: () => S.flags.starter ? [8, 63] : null, talk: async () => {
-  if (!S.flags.starter) { await say([T('AGHA BABAK', `${F('صبر کن', 'sabr kon')}! Wait!`), 'Wild Lenguamon live in the tall grass up north. You need your own Lenguamon first!', 'Go see Professor Haydeh at the school.']); return; }
-  await say(T('AGHA BABAK', `The path is open. ${F('موفق باشی', 'movafagh bashi')}! Good luck!`));
+npc('9', { look: 'babak', lookG: 'bahar', where: () => S.flags.starter ? [8, 63] : null, talk: async () => {
+  if (!S.flags.starter) { await say([T(G('AGHA BABAK', 'KHANOM BAHAR'), `${F('صبر کن', 'sabr kon')}! Wait!`), 'Wild Lenguamon live in the tall grass up north. You need your own Lenguamon first!', 'Go see Professor Haydeh at the school.']); return; }
+  await say(T(G('AGHA BABAK', 'KHANOM BAHAR'), `The path is open. ${F('موفق باشی', 'movafagh bashi')}! Good luck!`));
 } });
 npc('s', { look: 'nasrin', talk: async () => {
-  await say([T('KHANOM NASRIN', 'Wild Lenguamon hide in the dark tall grass.'), 'Weaken them with quiz attacks, then write them in your DAFTAR to catch them!', 'If you get tired, Agha Reza\'s teahouse is in the south-east corner.']);
+  await say([T('KHANOM NASRIN', 'Wild Lenguamon hide in the dark tall grass.'), 'Weaken them with quiz attacks, then write them in your DAFTAR to catch them!', `If you get tired, ${G('Agha Reza', 'Khanom Zari')}'s teahouse is in the south-east corner.`]);
 } });
-npc('v', { look: 'farhad', dir: 'right', talk: async () => {
-  await say([T('FARHAD', `To get someone's attention, say ${F('ببخشید', 'bebakhshid')}.`), 'It means "excuse me" AND "sorry". Very useful!']);
+npc('v', { look: 'farhad', lookG: 'fereshteh', dir: 'right', talk: async () => {
+  await say([T(G('FARHAD', 'FERESHTEH'), `To get someone's attention, say ${F('ببخشید', 'bebakhshid')}.`), 'It means "excuse me" AND "sorry". Very useful!']);
 } });
 npc('g', { look: 'golnaz', dir: 'left', talk: async () => {
   await say([T('GOLNAZ', `When someone speaks too fast, say ${F('نمی‌فهمم', 'nemifahmam')}: "I don't understand".`), `Then ask: ${F('لطفا دوباره بگو', 'lotfan dobare begu')}, "please say it again".`]);
@@ -50,21 +48,21 @@ npc('1', { look: 'basij', where: () => S.flags.b1 ? [11, 48] : null, talk: async
   if (S.flags.b1) { await say(T('BASIJI', `Hmph. You again? ${F('برو', 'boro')}! Go! Isfahan is north.`)); return; }
   await gateBoss('b1');
 } });
-npc('i', { look: 'kian', dir: 'left', talk: async () => {
-  await say([T('KIAN', `I can count to ten! ${F('یک، دو، سه', 'yek, do, se')}...`), F('چهار، پنج، شش، هفت، هشت، نه، ده!', 'chahar, panj, shesh, haft, hasht, noh, dah!'), 'Hehe! Can you? The big bridge here, Si-o-se-pol, means 33 bridges: ' + F('سی و سه پل', 'si-o-se pol')]);
+npc('i', { look: 'kian', lookG: 'kimia', dir: 'left', talk: async () => {
+  await say([T(G('KIAN', 'KIMIA'), `I can count to ten! ${F('یک، دو، سه', 'yek, do, se')}...`), F('چهار، پنج، شش، هفت، هشت، نه، ده!', 'chahar, panj, shesh, haft, hasht, noh, dah!'), 'Hehe! Can you? The big bridge here, Si-o-se-pol, means 33 bridges: ' + F('سی و سه پل', 'si-o-se pol')]);
 } });
 npc('e', { look: 'maryam', talk: async () => {
   await say([T('MARYAM', `At the bazaar, ask ${F('قیمتش چنده؟', 'gheymatesh chande?')}: "how much does it cost?"`), `If it costs too much, say ${F('خیلی گرونه!', 'kheyli geroone!')} and the price drops!`]);
 } });
-npc('q', { look: 'navid', dir: 'right', talk: async () => {
-  await say([T('NAVID', `We pay in ${F('تومن', 'toman')}. ${F('هزار', 'hezar')} means one thousand.`), `So ${F('پنجاه هزار تومن', 'panjah hezar toman')} is 50,000 toman. Saffron? Pistachios? Sumac?`]);
+npc('q', { look: 'navid', lookG: 'nazanin', dir: 'right', talk: async () => {
+  await say([T(G('NAVID', 'NAZANIN'), `We pay in ${F('تومن', 'toman')}. ${F('هزار', 'hezar')} means one thousand.`), `So ${F('پنجاه هزار تومن', 'panjah hezar toman')} is 50,000 toman. Saffron? Pistachios? Sumac?`]);
 } });
 npc('2', { look: 'irgc', where: () => S.flags.b2 ? [11, 26] : null, talk: async () => {
   if (S.flags.b2) { await say(T('IRGC COMMANDER', `Move along. ${F('زود باش', 'zood bash')}! Hurry!`)); return; }
   await gateBoss('b2');
 } });
-npc('o', { look: 'omid', dir: 'left', talk: async () => {
-  await say([T('OMID', `When someone serves you food, they say ${F('نوش جان', 'noosh-e jan')}.`), `And if the food is great, tell them: ${F('خیلی خوشمزه است', 'kheyli khoshmazeh ast')}!`]);
+npc('o', { look: 'omid', lookG: 'mina', dir: 'left', talk: async () => {
+  await say([T(G('OMID', 'MINA'), `When someone serves you food, they say ${F('نوش جان', 'noosh-e jan')}.`), `And if the food is great, tell them: ${F('خیلی خوشمزه است', 'kheyli khoshmazeh ast')}!`]);
 } });
 npc('a', { look: 'parisa', dir: 'left', talk: async () => {
   await say([T('PARISA', `${F('هوا چطوره؟', 'hava chetore?')} means "how's the weather?"`), `Today it's ${F('آفتابی', 'aftabi')}: sunny! Shirin loves to talk about the weather.`]);

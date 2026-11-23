@@ -59,6 +59,7 @@ function drawChar(ctx, px, py, L, dir, step) {
   if (L.kef) { rrect(c, 5.3, 7.3, 5.4, 1.6, .7, '#f4f0e4', true, .4); c.fillStyle = '#1a1a1a'; for (let i = 0; i < 4; i++) c.fillRect(5.8 + i * 1.3, 7.7 + (i % 2) * .6, .45, .45); }
   if (dir === 'left') { rrect(c, 8.5, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, 9.2, 11.9, .6, .6, L.skin); }
   else { for (const ax of [4.3, 10.3]) { rrect(c, ax, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, ax + .7, 11.9, .6, .6, L.skin); } }
+  if (L.scarf && dir !== 'up') { el(c, HX + (dir === 'left' ? .5 : 0), HY + .4, HR + .9, HR + 1.15, L.scarf, O, .45); }
   el(c, HX, HY, HR, HR * 1.02, L.skin, O, .45);
   const L0 = HX - HR - .1, R0 = HX + HR + .1, T0 = HY - HR - .6;
   if (dir === 'up') {
@@ -103,6 +104,17 @@ function drawChar(ctx, px, py, L, dir, step) {
     if (L.beard) { c.beginPath(); c.moveTo(L0 + .2, HY + 1.4); c.quadraticCurveTo(L0 + .6, HY + 4, HX + .2, HY + 3.6); c.lineTo(HX + 1.4, HY + 2); c.quadraticCurveTo(HX - .8, HY + 2.7, L0 + .2, HY + 1.4); c.fillStyle = hairC; c.fill(); }
     if (L.stache) { c.beginPath(); c.moveTo(L0 + .2, HY + 2.1); c.quadraticCurveTo(HX - 2.4, HY + 1.6, HX - 1.4, HY + 2.2); c.quadraticCurveTo(HX - 2.5, HY + 2.6, L0 + .2, HY + 2.1); c.fillStyle = hairC; c.fill(); }
   }
+  if (L.scarf) {
+    c.beginPath();
+    if (dir === 'up') c.ellipse(HX, HY - .1, HR + .7, HR + .8, 0, 0, 7);
+    else if (dir === 'down') { c.moveTo(L0 - .5, HY + 1.3); c.bezierCurveTo(L0 - .7, T0 - 1.3, R0 + .7, T0 - 1.3, R0 + .5, HY + 1.3); c.quadraticCurveTo(R0 - .5, HY - 1.2, HX, HY - 1.5); c.quadraticCurveTo(L0 + .5, HY - 1.2, L0 - .5, HY + 1.3); }
+    else { c.moveTo(HX - 2.6, HY - .2); c.bezierCurveTo(HX - 2.9, T0 - 1.2, R0 + 1, T0 - .8, R0 + 1.2, HY + 1.4); c.lineTo(R0 + .3, HY + HR + 1.4); c.quadraticCurveTo(HX + .6, HY + HR + 1, HX + .3, HY + 1.2); c.quadraticCurveTo(HX - .6, HY - 1.4, HX - 2.6, HY - .2); }
+    c.fillStyle = L.scarf; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
+    const dots = dir === 'up' ? [[-1.6, -1], [1.4, -1.8], [0, .8], [-1, 2.2], [1.8, 1.6]] : dir === 'down' ? [[-2.2, -1.6], [0, -2.9], [2.2, -1.6]] : [[1, -2.6], [2.6, -.6], [3.4, 2]];
+    for (const [dx, dy] of dots) el(c, HX + dx, HY + dy, .45, .45, L.scarf2 || '#f4e8d0');
+    if (dir === 'down') { c.beginPath(); c.moveTo(HX - .9, HY + HR + .5); c.lineTo(HX + .9, HY + HR + .5); c.lineTo(HX, HY + HR + 2); c.closePath(); c.fillStyle = L.scarf; c.fill(); c.stroke(); }
+  }
+  if (L.apron && dir !== 'up') { rrect(c, dir === 'left' ? 5.4 : 6.1, 9, dir === 'left' ? 2.6 : 3.8, 3.4, .5, '#f2ece0', true, .35); }
   if (L.cap) {
     c.beginPath(); c.moveTo(L0 - .1, HY - .6); c.bezierCurveTo(L0 - .1, T0 - .6, R0 + .1, T0 - .6, R0 + .1, HY - .6); c.closePath(); c.fillStyle = L.cap; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
     if (dir === 'down') { rrect(c, L0 - .5, HY - 1, R0 - L0 + 1, 1.1, .5, '#26301a', true, .35); el(c, HX, HY - 2.3, .65, .6, C.gold); }
@@ -178,6 +190,19 @@ Object.assign(LOOKS, {
   // the hero: worn leather jacket over a tee, dark jeans, sneakers, shades pushed up
   player: { skin: '#eebf96', hair: '#1e1612', hairStyle: 'swoop', top: '#6a4430', top2: '#3e2618', tee: '#e9e4d8', legs: '#2c3448', kicks: '#b8333a', shades: true },
   playerGirl: { skin: '#eebf96', hair: '#22160f', hairStyle: 'long', top: '#2e2a2c', top2: '#141214', tee: '#c8913a', legs: '#2c3448', kicks: '#2f7f7a', shades: true, hoops: true },
+  // women counterparts, shown when the hero is a girl. Older women wear a headscarf.
+  zari: { skin: '#ecbc94', hair: '#a8a8a8', hairStyle: 'bald', top: '#7a2e3a', top2: '#521c26', legs: '#3a2a2a', scarf: '#8a5a40', scarf2: '#f0c0a0', apron: true },
+  parvin: { skin: '#e8b890', hair: '#b0b0b0', hairStyle: 'bald', top: '#3a4a6a', top2: '#26324a', legs: '#2a2a3a', scarf: '#2f6a6a', scarf2: '#f6e4b0', apron: true },
+  shahla: { skin: '#e4b48c', hair: '#a0a0a0', hairStyle: 'bald', top: '#5a3a5a', top2: '#3a243a', legs: '#2a2030', scarf: '#a84a4a', scarf2: '#ffe0e0', apron: true },
+  grandma: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#4a5a3a', top2: '#323e26', legs: '#302820', scarf: '#5a4a7a', scarf2: '#e8e0f8' },
+  ava: { skin: '#f0c49c', hair: '#2a1a10', hairStyle: 'long', top: '#d83040', top2: '#a01828', legs: '#283048' },
+  bahar: { skin: '#e8b890', hair: '#201810', hairStyle: 'bun', top: '#806040', top2: '#5a4028', legs: '#302820' },
+  fereshteh: { skin: '#e8b890', hair: '#4a2a14', hairStyle: 'long', top: '#48a060', top2: '#287040', legs: '#383020' },
+  kimia: { skin: '#f4c8a0', hair: '#5a3818', hairStyle: 'bun', top: '#f0c020', top2: '#c89000', legs: '#3858a8', small: true },
+  nazanin: { skin: '#e8b890', hair: '#1a1010', hairStyle: 'bun', top: '#c87830', top2: '#8a4a18', legs: '#403020' },
+  mina: { skin: '#e8b890', hair: '#3a2010', hairStyle: 'long', top: '#8858c8', top2: '#5a3090', legs: '#302838' },
+  morshedF: { skin: '#e0b088', hair: '#9a9a9a', hairStyle: 'bun', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', coat: true },
+  pahlevanF: { skin: '#e0ac80', hair: '#1a120c', hairStyle: 'bun', top: '#8a2a2a', top2: '#5a1a1a', legs: '#c89a3a' },
   hassan: { skin: '#e8b890', hair: '#a0a0a0', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a4a5a', stache: true },
   karim: { skin: '#e4b48c', hair: '#8a8a8a', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a5a3a', stache: true },
   morshed: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', stache: true, beard: true },

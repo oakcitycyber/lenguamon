@@ -1189,6 +1189,7 @@ function drawChar(ctx, px, py, L, dir, step) {
   if (L.kef) { rrect(c, 5.3, 7.3, 5.4, 1.6, .7, '#f4f0e4', true, .4); c.fillStyle = '#1a1a1a'; for (let i = 0; i < 4; i++) c.fillRect(5.8 + i * 1.3, 7.7 + (i % 2) * .6, .45, .45); }
   if (dir === 'left') { rrect(c, 8.5, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, 9.2, 11.9, .6, .6, L.skin); }
   else { for (const ax of [4.3, 10.3]) { rrect(c, ax, 8.1, 1.4, 3.6, .7, L.top, true, .4); el(c, ax + .7, 11.9, .6, .6, L.skin); } }
+  if (L.scarf && dir !== 'up') { el(c, HX + (dir === 'left' ? .5 : 0), HY + .4, HR + .9, HR + 1.15, L.scarf, O, .45); }
   el(c, HX, HY, HR, HR * 1.02, L.skin, O, .45);
   const L0 = HX - HR - .1, R0 = HX + HR + .1, T0 = HY - HR - .6;
   if (dir === 'up') {
@@ -1233,6 +1234,17 @@ function drawChar(ctx, px, py, L, dir, step) {
     if (L.beard) { c.beginPath(); c.moveTo(L0 + .2, HY + 1.4); c.quadraticCurveTo(L0 + .6, HY + 4, HX + .2, HY + 3.6); c.lineTo(HX + 1.4, HY + 2); c.quadraticCurveTo(HX - .8, HY + 2.7, L0 + .2, HY + 1.4); c.fillStyle = hairC; c.fill(); }
     if (L.stache) { c.beginPath(); c.moveTo(L0 + .2, HY + 2.1); c.quadraticCurveTo(HX - 2.4, HY + 1.6, HX - 1.4, HY + 2.2); c.quadraticCurveTo(HX - 2.5, HY + 2.6, L0 + .2, HY + 2.1); c.fillStyle = hairC; c.fill(); }
   }
+  if (L.scarf) {
+    c.beginPath();
+    if (dir === 'up') c.ellipse(HX, HY - .1, HR + .7, HR + .8, 0, 0, 7);
+    else if (dir === 'down') { c.moveTo(L0 - .5, HY + 1.3); c.bezierCurveTo(L0 - .7, T0 - 1.3, R0 + .7, T0 - 1.3, R0 + .5, HY + 1.3); c.quadraticCurveTo(R0 - .5, HY - 1.2, HX, HY - 1.5); c.quadraticCurveTo(L0 + .5, HY - 1.2, L0 - .5, HY + 1.3); }
+    else { c.moveTo(HX - 2.6, HY - .2); c.bezierCurveTo(HX - 2.9, T0 - 1.2, R0 + 1, T0 - .8, R0 + 1.2, HY + 1.4); c.lineTo(R0 + .3, HY + HR + 1.4); c.quadraticCurveTo(HX + .6, HY + HR + 1, HX + .3, HY + 1.2); c.quadraticCurveTo(HX - .6, HY - 1.4, HX - 2.6, HY - .2); }
+    c.fillStyle = L.scarf; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
+    const dots = dir === 'up' ? [[-1.6, -1], [1.4, -1.8], [0, .8], [-1, 2.2], [1.8, 1.6]] : dir === 'down' ? [[-2.2, -1.6], [0, -2.9], [2.2, -1.6]] : [[1, -2.6], [2.6, -.6], [3.4, 2]];
+    for (const [dx, dy] of dots) el(c, HX + dx, HY + dy, .45, .45, L.scarf2 || '#f4e8d0');
+    if (dir === 'down') { c.beginPath(); c.moveTo(HX - .9, HY + HR + .5); c.lineTo(HX + .9, HY + HR + .5); c.lineTo(HX, HY + HR + 2); c.closePath(); c.fillStyle = L.scarf; c.fill(); c.stroke(); }
+  }
+  if (L.apron && dir !== 'up') { rrect(c, dir === 'left' ? 5.4 : 6.1, 9, dir === 'left' ? 2.6 : 3.8, 3.4, .5, '#f2ece0', true, .35); }
   if (L.cap) {
     c.beginPath(); c.moveTo(L0 - .1, HY - .6); c.bezierCurveTo(L0 - .1, T0 - .6, R0 + .1, T0 - .6, R0 + .1, HY - .6); c.closePath(); c.fillStyle = L.cap; c.fill(); c.strokeStyle = O; c.lineWidth = .45; c.stroke();
     if (dir === 'down') { rrect(c, L0 - .5, HY - 1, R0 - L0 + 1, 1.1, .5, '#26301a', true, .35); el(c, HX, HY - 2.3, .65, .6, C.gold); }
@@ -1308,6 +1320,19 @@ Object.assign(LOOKS, {
   // the hero: worn leather jacket over a tee, dark jeans, sneakers, shades pushed up
   player: { skin: '#eebf96', hair: '#1e1612', hairStyle: 'swoop', top: '#6a4430', top2: '#3e2618', tee: '#e9e4d8', legs: '#2c3448', kicks: '#b8333a', shades: true },
   playerGirl: { skin: '#eebf96', hair: '#22160f', hairStyle: 'long', top: '#2e2a2c', top2: '#141214', tee: '#c8913a', legs: '#2c3448', kicks: '#2f7f7a', shades: true, hoops: true },
+  // women counterparts, shown when the hero is a girl. Older women wear a headscarf.
+  zari: { skin: '#ecbc94', hair: '#a8a8a8', hairStyle: 'bald', top: '#7a2e3a', top2: '#521c26', legs: '#3a2a2a', scarf: '#8a5a40', scarf2: '#f0c0a0', apron: true },
+  parvin: { skin: '#e8b890', hair: '#b0b0b0', hairStyle: 'bald', top: '#3a4a6a', top2: '#26324a', legs: '#2a2a3a', scarf: '#2f6a6a', scarf2: '#f6e4b0', apron: true },
+  shahla: { skin: '#e4b48c', hair: '#a0a0a0', hairStyle: 'bald', top: '#5a3a5a', top2: '#3a243a', legs: '#2a2030', scarf: '#a84a4a', scarf2: '#ffe0e0', apron: true },
+  grandma: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#4a5a3a', top2: '#323e26', legs: '#302820', scarf: '#5a4a7a', scarf2: '#e8e0f8' },
+  ava: { skin: '#f0c49c', hair: '#2a1a10', hairStyle: 'long', top: '#d83040', top2: '#a01828', legs: '#283048' },
+  bahar: { skin: '#e8b890', hair: '#201810', hairStyle: 'bun', top: '#806040', top2: '#5a4028', legs: '#302820' },
+  fereshteh: { skin: '#e8b890', hair: '#4a2a14', hairStyle: 'long', top: '#48a060', top2: '#287040', legs: '#383020' },
+  kimia: { skin: '#f4c8a0', hair: '#5a3818', hairStyle: 'bun', top: '#f0c020', top2: '#c89000', legs: '#3858a8', small: true },
+  nazanin: { skin: '#e8b890', hair: '#1a1010', hairStyle: 'bun', top: '#c87830', top2: '#8a4a18', legs: '#403020' },
+  mina: { skin: '#e8b890', hair: '#3a2010', hairStyle: 'long', top: '#8858c8', top2: '#5a3090', legs: '#302838' },
+  morshedF: { skin: '#e0b088', hair: '#9a9a9a', hairStyle: 'bun', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', coat: true },
+  pahlevanF: { skin: '#e0ac80', hair: '#1a120c', hairStyle: 'bun', top: '#8a2a2a', top2: '#5a1a1a', legs: '#c89a3a' },
   hassan: { skin: '#e8b890', hair: '#a0a0a0', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a4a5a', stache: true },
   karim: { skin: '#e4b48c', hair: '#8a8a8a', top: '#f0f0f0', top2: '#c8c8c8', legs: '#3a5a3a', stache: true },
   morshed: { skin: '#e0b088', hair: '#d8d8d8', hairStyle: 'bald', top: '#2a3a6a', top2: '#1a2448', legs: '#2a2a3a', stache: true, beard: true },
@@ -2269,6 +2294,8 @@ function regionOf(map, y) { if (map !== 'world') return 0; if (y >= 63 || y <= 1
 
 // ---- NPCs ----
 const NPCS = [];
+const isGirl = () => !!(S && S.gender === 'girl');
+const G = (boy, girl) => (isGirl() ? girl : boy);
 function npc(marker, def) { NPCS.push({ marker, dir: 'down', ...def }); }
 function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
 function npcAt(map, x, y) { for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === map && p.x === x && p.y === y) return n; } return null; }
@@ -2301,7 +2328,7 @@ function drawWorld() {
   cx = Math.round(cx * SCALE) / SCALE; cy = Math.round(cy * SCALE) / SCALE;
   c.drawImage(curMap.canvas, -cx, -cy, mw, mh);
   const ents = [];
-  for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[n.look], n.dir, 0) }); }
+  for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[(isGirl() && n.lookG) || n.look], n.dir, 0) }); }
   let step = 0; if (PL.moving) { const k = (performance.now() - PL.t0) / MOVE_MS; step = k < 0.5 ? (PL.walkPh ? 1 : 2) : 0; }
   ents.push({ y: py, draw: () => drawChar(c, px - cx, py - cy - 2, playerLook(), PL.dir, step) });
   ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
@@ -2644,10 +2671,10 @@ async function handleFaint() {
   BT.me = S.team[r]; bDraw(); await say(`Go! ${esc(monW(BT.me).name)}!`); return true;
 }
 async function blackout() {
-  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to Agha Reza's teahouse...`]);
+  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to ${G('Agha Reza', 'Khanom Zari')}'s teahouse...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
   healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say(`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  await say(`${G('AGHA REZA', 'KHANOM ZARI')}: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
   await teaScene();
   await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
@@ -2711,7 +2738,7 @@ async function wildEncounter(route) {
       }
       if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
     } else if (r === 1) {
-      if (S.daftar <= 0) { await say("You're out of DAFTARS! Agha Reza at the teahouse can give you more."); continue; }
+      if (S.daftar <= 0) { await say(`You're out of DAFTARS! ${G('Agha Reza', 'Khanom Zari')} at the teahouse can give you more.`); continue; }
       S.daftar--;
       await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
@@ -2878,26 +2905,24 @@ npc('y', { look: 'haydeh', talk: async () => {
   await say([T('HAYDEH', `${F('سلام', 'salam')}, ${nm()}! How is your Lenguadex?`), `You have caught ${B(caughtCount())} words.`, `NEXT: ${nextGoal()}`]);
   if (S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('HAYDEH: Take some fresh DAFTARS. You now have 5.'); }
 } });
-npc('z', { look: 'arash', dir: 'up', talk: async () => {
-  await say([T('ARASH', `I'm practising for the Basij checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
+npc('z', { look: 'arash', lookG: 'ava', dir: 'up', talk: async () => {
+  await say([T(G('ARASH', 'AVA'), `I'm practising for the Basij checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
 } });
-npc('r', { look: 'reza', talk: async () => {
-  await say(T('AGHA REZA', `${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`));
-  await teaScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
-  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('AGHA REZA: And here, take some DAFTARS for your journey. You now have 5.'); }
+npc('r', { look: 'reza', lookG: 'zari', talk: () => isGirl()
+  ? teaHost('KHANOM ZARI', null, [`${F('بفرمایید', 'befarmaid')}, ${F('دخترم', 'dokhtaram')}! Come in, my daughter!`, `I am Khanom Zari, Agha Reza's wife. He is at the bazaar, so today I pour the ${F('چای', 'chai')}.`, 'Sit, sit. You look like you need a glass.'])
+  : teaHost('AGHA REZA', null, [`${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`]) });
+npc('j', { look: 'mahmoud', lookG: 'grandma', dir: 'left', talk: async () => {
+  await say([T(G('AGHA MAHMOUD', 'MAMAN BOZORG'), G('An old Persian saying:', `I am everyone's ${F('مامان بزرگ', 'maman bozorg')}, grandma! Here is an old Persian saying:`)), F('قطره قطره جمع گردد، وانگهی دریا شود', 'ghatreh ghatreh jam gardad, vangahi darya shavad'), '"Drop by drop it gathers, and then it becomes a sea." Learn a few words every day!']);
 } });
-npc('j', { look: 'mahmoud', dir: 'left', talk: async () => {
-  await say([T('AGHA MAHMOUD', 'An old Persian saying:'), F('قطره قطره جمع گردد، وانگهی دریا شود', 'ghatreh ghatreh jam gardad, vangahi darya shavad'), '"Drop by drop it gathers, and then it becomes a sea." Learn a few words every day!']);
-} });
-npc('9', { look: 'babak', where: () => S.flags.starter ? [8, 63] : null, talk: async () => {
-  if (!S.flags.starter) { await say([T('AGHA BABAK', `${F('صبر کن', 'sabr kon')}! Wait!`), 'Wild Lenguamon live in the tall grass up north. You need your own Lenguamon first!', 'Go see Professor Haydeh at the school.']); return; }
-  await say(T('AGHA BABAK', `The path is open. ${F('موفق باشی', 'movafagh bashi')}! Good luck!`));
+npc('9', { look: 'babak', lookG: 'bahar', where: () => S.flags.starter ? [8, 63] : null, talk: async () => {
+  if (!S.flags.starter) { await say([T(G('AGHA BABAK', 'KHANOM BAHAR'), `${F('صبر کن', 'sabr kon')}! Wait!`), 'Wild Lenguamon live in the tall grass up north. You need your own Lenguamon first!', 'Go see Professor Haydeh at the school.']); return; }
+  await say(T(G('AGHA BABAK', 'KHANOM BAHAR'), `The path is open. ${F('موفق باشی', 'movafagh bashi')}! Good luck!`));
 } });
 npc('s', { look: 'nasrin', talk: async () => {
-  await say([T('KHANOM NASRIN', 'Wild Lenguamon hide in the dark tall grass.'), 'Weaken them with quiz attacks, then write them in your DAFTAR to catch them!', 'If you get tired, Agha Reza\'s teahouse is in the south-east corner.']);
+  await say([T('KHANOM NASRIN', 'Wild Lenguamon hide in the dark tall grass.'), 'Weaken them with quiz attacks, then write them in your DAFTAR to catch them!', `If you get tired, ${G('Agha Reza', 'Khanom Zari')}'s teahouse is in the south-east corner.`]);
 } });
-npc('v', { look: 'farhad', dir: 'right', talk: async () => {
-  await say([T('FARHAD', `To get someone's attention, say ${F('ببخشید', 'bebakhshid')}.`), 'It means "excuse me" AND "sorry". Very useful!']);
+npc('v', { look: 'farhad', lookG: 'fereshteh', dir: 'right', talk: async () => {
+  await say([T(G('FARHAD', 'FERESHTEH'), `To get someone's attention, say ${F('ببخشید', 'bebakhshid')}.`), 'It means "excuse me" AND "sorry". Very useful!']);
 } });
 npc('g', { look: 'golnaz', dir: 'left', talk: async () => {
   await say([T('GOLNAZ', `When someone speaks too fast, say ${F('نمی‌فهمم', 'nemifahmam')}: "I don't understand".`), `Then ask: ${F('لطفا دوباره بگو', 'lotfan dobare begu')}, "please say it again".`]);
@@ -2906,21 +2931,21 @@ npc('1', { look: 'basij', where: () => S.flags.b1 ? [11, 48] : null, talk: async
   if (S.flags.b1) { await say(T('BASIJI', `Hmph. You again? ${F('برو', 'boro')}! Go! Isfahan is north.`)); return; }
   await gateBoss('b1');
 } });
-npc('i', { look: 'kian', dir: 'left', talk: async () => {
-  await say([T('KIAN', `I can count to ten! ${F('یک، دو، سه', 'yek, do, se')}...`), F('چهار، پنج، شش، هفت، هشت، نه، ده!', 'chahar, panj, shesh, haft, hasht, noh, dah!'), 'Hehe! Can you? The big bridge here, Si-o-se-pol, means 33 bridges: ' + F('سی و سه پل', 'si-o-se pol')]);
+npc('i', { look: 'kian', lookG: 'kimia', dir: 'left', talk: async () => {
+  await say([T(G('KIAN', 'KIMIA'), `I can count to ten! ${F('یک، دو، سه', 'yek, do, se')}...`), F('چهار، پنج، شش، هفت، هشت، نه، ده!', 'chahar, panj, shesh, haft, hasht, noh, dah!'), 'Hehe! Can you? The big bridge here, Si-o-se-pol, means 33 bridges: ' + F('سی و سه پل', 'si-o-se pol')]);
 } });
 npc('e', { look: 'maryam', talk: async () => {
   await say([T('MARYAM', `At the bazaar, ask ${F('قیمتش چنده؟', 'gheymatesh chande?')}: "how much does it cost?"`), `If it costs too much, say ${F('خیلی گرونه!', 'kheyli geroone!')} and the price drops!`]);
 } });
-npc('q', { look: 'navid', dir: 'right', talk: async () => {
-  await say([T('NAVID', `We pay in ${F('تومن', 'toman')}. ${F('هزار', 'hezar')} means one thousand.`), `So ${F('پنجاه هزار تومن', 'panjah hezar toman')} is 50,000 toman. Saffron? Pistachios? Sumac?`]);
+npc('q', { look: 'navid', lookG: 'nazanin', dir: 'right', talk: async () => {
+  await say([T(G('NAVID', 'NAZANIN'), `We pay in ${F('تومن', 'toman')}. ${F('هزار', 'hezar')} means one thousand.`), `So ${F('پنجاه هزار تومن', 'panjah hezar toman')} is 50,000 toman. Saffron? Pistachios? Sumac?`]);
 } });
 npc('2', { look: 'irgc', where: () => S.flags.b2 ? [11, 26] : null, talk: async () => {
   if (S.flags.b2) { await say(T('IRGC COMMANDER', `Move along. ${F('زود باش', 'zood bash')}! Hurry!`)); return; }
   await gateBoss('b2');
 } });
-npc('o', { look: 'omid', dir: 'left', talk: async () => {
-  await say([T('OMID', `When someone serves you food, they say ${F('نوش جان', 'noosh-e jan')}.`), `And if the food is great, tell them: ${F('خیلی خوشمزه است', 'kheyli khoshmazeh ast')}!`]);
+npc('o', { look: 'omid', lookG: 'mina', dir: 'left', talk: async () => {
+  await say([T(G('OMID', 'MINA'), `When someone serves you food, they say ${F('نوش جان', 'noosh-e jan')}.`), `And if the food is great, tell them: ${F('خیلی خوشمزه است', 'kheyli khoshmazeh ast')}!`]);
 } });
 npc('a', { look: 'parisa', dir: 'left', talk: async () => {
   await say([T('PARISA', `${F('هوا چطوره؟', 'hava chetore?')} means "how's the weather?"`), `Today it's ${F('آفتابی', 'aftabi')}: sunny! Shirin loves to talk about the weather.`]);
@@ -3041,26 +3066,32 @@ async function enterWorld() {
 
 // ===== LENGUAMON places: a teahouse and a zurkhaneh (traditional gym) in every city =====
 
-// ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers ----
+// ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers (or, for a girl hero, the brothers' wives) ----
 async function teaHost(name, vest, lines) {
   await say(lines.map(l => T(name, l)));
   await teaScene(vest, name); await say(['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some DAFTARS too. You now have 5.`); }
 }
-npc('!', { look: 'hassan', talk: () => teaHost('AGHA HASSAN', '#3a5a7a', [
+npc('!', { look: 'hassan', lookG: 'parvin', talk: () => isGirl() ? teaHost('KHANOM PARVIN', null, [
+  `${F('خوش اومدی', 'khosh oomadi')}, ${F('عزیزم', 'azizam')}! Welcome, dear! I am Khanom Parvin.`,
+  'My sister-in-law Zari pours tea in Yazd. Mine is better, but do not tell her!',
+  `A glass of ${F('چای', 'chai')} with ${F('گز', 'gaz')}, the nougat Isfahan is famous for?`]) : teaHost('AGHA HASSAN', null, [
   `${F('خوش اومدی', 'khosh oomadi')}! Welcome! I am Agha Hassan, Agha Reza's big brother.`,
   'Everyone in Isfahan says we look exactly alike. I say I am the handsome one!',
   `Sit, sit. A glass of ${F('چای', 'chai')}?`]) });
-npc('$', { look: 'karim', talk: () => teaHost('AGHA KARIM', '#2f5a3a', [
+npc('$', { look: 'karim', lookG: 'shahla', talk: () => isGirl() ? teaHost('KHANOM SHAHLA', null, [
+  `${F('سلام', 'salam')}, ${F('دخترم', 'dokhtaram')}! I am Khanom Shahla. My sisters-in-law Zari and Parvin pour tea in Yazd and Isfahan.`,
+  'But here in Shiraz I put a little rosewater in the pot. Smell that!',
+  `${F('بفرمایید', 'befarmaid')}, have a glass.`]) : teaHost('AGHA KARIM', null, [
   `${F('سلام', 'salam')}, traveller! I am Agha Karim. My brothers Reza and Hassan pour tea in Yazd and Isfahan.`,
   'But only Shiraz has tea this good. The roses make the air sweet!',
   `${F('بفرمایید', 'befarmaid')}, have a glass.`]) });
 
 // ---- zurkhanehs: train on the words of each city ----
 const GYMS = {
-  '<': { route: 1, city: 'YAZD', name: 'MORSHED JAMSHID' },
-  '>': { route: 2, city: 'ISFAHAN', name: 'MORSHED SOHRAB' },
-  '?': { route: 3, city: 'SHIRAZ', name: 'MORSHED ROSTAM' },
+  '<': { route: 1, city: 'YAZD', boy: 'MORSHED JAMSHID', girl: 'MORSHED GORDAFARID' },
+  '>': { route: 2, city: 'ISFAHAN', boy: 'MORSHED SOHRAB', girl: 'MORSHED TAHMINEH' },
+  '?': { route: 3, city: 'SHIRAZ', boy: 'MORSHED ROSTAM', girl: 'MORSHED RUDABEH' },
 };
 const GYM_ROUNDS = 8;
 function gymWords(route) {
@@ -3099,11 +3130,13 @@ async function gymDrill(g) {
   if (perfect) { S.daftar += 2; await say(`${g.name} gave you 2 DAFTARS. You now have ${S.daftar}.`); }
   writeSave();
 }
-async function gymTalk(g) {
+async function gymTalk(g0) {
+  const g = { ...g0, name: G(g0.boy, g0.girl) };
   const met = 'gym' + g.route;
   if (!S.flags[met]) {
     await say([T(g.name, `${F('خوش آمدید', 'khosh amadid')}! Welcome to the ${F('زورخانه', 'zoorkhaneh')}, the house of strength.`),
       'Here athletes swing the heavy meel clubs while I beat the drum and sing the Shahnameh, the Book of Kings.',
+      ...(isGirl() ? ['I am named for Gordafarid, Tahmineh and Rudabeh, the brave women of the Shahnameh. This pit trains women too!'] : []),
       `But you, young ${F('پهلوان', 'pahlevan')}, will train your WORDS.`]);
     S.flags[met] = true;
   }
@@ -3112,10 +3145,10 @@ async function gymTalk(g) {
   await say(T(g.name, '*BOOM, ba-da BOOM* goes the drum. Begin!'));
   await gymDrill(g);
 }
-for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', talk: () => gymTalk(g) });
-npc('|', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('KAVEH', `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
-npc('_', { look: 'pahlevan', dir: 'right', talk: async () => { await say([T('BIZHAN', `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
-npc(';', { look: 'pahlevan', dir: 'left', talk: async () => { await say([T('GIV', `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });
+for (const [m, g] of Object.entries(GYMS)) npc(m, { look: 'morshed', lookG: 'morshedF', talk: () => gymTalk(g) });
+npc('|', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('KAVEH', 'KATAYOUN'), `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
+npc('_', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'right', talk: async () => { await say([T(G('BIZHAN', 'MANIZHEH'), `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
+npc(';', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('GIV', 'FARANGIS'), `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });
 
 // ===== LENGUAMON boot =====
 function layout() {
