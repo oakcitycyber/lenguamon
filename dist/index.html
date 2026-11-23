@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Lenguamon: Persian Edition</title>
+<meta name="theme-color" content="#2a1f3d">
+<style>
+:root { --u: 3px; --ink: #1c2234; --paper: #fbf6e8; --tq: #1a8f8c; --gold: #e0b040; --navy: #233a7a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: #228b22;
+  background-image: radial-gradient(ellipse at 50% 35%, #2a9a2a 0, #228b22 45%, #186a18 100%);
+  color: #f0e8d8; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  display: flex; justify-content: center; align-items: flex-start; overflow: hidden;
+  -webkit-user-select: none; user-select: none; touch-action: manipulation;
+}
+#shell { display: flex; flex-direction: column; align-items: center; padding: 8px 8px 4px; gap: 8px; width: 100%; height: 100vh; height: 100dvh; }
+#bezel {
+  background: linear-gradient(#2a9a2a, #1e7a1e); border-radius: 12px 12px 40px 12px; padding: 6px 14px 14px;
+  box-shadow: 0 5px 0 #125212, 0 8px 22px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.2);
+}
+.bz-top { display: flex; align-items: center; gap: 8px; height: 18px; font: bold 11px/1 ui-monospace, monospace; color: #f6e7b0; letter-spacing: 2px; }
+.bz-top .led { width: 8px; height: 8px; border-radius: 50%; background: #ff4a5a; box-shadow: 0 0 6px #ff4a5a; }
+.bz-c { margin-left: auto; color: #ffd36a; font-style: italic; }
+#screen {
+  position: relative; width: calc(var(--u) * 160); height: calc(var(--u) * 144); overflow: hidden; background: #000;
+  border: 3px solid #0c3a10; border-radius: 4px; font: bold calc(var(--u) * 6.2)/1.35 ui-monospace, Menlo, Consolas, monospace; color: var(--ink);
+}
+#cv { width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.layer { position: absolute; inset: 0; display: none; }
+.layer.show { display: block; }
+#fade { display: block; background: #000; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 50; }
+#fade.on { opacity: 1; }
+#flash { display: block; background: #fff; opacity: 0; pointer-events: none; z-index: 49; }
+#flash.on { opacity: 1; }
+img.mon { image-rendering: pixelated; display: block; }
+
+/* Persian markup: script with transliteration underneath */
+.fa { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 .15em; line-height: 1.05; }
+.fs { font-family: "Vazirmatn", "Noto Naskh Arabic", "Noto Sans Arabic", "Geeza Pro", Tahoma, "Segoe UI", sans-serif; font-weight: 700; font-size: 1.12em; color: #8a1c2c; unicode-bidi: isolate; }
+.ft { font-size: .78em; color: #1d5a8a; font-weight: 700; }
+.notr .ft { display: none; }
+.en { display: block; }
+.sm { font-size: .82em; color: #50586a; }
+small { font-size: .8em; }
+
+/* boxes: GBC text box with turquoise and gold Persian tile trim */
+.box {
+  position: absolute; background: var(--paper); color: var(--ink);
+  border: calc(var(--u) * 1.4) solid var(--navy); border-radius: calc(var(--u) * 2);
+  box-shadow: inset 0 0 0 calc(var(--u) * .7) var(--gold), inset 0 0 0 calc(var(--u) * 1.4) var(--paper), 0 calc(var(--u) * .8) 0 rgba(0,0,0,.35);
+  padding: calc(var(--u) * 4) calc(var(--u) * 5);
+  z-index: 20;
+}
+.box::before, .box::after { content: ""; position: absolute; width: calc(var(--u) * 3); height: calc(var(--u) * 3); background: var(--tq); transform: rotate(45deg); top: calc(var(--u) * -2.2); box-shadow: 0 0 0 calc(var(--u) * .6) var(--gold); }
+.box::before { left: calc(var(--u) * 4); } .box::after { right: calc(var(--u) * 4); }
+#textbox { left: calc(var(--u) * 2); right: calc(var(--u) * 2); bottom: calc(var(--u) * 2); min-height: calc(var(--u) * 44); display: none; z-index: 30; }
+#textbox.show { display: block; }
+.tb-body { min-height: calc(var(--u) * 33); }
+.tb-arrow { position: absolute; right: calc(var(--u) * 5); bottom: calc(var(--u) * 2); opacity: 0; font-size: .8em; color: #8a1c2c; }
+.tb-arrow.show { opacity: 1; animation: blink .7s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* menus */
+.menu { display: grid; gap: calc(var(--u) * 1.5) calc(var(--u) * 6); z-index: 40; }
+.mi { display: flex; gap: calc(var(--u) * 2); align-items: center; cursor: pointer; white-space: nowrap; }
+.mi .cur { visibility: hidden; color: #8a1c2c; }
+.mi.sel .cur { visibility: visible; }
+.mi.dis { color: #a8a090; }
+.startmenu { right: calc(var(--u) * 2); top: calc(var(--u) * 2); }
+.yn { right: calc(var(--u) * 2); bottom: calc(var(--u) * 48); }
+.bmenu { right: calc(var(--u) * 2); bottom: calc(var(--u) * 2); width: calc(var(--u) * 82); min-height: calc(var(--u) * 44); align-content: center; }
+.titlemenu { left: 50%; transform: translateX(-50%); bottom: calc(var(--u) * 8); min-width: calc(var(--u) * 100); }
+.opts, .sub, .teamsel { right: calc(var(--u) * 2); top: calc(var(--u) * 2); }
+.team { left: calc(var(--u) * 2); right: calc(var(--u) * 2); top: calc(var(--u) * 2); max-height: calc(var(--u) * 140); overflow: hidden; gap: calc(var(--u) * 1); }
+.team .mi { white-space: normal; }
+.tm { display: flex; align-items: center; gap: calc(var(--u) * 3); line-height: 1.15; }
+img.mon.tiny { width: calc(var(--u) * 16); height: calc(var(--u) * 16); }
+.sub { z-index: 41; top: auto; bottom: calc(var(--u) * 2); }
+.hpbar { display: inline-block; width: calc(var(--u) * 40); height: calc(var(--u) * 3); background: #4a4a58; border: calc(var(--u) * .6) solid var(--ink); border-radius: calc(var(--u) * 1); vertical-align: middle; overflow: hidden; }
+.hpbar i { display: block; height: 100%; transition: width .4s; }
+
+/* name entry */
+.namebox { left: calc(var(--u) * 10); right: calc(var(--u) * 10); top: calc(var(--u) * 30); text-align: center; }
+.namebox input, .qz-i input {
+  font: inherit; width: 100%; padding: calc(var(--u) * 2); margin: calc(var(--u) * 3) 0; border: calc(var(--u) * .8) solid var(--navy);
+  border-radius: calc(var(--u) * 1.5); background: #fff; color: var(--ink); text-align: center; text-transform: uppercase; outline: none;
+}
+.qz-i input { text-transform: none; margin: 0; text-align: left; }
+button { font: inherit; cursor: pointer; }
+.okbtn, .qz-i button { background: var(--tq); color: #fff; border: calc(var(--u) * .8) solid var(--navy); border-radius: calc(var(--u) * 1.5); padding: calc(var(--u) * 1.5) calc(var(--u) * 5); }
+
+/* portrait and title */
+#portrait { z-index: 15; background: radial-gradient(circle, #fff7e0 0, #f3dfb0 60%, #e0bf80 100%); }
+#portrait img.big { width: calc(var(--u) * 64); height: calc(var(--u) * 64); margin: calc(var(--u) * 18) auto 0; }
+.end { text-align: center; padding-top: calc(var(--u) * 26); color: var(--ink); }
+.end-t { font-size: 2.2em; color: #8a1c2c; letter-spacing: .1em; margin-bottom: calc(var(--u) * 4); }
+.end-s { margin-top: calc(var(--u) * 4); font-size: .85em; }
+#title { z-index: 16; overflow: hidden; background: #1a2a5a; }
+.tt-bg { position: absolute; inset: 0; opacity: .5;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 calc(var(--u) * 4), #2ab0aa calc(var(--u) * 4) calc(var(--u) * 5), transparent calc(var(--u) * 5)) 0 0 / calc(var(--u) * 16) calc(var(--u) * 16),
+    linear-gradient(45deg, transparent 46%, #e0b040 46% 54%, transparent 54%) 0 0 / calc(var(--u) * 16) calc(var(--u) * 16),
+    linear-gradient(-45deg, transparent 46%, #e0b040 46% 54%, transparent 54%) 0 0 / calc(var(--u) * 16) calc(var(--u) * 16); }
+.tt-logo { position: relative; text-align: center; margin-top: calc(var(--u) * 14); font-size: 2.6em; letter-spacing: .04em; color: #ffd860;
+  text-shadow: calc(var(--u)*.8) 0 #8a1c2c, calc(var(--u)*-.8) 0 #8a1c2c, 0 calc(var(--u)*.8) #8a1c2c, 0 calc(var(--u)*-.8) #8a1c2c, calc(var(--u)*1.6) calc(var(--u)*1.6) #0b1a3a; }
+.tt-sub { position: relative; text-align: center; color: #fbf6e8; margin-top: calc(var(--u) * 2); }
+.tt-sub .fs { color: #ffd860; } .tt-sub .ft { color: #9fe8e0; }
+.tt-mons { position: relative; display: flex; justify-content: center; gap: calc(var(--u) * 4); margin-top: calc(var(--u) * 6); }
+.tt-mons img { width: calc(var(--u) * 36); height: calc(var(--u) * 36); animation: bob 1.2s ease-in-out infinite; }
+.tt-mons img:nth-child(2) { animation-delay: .3s; } .tt-mons img:nth-child(3) { animation-delay: .6s; }
+.tt-press { position: relative; text-align: center; color: #fff; margin-top: calc(var(--u) * 8); animation: blink 1s steps(2) infinite; }
+.tt-ver { position: absolute; bottom: calc(var(--u) * 2); width: 100%; text-align: center; font-size: .7em; color: #9fb0d8; }
+@keyframes bob { 50% { transform: translateY(calc(var(--u) * -3)); } }
+
+/* battle */
+#battle { z-index: 10; }
+.b-bg { position: absolute; inset: 0; background:
+  radial-gradient(ellipse calc(var(--u) * 34) calc(var(--u) * 7) at calc(var(--u) * 120) calc(var(--u) * 50), #a8d070 98%, transparent 100%),
+  radial-gradient(ellipse calc(var(--u) * 38) calc(var(--u) * 8) at calc(var(--u) * 38) calc(var(--u) * 95), #a8d070 98%, transparent 100%),
+  linear-gradient(#f8f0d8 0, #fdf8ec 60%, #f0e4c0 100%); }
+.b-info { position: absolute; line-height: 1.2; }
+.b-info.foe { left: calc(var(--u) * 5); top: calc(var(--u) * 5); width: calc(var(--u) * 80); border-left: calc(var(--u) * 1) solid var(--ink); border-bottom: calc(var(--u) * 1) solid var(--ink); padding: 0 0 calc(var(--u) * 1.5) calc(var(--u) * 3); border-bottom-left-radius: calc(var(--u) * 2); }
+.b-info.me { right: calc(var(--u) * 4); top: calc(var(--u) * 60); width: calc(var(--u) * 80); border-right: calc(var(--u) * 1) solid var(--ink); border-bottom: calc(var(--u) * 1) solid var(--ink); padding: 0 calc(var(--u) * 3) calc(var(--u) * 1.5) 0; text-align: right; border-bottom-right-radius: calc(var(--u) * 2); }
+.b-info .nm { font-size: .92em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.b-info .lv { font-size: .85em; } .b-info .lv small { color: #50586a; }
+.b-info .hp { font-size: .75em; } .b-info .num { font-size: .85em; }
+.b-info .hpbar { width: calc(var(--u) * 48); }
+.b-spr { position: absolute; width: calc(var(--u) * 52); height: calc(var(--u) * 52); }
+.b-spr img { width: 100%; height: 100%; }
+.b-spr.foe { right: calc(var(--u) * 14); top: calc(var(--u) * 2); }
+.b-spr.me { left: calc(var(--u) * 12); top: calc(var(--u) * 46); }
+.b-spr.me img { transform: scaleX(-1); }
+.b-spr img.foe { animation: bob 1.6s ease-in-out infinite; }
+.b-spr img.trainer { width: 56%; height: 56%; margin: 0 auto; }
+.b-spr.hurt { animation: hurt .45s steps(2) 1; }
+@keyframes hurt { 0%, 50% { opacity: 0; transform: translateX(calc(var(--u) * 3)); } 25%, 75% { opacity: 1; transform: translateX(calc(var(--u) * -3)); } }
+.b-spr.faint { animation: faint .6s ease-in forwards; }
+@keyframes faint { to { transform: translateY(calc(var(--u) * 30)); opacity: 0; } }
+.b-spr.shake { animation: shake .5s ease-in-out 1; }
+@keyframes shake { 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+.daftar-ico { width: 40%; height: 46%; margin: 34% auto 0; background: linear-gradient(90deg, #8a1c2c 0 18%, #c83038 18%); border: calc(var(--u) * .8) solid var(--ink); border-radius: calc(var(--u) * 1); box-shadow: inset calc(var(--u) * -2) 0 0 #f0d070; }
+
+/* quiz */
+#quiz { z-index: 35; }
+.qz { left: calc(var(--u) * 2); right: calc(var(--u) * 2); bottom: calc(var(--u) * 2); top: calc(var(--u) * 30); display: flex; flex-direction: column; gap: calc(var(--u) * 2); font-size: calc(var(--u) * 5.4); padding: calc(var(--u) * 3) calc(var(--u) * 4); }
+.qz-t { font-size: .8em; color: #8a1c2c; }
+.qz-p { line-height: 1.25; }
+.qz-p .who { color: #8a1c2c; }
+.qz-o { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 1.5); flex: 1; }
+.qo { border: calc(var(--u) * .6) solid #b8ac90; border-radius: calc(var(--u) * 1.5); background: #fff; padding: calc(var(--u) * 1) calc(var(--u) * 1.5); display: flex; align-items: center; gap: calc(var(--u) * 1.5); font-size: .92em; line-height: 1.15; overflow: hidden; }
+.qo .fa { align-items: flex-start; margin: 0; flex: none; }
+.qo .fs, .qo .ft { white-space: nowrap; }
+.qz-o.one { grid-template-columns: 1fr; }
+.qz-o.one .qo { padding-top: calc(var(--u) * .6); padding-bottom: calc(var(--u) * .6); }
+.qz-o.one .qo .en.sm { margin-left: auto; text-align: right; font-size: .78em; line-height: 1.1; }
+.qo .ql { flex: none; width: calc(var(--u) * 6); height: calc(var(--u) * 6); border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .75em; }
+.qo.right { background: #c8f0c0; border-color: #2a8a3a; }
+.qo.wrong { background: #f8c8c8; border-color: #b02030; }
+.qz-i { display: flex; gap: calc(var(--u) * 2); }
+.qz-i input { flex: 1; padding: calc(var(--u) * 1.5) calc(var(--u) * 2); }
+
+/* lenguadex */
+.dex { z-index: 25; }
+.dx { inset: calc(var(--u) * 2); display: flex; flex-direction: column; gap: calc(var(--u) * 2); font-size: calc(var(--u) * 5.4); padding: calc(var(--u) * 3) calc(var(--u) * 4); }
+.dx-h { display: flex; justify-content: space-between; color: #8a1c2c; }
+.dx-h span { color: var(--ink); font-size: .85em; }
+.dx-d { display: flex; gap: calc(var(--u) * 3); align-items: center; min-height: calc(var(--u) * 36); border-bottom: calc(var(--u) * .6) dashed #b8ac90; padding-bottom: calc(var(--u) * 2); line-height: 1.25; }
+.dx-d img.mon { width: calc(var(--u) * 36); height: calc(var(--u) * 36); flex: none; }
+.dx-q { width: calc(var(--u) * 36); height: calc(var(--u) * 36); display: grid; place-items: center; font-size: 2em; color: #b8ac90; flex: none; }
+.dx-l { flex: 1; }
+.dx-r { line-height: 1.22; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.dx-r .cur { visibility: hidden; color: #8a1c2c; } .dx-r.sel .cur { visibility: visible; }
+.dx-f { font-size: .72em; color: #6a6a78; }
+
+/* controls */
+#pad { --c: clamp(44px, 15vw, 72px); --ab: clamp(58px, 21vw, 92px); flex: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(100%, 560px); padding: 0 6px 10px; }
+.dpad { display: grid; grid-template-columns: repeat(3, var(--c)); grid-template-rows: repeat(3, var(--c)); justify-self: start; }
+.dp { background: #222232; border: 0; border-radius: 6px; box-shadow: 0 3px 0 #0a0a12; touch-action: none; }
+.dp.up { grid-area: 1/2; } .dp.left { grid-area: 2/1; } .dp.mid { grid-area: 2/2; background: #222232; border-radius: 0; } .dp.right { grid-area: 2/3; } .dp.down { grid-area: 3/2; }
+.dp.on, .rb.on, .pill.on { filter: brightness(1.6); transform: translateY(2px); box-shadow: none; }
+.ss { display: flex; gap: 10px; }
+.pill { background: #1a3a1c; color: #d8f0d0; border: 0; border-radius: 20px; padding: 6px 14px; font-size: 11px; letter-spacing: 1px; box-shadow: 0 3px 0 #15121f; touch-action: none; }
+.ab { display: flex; gap: 14px; justify-self: end; transform: rotate(-18deg); }
+.rb { width: var(--ab); height: var(--ab); border-radius: 50%; border: 0; background: #b0283a; color: #ffd8dc; font: bold 18px ui-monospace, monospace; box-shadow: 0 4px 0 #5a0c18; touch-action: none; }
+.rb.b { margin-top: calc(var(--ab) * .45); }
+#keys { font-size: 11px; color: #cfe8c8; text-align: center; }
+@media (pointer: coarse) { #keys { display: none; } }
+
+@media (max-width: 600px) {
+  #shell { padding: 4px 4px 0; gap: 6px; }
+  #bezel { padding: 4px 4px 8px; border-radius: 10px 10px 28px 10px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .bz-top { align-self: stretch; padding: 0 4px; }
+  .pill { padding: 10px 22px; font-size: 13px; }
+  #pad { --c: clamp(44px, 14vw, 70px); --ab: clamp(58px, 19vw, 86px); grid-template-columns: auto 1fr auto; grid-template-rows: 1fr auto; padding: 4px 12px 10px; row-gap: 6px; }
+  .dpad { grid-row: 1; grid-column: 1; }
+  .ab { grid-row: 1; grid-column: 3; }
+  .ss { grid-row: 2; grid-column: 1 / 4; justify-content: center; }
+}
+
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="bezel">
+    <div class="bz-top"><span class="led"></span><span class="bz-t">LENGUAMON</span><span class="bz-c">COLOR</span></div>
+    <div id="screen">
+      <canvas id="cv" width="160" height="144"></canvas>
+      <div id="battle" class="layer">
+        <div class="b-bg"></div>
+        <div id="b-foe" class="b-info foe"></div><div id="b-foe-spr" class="b-spr foe"></div>
+        <div id="b-me-spr" class="b-spr me"></div><div id="b-me" class="b-info me"></div>
+      </div>
+      <div id="portrait" class="layer"></div>
+      <div id="title" class="layer"></div>
+      <div id="quiz" class="layer"></div>
+      <div id="textbox" class="box"><div class="tb-body"></div><div class="tb-arrow">▼</div></div>
+      <div id="flash" class="layer"></div>
+      <div id="fade" class="layer"></div>
+    </div>
+  </div>
+  <div id="pad">
+    <div class="dpad">
+      <button data-btn="up" class="dp up" aria-label="up"></button><button data-btn="left" class="dp left" aria-label="left"></button>
+      <span class="dp mid"></span>
+      <button data-btn="right" class="dp right" aria-label="right"></button><button data-btn="down" class="dp down" aria-label="down"></button>
+    </div>
+    <div class="ss"><button data-btn="start" class="pill">START</button></div>
+    <div class="ab"><button data-btn="b" class="rb b">B</button><button data-btn="a" class="rb a">A</button></div>
+  </div>
+  <div id="keys">Arrows / WASD: move · Z, Space, Enter: A · X, Esc: B · M or Shift: START (menu)</div>
+</div>
+<script>
+'use strict';
+// LENGUAMON word bank (Persian v1)
+// Format: transliteration | english | persian script | route (1-3) | type
+// Alternatives are separated by " / ". In the script column "+" is a zero-width non-joiner.
+// Sources: Kurt's "Farsi word bank.csv" (ICF course weeks 1-11, Quizlet, Instagram lists),
+// plus high-frequency conversational words checked against the wordfreq Persian top-1000 list
+// and beginner phrase lists (MSU Open Books "Common Words and Phrases", Omniglot Persian phrases).
+const RAW_WORDS = `
+salam|hello|سلام|1|GREET
+khodahafez|goodbye|خداحافظ|1|GREET
+khubi? / chetori?|how are you?|خوبی؟ / چطوری؟|1|GREET
+halet chetore?|how are you doing?|حالت چطوره؟|1|GREET
+khubam|I'm good|خوبم|1|GREET
+kheyli khubam|I'm very good|خیلی خوبم|1|GREET
+khub nistam|I'm not good|خوب نیستم|1|GREET
+bad nistam|not bad|بد نیستم|1|GREET
+merci|thanks|مرسی|1|GREET
+mamnoon|thank you|ممنون|1|GREET
+khahesh mikonam|you're welcome|خواهش می+کنم|1|GREET
+a'li|great / excellent|عالی|1|GREET
+khoshbakhtam|nice to meet you|خوشبختم|1|GREET
+man ham khoshbakhtam|nice to meet you too|من هم خوشبختم|1|GREET
+sobh bekheir|good morning|صبح بخیر|1|GREET
+shab bekheir|good night|شب بخیر|1|GREET
+khosh amadid|welcome|خوش آمدید|1|GREET
+khasteh nabashi|good work / don't be tired|خسته نباشی|1|GREET
+salamat bashi|be well (reply to good work)|سلامت باشی|1|GREET
+movafagh bashi|good luck|موفق باشی|1|GREET
+ruz-e khubi dashte bashi|have a nice day|روز خوبی داشته باشی|1|GREET
+esm-e man ... ast|my name is ...|اسم من ... است|1|BASIC
+esm-e shoma chie?|what's your name?|اسم شما چیه؟|1|BASIC
+esmet chie?|what's your name? (informal)|اسمت چیه؟|1|BASIC
+famil-e shoma chie?|what's your family name?|فامیل شما چیه؟|1|BASIC
+man ... hastam|I am ...|من ... هستم|1|BASIC
+ahl-e kojayi? / shoma ahl-e kojayi?|where are you from?|اهل کجایی؟|1|BASIC
+man ahl-e ... hastam|I am from ...|من اهل ... هستم|1|BASIC
+man ham|me too|من هم|1|BASIC
+man American am / man amrikayi am|I'm American|من آمریکایی+ام|1|BASIC
+man ham American am|I'm American too|من هم آمریکایی+ام|1|BASIC
+baleh|yes|بله|1|BASIC
+areh|yeah|آره|1|BASIC
+na|no|نه|1|BASIC
+chashm|sure, will do|چشم|1|BASIC
+lotfan|please|لطفا|1|BASIC
+bebakhshid|excuse me / sorry|ببخشید|1|BASIC
+moteassefam|I'm sorry|متاسفم|1|BASIC
+befarmaid|here you go / go ahead|بفرمایید|1|BASIC
+agha|sir / Mr.|آقا|1|BASIC
+khanom|madam / Mrs.|خانم|1|BASIC
+ast / hast|is|است / هست|1|BASIC
+nist|is not|نیست|1|BASIC
+budan|to be|بودن|1|BASIC
+va|and|و|1|BASIC
+amma / vali|but|اما / ولی|1|BASIC
+ham|also / too|هم|1|BASIC
+faghat|only|فقط|1|BASIC
+age|if|اگه|1|BASIC
+kheyli|very / a lot|خیلی|1|BASIC
+yek kami / ye kam|a little bit|یک کمی|1|BASIC
+in|this|این|1|BASIC
+oon|that|اون|1|BASIC
+inja|here|اینجا|1|BASIC
+oonja|there|اونجا|1|BASIC
+man|I / me|من|1|PRON
+to|you (informal)|تو|1|PRON
+shoma|you (formal / plural)|شما|1|PRON
+oo|he / she|او|1|PRON
+ma / maa|we|ما|1|PRON
+oona / anha|they|اونا / آنها|1|PRON
+chi?|what?|چی؟|1|QUES
+chiyeh?|what is it?|چیه؟|1|QUES
+in chie?|what is this?|این چیه؟|1|QUES
+koja?|where?|کجا؟|1|QUES
+key?|when?|کی؟|1|QUES
+chera?|why?|چرا؟|1|QUES
+chetor?|how?|چطور؟|1|QUES
+amadeyi?|are you ready?|آماده+ای؟|1|QUES
+tamoom?|finished? / done?|تموم؟|1|QUES
+yani chi?|what does it mean?|یعنی چی؟|1|QUES
+so'al|question|سوال|1|QUES
+man so'al daram|I have a question|من سوال دارم|1|QUES
+man so'al nadaram|I don't have a question|من سوال ندارم|1|QUES
+fahmidi?|did you understand?|فهمیدی؟|1|QUES
+farsi baladi?|do you know Persian?|فارسی بلدی؟|1|QUES
+ye kam farsi baladam|I know a little Persian|یه کم فارسی بلدم|1|QUES
+farsim khub nist|my Persian isn't good|فارسیم خوب نیست|1|QUES
+be farsi chi mishe?|how do you say it in Persian?|به فارسی چی میشه؟|1|QUES
+goosh kon|listen|گوش کن|1|CLASS
+negah kon|look|نگاه کن|1|CLASS
+bia|come|بیا|1|CLASS
+bia inja|come here|بیا اینجا|1|CLASS
+beshin|sit|بشین|1|CLASS
+boland sho / pa sho|stand up|بلند شو / پاشو|1|CLASS
+sabr kon|wait|صبر کن|1|CLASS
+dobare begu|say it again|دوباره بگو|1|CLASS
+begoo|say it|بگو|1|CLASS
+lotfan aheste sohbat konid|please speak slowly|لطفا آهسته صحبت کنید|1|CLASS
+nemifahmam|I don't understand|نمی+فهمم|1|CLASS
+fahmidam|I understand|فهمیدم|1|CLASS
+nemidoonam|I don't know|نمی+دونم|1|CLASS
+komak mikham|I need help|کمک می+خوام|1|CLASS
+harf bezan|talk / speak|حرف بزن|1|CLASS
+harf nazan|don't talk|حرف نزن|1|CLASS
+saket bash|be quiet|ساکت باش|1|CLASS
+kon|do it|کن|1|CLASS
+nakon|don't do it|نکن|1|CLASS
+zood bash|hurry|زود باش|1|CLASS
+boro|go|برو|1|CLASS
+boro bekhab|go to sleep|برو بخواب|1|CLASS
+dastshooyi|restroom|دستشویی|1|CLASS
+sefr|zero / 0|صفر|2|NUM
+yek|one / 1|یک|2|NUM
+do|two / 2|دو|2|NUM
+se|three / 3|سه|2|NUM
+chahar|four / 4|چهار|2|NUM
+panj|five / 5|پنج|2|NUM
+shesh|six / 6|شش|2|NUM
+haft|seven / 7|هفت|2|NUM
+hasht|eight / 8|هشت|2|NUM
+noh|nine / 9|نه|2|NUM
+dah|ten / 10|ده|2|NUM
+yazdah|eleven / 11|یازده|2|NUM
+davazdah|twelve / 12|دوازده|2|NUM
+sizdah|thirteen / 13|سیزده|2|NUM
+chahardah|fourteen / 14|چهارده|2|NUM
+poonzdah|fifteen / 15|پونزده|2|NUM
+shoonzdah|sixteen / 16|شونزده|2|NUM
+hefdah|seventeen / 17|هفده|2|NUM
+hejdah|eighteen / 18|هجده|2|NUM
+noozdah|nineteen / 19|نوزده|2|NUM
+bist|twenty / 20|بیست|2|NUM
+bist-o-yek|twenty-one / 21|بیست و یک|2|NUM
+si|thirty / 30|سی|2|NUM
+chehel|forty / 40|چهل|2|NUM
+panjah|fifty / 50|پنجاه|2|NUM
+shast|sixty / 60|شصت|2|NUM
+haftad|seventy / 70|هفتاد|2|NUM
+hashtad|eighty / 80|هشتاد|2|NUM
+navad|ninety / 90|نود|2|NUM
+sad|one hundred / 100|صد|2|NUM
+hezar|one thousand / 1000|هزار|2|NUM
+chand|how many / how much|چند|2|NUM
+shomare|number|شماره|2|NUM
+sal|year|سال|2|NUM
+chand saleteh? / shoma chand saleteh?|how old are you?|چند سالته؟|2|NUM
+man ... sal daram|I am ... years old|من ... سال دارم|2|NUM
+avval|first|اول|2|NUM
+dovvom|second|دوم|2|NUM
+akhar|last|آخر|2|NUM
+khuneh / khoone|house / home|خونه|2|FAM
+khanevadeh / khoonevade|family|خانواده|2|FAM
+maman|mom|مامان|2|FAM
+baba|dad|بابا|2|FAM
+pedar|father|پدر|2|FAM
+madar|mother|مادر|2|FAM
+bacheh / bache|child|بچه|2|FAM
+bacheh-ha|children|بچه+ها|2|FAM
+bache-ye man|my child|بچه+ی من|2|FAM
+namzad|fiancé / fiancée|نامزد|2|FAM
+hamsar|spouse|همسر|2|FAM
+pesar|son / boy|پسر|2|FAM
+dokhtar|daughter / girl|دختر|2|FAM
+khahar|sister|خواهر|2|FAM
+baradar|brother|برادر|2|FAM
+khaleh|maternal aunt|خاله|2|FAM
+ameh|paternal aunt|عمه|2|FAM
+amoo|paternal uncle|عمو|2|FAM
+daei|maternal uncle|دایی|2|FAM
+maman bozorg / madar bozorg|grandmother|مامان بزرگ|2|FAM
+baba bozorg / pedar bozorg|grandfather|بابا بزرگ|2|FAM
+bozorg|big / grand|بزرگ|2|FAM
+koochik|small|کوچیک|2|FAM
+damad|son-in-law / groom|داماد|2|FAM
+aroos|bride / daughter-in-law|عروس|2|FAM
+nafar|person (counter word)|نفر|2|FAM
+adam|person / human|آدم|2|FAM
+mard|man|مرد|2|FAM
+zan|woman / wife|زن|2|FAM
+mardom|people|مردم|2|FAM
+doost|friend|دوست|2|FAM
+dooste dokhtar|girlfriend|دوست دختر|2|FAM
+hamkar|colleague / coworker|همکار|2|FAM
+ham otaghi|roommate|هم+اتاقی|2|FAM
+otagh|room|اتاق|2|FAM
+daram|I have|دارم|2|FAM
+dari|you have|داری|2|FAM
+dare|he/she has|داره|2|FAM
+nadaram|I don't have|ندارم|2|FAM
+man bache nadaram|I don't have children|من بچه ندارم|2|FAM
+man yek khahar daram|I have one sister|من یک خواهر دارم|2|FAM
+shoma chanta dokhtar dari?|how many daughters do you have?|شما چندتا دختر داری؟|2|FAM
+esme mamane shoma chie?|what is your mom's name?|اسم مامان شما چیه؟|2|FAM
+esme mamane man Rhonda-ast|my mom's name is Rhonda|اسم مامان من روندا است|2|FAM
+rooz|day|روز|2|TIME
+emrooz|today|امروز|2|TIME
+dirooz|yesterday|دیروز|2|TIME
+farda|tomorrow|فردا|2|TIME
+hafte|week|هفته|2|TIME
+mah|month / moon|ماه|2|TIME
+shanbeh|Saturday|شنبه|2|TIME
+yekshanbeh|Sunday|یکشنبه|2|TIME
+doshanbeh|Monday|دوشنبه|2|TIME
+seshanbeh|Tuesday|سه+شنبه|2|TIME
+chaharshanbeh|Wednesday|چهارشنبه|2|TIME
+panjshanbeh|Thursday|پنجشنبه|2|TIME
+jomeh|Friday|جمعه|2|TIME
+emrooz chand shanbe ast?|what day is today?|امروز چندشنبه است؟|2|TIME
+sobh|morning|صبح|2|TIME
+zohr|noon|ظهر|2|TIME
+ba'd az zohr|afternoon (pm)|بعد از ظهر|2|TIME
+asr|late afternoon / evening|عصر|2|TIME
+shab|night|شب|2|TIME
+dishab|last night|دیشب|2|TIME
+dirooz sobh / dee'sobh|yesterday morning|دیروز صبح|2|TIME
+dirooz asr / dee'asr|yesterday afternoon|دیروز عصر|2|TIME
+vaght|time (a moment)|وقت|2|TIME
+saat|clock / watch / hour|ساعت|2|TIME
+saat chande?|what time is it?|ساعت چنده؟|2|TIME
+saat hasht-e sobh ast|it is 8 in the morning|ساعت هشت صبح است|2|TIME
+saat yek-e ba'd az zohr ast|it is 1 in the afternoon|ساعت یک بعد از ظهر است|2|TIME
+saat dah-e shab ast|it is 10 at night|ساعت ده شب است|2|TIME
+alan|right now|الان|2|TIME
+hala|now|حالا|2|TIME
+ghabl|before|قبل|2|TIME
+ba'd|after|بعد|2|TIME
+zood|early / soon|زود|2|TIME
+dir|late|دیر|2|TIME
+hamishe|always|همیشه|2|TIME
+hichvaght|never|هیچ+وقت|2|TIME
+har|every|هر|2|TIME
+har rooz|every day|هر روز|2|TIME
+bood|was|بود|2|TIME
+bazar|bazaar / market|بازار|2|SHOP
+chande?|how much is it?|چنده؟|2|SHOP
+gheymat|price|قیمت|2|SHOP
+gheymatesh chande?|how much does it cost?|قیمتش چنده؟|2|SHOP
+pool|money|پول|2|SHOP
+toman|toman (money)|تومن|2|SHOP
+geroon|expensive|گرون|2|SHOP
+kheyli geroone!|that's very expensive!|خیلی گرونه!|2|SHOP
+arzoon|cheap|ارزون|2|SHOP
+bashe|okay|باشه|2|SHOP
+kharidan|to buy|خریدن|2|SHOP
+mikham|I want|می+خوام|2|SHOP
+nemikham|I don't want|نمی+خوام|2|SHOP
+shahr|city|شهر|2|SHOP
+khiaban|street|خیابان|2|SHOP
+mashin|car|ماشین|2|SHOP
+madreseh|school|مدرسه|2|SHOP
+kaar|work|کار|2|SHOP
+sal-e no mobarak|happy new year|سال نو مبارک|2|SHOP
+tavallodet mobarak|happy birthday|تولدت مبارک|2|SHOP
+ghaza|food / meal|غذا|3|FOOD
+ab|water|آب|3|FOOD
+chai|tea|چای|3|FOOD
+nan|bread|نان|3|FOOD
+berenj|rice|برنج|3|FOOD
+miveh|fruit|میوه|3|FOOD
+anar|pomegranate|انار|3|FOOD
+morgh|chicken (the meat)|مرغ|3|FOOD
+joojeh|chick (young chicken)|جوجه|3|FOOD
+kabab koobideh|ground-meat kabab|کباب کوبیده|3|FOOD
+tokhm-e morgh|egg|تخم مرغ|3|FOOD
+sobhaneh|breakfast|صبحانه|3|FOOD
+nahar|lunch|ناهار|3|FOOD
+shaam|dinner|شام|3|FOOD
+khoshmazeh|delicious|خوشمزه|3|FOOD
+noosh-e jan|enjoy your meal|نوش جان|3|FOOD
+gorosneh / goshne|hungry|گرسنه / گشنه|3|FOOD
+teshneh|thirsty|تشنه|3|FOOD
+seer|full (after eating)|سیر|3|FOOD
+khordan|to eat|خوردن|3|FOOD
+khordam|I ate|خوردم|3|FOOD
+khordi|you ate|خوردی|3|FOOD
+oo khord|he/she ate|او خورد|3|FOOD
+maa khordim|we ate|ما خوردیم|3|FOOD
+shoma khordid|you all ate|شما خوردید|3|FOOD
+oona khordand|they ate|اونا خوردند|3|FOOD
+sobhaneh mikhoram|I eat breakfast|صبحانه می+خورم|3|FOOD
+nahar mikhoram|I eat lunch|ناهار می+خورم|3|FOOD
+shaam mikhoram|I eat dinner|شام می+خورم|3|FOOD
+hichi|nothing|هیچی|3|FOOD
+man emrooz hichi nakhordam|I didn't eat anything today|من امروز هیچی نخوردم|3|FOOD
+doost daram|I like / I love|دوست دارم|3|FOOD
+doost dari|you like|دوست داری|3|FOOD
+shoma che ghaza doost dari?|what food do you like?|شما چه غذایی دوست داری؟|3|FOOD
+khub / khoob|good|خوب|3|FEEL
+bad|bad|بد|3|FEEL
+khasteh|tired|خسته|3|FEEL
+khasteh hastam|I am tired|خسته هستم|3|FEEL
+khoshhal|happy|خوشحال|3|FEEL
+khoshhalam|I'm happy|خوشحالم|3|FEEL
+narahat|upset / uneasy|ناراحت|3|FEEL
+khab-alood|sleepy|خواب+آلود|3|FEEL
+hayajan-zadeh|excited|هیجان+زده|3|FEEL
+kam|a little / not much|کم|3|FEEL
+mariz|sick|مریض|3|FEEL
+man marizam|I'm sick|من مریضم|3|FEEL
+man mariz nistam|I'm not sick|من مریض نیستم|3|FEEL
+man mariz boodam|I was sick|من مریض بودم|3|FEEL
+behtaram|I feel better|بهترم|3|FEEL
+shoma behtari?|do you feel better?|شما بهتری؟|3|FEEL
+zood khub sho|get well soon|زود خوب شو|3|FEEL
+saram sholooghe|I'm busy|سرم شلوغه|3|FEEL
+ziba|beautiful|زیبا|3|FEEL
+khoshgel|pretty / cute|خوشگل|3|FEEL
+asoon|easy|آسون|3|FEEL
+sakht|hard / difficult|سخت|3|FEEL
+garm|warm / hot|گرم|3|FEEL
+sard|cold|سرد|3|FEEL
+daagh|hot (to the touch)|داغ|3|FEEL
+rang|color|رنگ|3|COLOR
+che rangi-e?|what color is it?|چه رنگیه؟|3|COLOR
+ghermez|red|قرمز|3|COLOR
+sabz|green|سبز|3|COLOR
+sefid|white|سفید|3|COLOR
+zard|yellow|زرد|3|COLOR
+siyah|black|سیاه|3|COLOR
+narenji|orange|نارنجی|3|COLOR
+abi|blue|آبی|3|COLOR
+ghahvei|brown|قهوه+ای|3|COLOR
+ghahveh|coffee|قهوه|3|COLOR
+soorati|pink|صورتی|3|COLOR
+banafsh|purple|بنفش|3|COLOR
+khakestari|gray|خاکستری|3|COLOR
+tala|gold|طلا|3|COLOR
+talayi|golden|طلایی|3|COLOR
+noghreh|silver|نقره|3|COLOR
+noghrei|silver-colored|نقره+ای|3|COLOR
+khak|dirt / soil|خاک|3|COLOR
+kam rang|light-colored|کم+رنگ|3|COLOR
+badan|body|بدن|3|BODY
+moo|hair|مو|3|BODY
+sar|head|سر|3|BODY
+abroo|eyebrow|ابرو|3|BODY
+cheshm|eye|چشم|3|BODY
+mojeh|eyelash|مژه|3|BODY
+beeni / damagh|nose|بینی / دماغ|3|BODY
+dahan|mouth|دهان|3|BODY
+lab|lip|لب|3|BODY
+dandoon|tooth|دندون|3|BODY
+dandoon-ha|teeth|دندون+ها|3|BODY
+goosh|ear|گوش|3|BODY
+zaban|tongue / language|زبان|3|BODY
+gardan|neck|گردن|3|BODY
+shooneh|shoulder|شونه|3|BODY
+dast|hand|دست|3|BODY
+moch|wrist|مچ|3|BODY
+aranj|elbow|آرنج|3|BODY
+zanoo|knee|زانو|3|BODY
+paa|foot / leg|پا|3|BODY
+angosht|finger|انگشت|3|BODY
+nakhon|nail|ناخن|3|BODY
+cheshm-e shoma che rangi ast?|what color are your eyes?|چشم شما چه رنگی است؟|3|BODY
+moo-e man ghahvei ast|my hair is brown|موی من قهوه+ای است|3|BODY
+oo cheshm-e sabz darad|he/she has green eyes|او چشم سبز دارد|3|BODY
+chand ta angosht dari?|how many fingers do you have?|چندتا انگشت داری؟|3|BODY
+man dah angosht daram|I have ten fingers|من ده انگشت دارم|3|BODY
+hava|weather / air|هوا|3|WEATHER
+hava chetore?|how's the weather?|هوا چطوره؟|3|WEATHER
+abr|cloud|ابر|3|WEATHER
+abri|cloudy|ابری|3|WEATHER
+barf|snow|برف|3|WEATHER
+barfi|snowy|برفی|3|WEATHER
+aftab|sunlight|آفتاب|3|WEATHER
+aftabi|sunny|آفتابی|3|WEATHER
+khorshid|sun|خورشید|3|WEATHER
+baroon|rain|بارون|3|WEATHER
+barooni|rainy|بارونی|3|WEATHER
+baad|wind|باد|3|WEATHER
+baadi|windy|بادی|3|WEATHER
+gol|flower|گل|3|WEATHER
+bagh|garden|باغ|3|WEATHER
+sag|dog|سگ|3|WEATHER
+bidar|awake|بیدار|3|VERB
+bidar shodan|to wake up|بیدار شدن|3|VERB
+man har sobh bidar misham|I wake up every morning|من هر صبح بیدار می+شم|3|VERB
+khab|sleep|خواب|3|VERB
+khabidan|to sleep|خوابیدن|3|VERB
+mikhabam|I sleep|می+خوابم|3|VERB
+raftan|to go|رفتن|3|VERB
+miram|I go|می+رم|3|VERB
+miravam|I go (formal)|می+روم|3|VERB
+sar-e kaar miram|I go to work|سر کار می+رم|3|VERB
+amadan|to come|آمدن|3|VERB
+didan|to see|دیدن|3|VERB
+goftan|to say|گفتن|3|VERB
+kardan|to do|کردن|3|VERB
+dashtan|to have|داشتن|3|VERB
+khastan|to want|خواستن|3|VERB
+danestan|to know|دانستن|3|VERB
+fekr mikonam|I think|فکر می+کنم|3|VERB
+ketab|book|کتاب|3|VERB
+dars|lesson|درس|3|VERB
+farsi|Persian (language)|فارسی|3|VERB
+engelisi|English (language)|انگلیسی|3|VERB
+zendegi|life|زندگی|3|VERB
+eshgh|love|عشق|3|PHRASE
+eshgham|my love|عشقم|3|PHRASE
+del|heart|دل|3|PHRASE
+doostet daram|I love you|دوستت دارم|3|PHRASE
+to ra doost daram|I like you (with object marker)|تو را دوست دارم|3|PHRASE
+delam barat tang shode|I miss you|دلم برات تنگ شده|3|PHRASE
+hamechie mani|you are my everything|همه+چیز منی|3|PHRASE
+man behet eftekhar mikonam|I'm proud of you|من بهت افتخار می+کنم|3|PHRASE
+damet garm|well done / good for you|دمت گرم|3|PHRASE
+sad dar sad|absolutely / 100%|صد در صد|3|PHRASE
+tanha|alone|تنها|3|PHRASE
+`;
+
+// ===== LENGUAMON core: utils, words, options, save, audio, input =====
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const rand = Math.random;
+const pick = a => a[Math.floor(rand() * a.length)];
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// split "a / b (c / d)" on " / " outside parentheses
+function splitAlts(s) {
+  const out = []; let depth = 0, cur = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === '(') depth++; if (c === ')') depth--;
+    if (depth === 0 && s.substr(i, 3) === ' / ') { out.push(cur.trim()); cur = ''; i += 2; continue; }
+    cur += c;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+function norm(s) {
+  return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/\.\.\.|___/g, ' ').replace(/[’‘'`´?!.,;:"()؟]/g, '').replace(/-/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function acceptForms(s) {
+  const set = new Set();
+  for (const alt of splitAlts(s)) {
+    set.add(norm(alt));
+    const noParen = alt.replace(/\([^)]*\)/g, '').trim();
+    if (noParen) set.add(norm(noParen));
+  }
+  set.delete('');
+  return [...set];
+}
+function lev(a, b) {
+  if (a === b) return 0; const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i), cur = new Array(n + 1);
+  for (let i = 1; i <= m; i++) { cur[0] = i; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); [prev, cur] = [cur, prev]; }
+  return prev[n];
+}
+const tolFor = len => len <= 3 ? 0 : len <= 6 ? 1 : 1 + Math.floor(len / 7);
+
+// ---- words ----
+const TYPES = {
+  GREET: { label: 'GREETING', pal: ['#9ff0e0', '#30b0a8', '#14605c'] },
+  BASIC: { label: 'BASIC', pal: ['#f8e8a8', '#d8a838', '#7a5410'] },
+  PRON: { label: 'PERSON', pal: ['#f8c8d8', '#d86890', '#782848'] },
+  QUES: { label: 'QUESTION', pal: ['#c8d8ff', '#6878e0', '#28307a'] },
+  CLASS: { label: 'CLASSROOM', pal: ['#e0f0a8', '#88b838', '#3a5a10'] },
+  NUM: { label: 'NUMBER', pal: ['#ffe090', '#f0a020', '#8a4a00'] },
+  FAM: { label: 'FAMILY', pal: ['#ffd0b0', '#e07848', '#7a3010'] },
+  TIME: { label: 'TIME', pal: ['#d8c8ff', '#9068d8', '#40207a'] },
+  SHOP: { label: 'BAZAAR', pal: ['#ffd8a0', '#c87830', '#6a3008'] },
+  FOOD: { label: 'FOOD', pal: ['#ffb8b8', '#d83040', '#701018'] },
+  FEEL: { label: 'FEELING', pal: ['#ffc8f0', '#c858b0', '#601858'] },
+  COLOR: { label: 'COLOR', pal: ['#c8f8ff', '#38a8e0', '#104878'] },
+  BODY: { label: 'BODY', pal: ['#f8d8c0', '#c89068', '#684020'] },
+  WEATHER: { label: 'WEATHER', pal: ['#d0f0ff', '#58a8d8', '#205078'] },
+  VERB: { label: 'ACTION', pal: ['#d8f8c8', '#50b860', '#185a28'] },
+  PHRASE: { label: 'PHRASE', pal: ['#ffe0e8', '#e8607a', '#7a1830'] },
+};
+const WORDS = [];
+const WORD = {};
+(function parseWords() {
+  for (const line of RAW_WORDS.trim().split('\n')) {
+    const p = line.split('|').map(s => s.trim()); if (p.length < 5) continue;
+    const [tr, en, fa, route, type] = p;
+    const tr0 = splitAlts(tr)[0], en0 = splitAlts(en)[0];
+    const key = norm(tr0) + '|' + norm(en0);
+    if (WORD[key]) continue;
+    const w = {
+      key, tr, en, fa: fa.replace(/\+/g, '‌'), route: +route, type,
+      tr0, en0, name: en0.toUpperCase(), level: Math.max(2, tr0.replace(/[?!.'’,]/g, '').length),
+      enForms: acceptForms(en), trForms: acceptForms(tr), idx: WORDS.length,
+    };
+    WORDS.push(w); WORD[key] = w;
+  }
+})();
+const wordsOfRoute = r => WORDS.filter(w => w.route === r);
+const ROUTE_NAMES = { 1: 'GREETINGS PATH', 2: 'BAZAAR ROAD', 3: 'ROSE GARDEN WAY' };
+
+// ---- options (kept separately from the 48h save) ----
+const OPT_KEY = 'lenguamon_opts_v1';
+const OPTS = Object.assign({ translit: true, music: true, sfx: true, speed: 1 }, (() => { try { return JSON.parse(localStorage.getItem(OPT_KEY)) || {}; } catch (e) { return {}; } })());
+function saveOpts() { try { localStorage.setItem(OPT_KEY, JSON.stringify(OPTS)); } catch (e) { } applyOpts(); }
+function applyOpts() { document.body.classList.toggle('notr', !OPTS.translit); }
+
+// ---- save (expires 48h after last play) ----
+const SAVE_KEY = 'lenguamon_save_v1';
+const LIFE_MS = 48 * 3600 * 1000;
+let S = null; // live game state
+function newState(name) {
+  return { v: 1, name, map: 'house', x: 3, y: 3, dir: 'down', team: [], caught: {}, seen: {}, stats: {}, daftar: 0, flags: {}, created: Date.now(), lastPlayed: Date.now() };
+}
+function readSave() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY); if (!raw) return { save: null };
+    const s = JSON.parse(raw);
+    if (!s || !s.lastPlayed) return { save: null };
+    if (Date.now() - s.lastPlayed > LIFE_MS) { localStorage.removeItem(SAVE_KEY); return { save: null, expired: s }; }
+    s.team = s.team.filter(m => WORD[m.key]);
+    return { save: s };
+  } catch (e) { return { save: null }; }
+}
+function writeSave() { if (!S) return; S.lastPlayed = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
+let lastTouch = 0;
+function touchPlay() {
+  if (!S) return;
+  const now = Date.now();
+  if (now - S.lastPlayed > LIFE_MS) { // tab left open more than 48h
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) { }
+    S = null; location.reload(); return;
+  }
+  if (now - lastTouch > 30000) { lastTouch = now; S.lastPlayed = now; writeSave(); }
+}
+const hoursLeft = s => Math.max(0, Math.ceil((LIFE_MS - (Date.now() - s.lastPlayed)) / 3600000));
+
+// ---- audio: tiny chiptune synth ----
+const SND = (() => {
+  let ac = null, master = null, musicGain = null, sfxGain = null, noiseBuf = null;
+  function init() {
+    if (ac) return; try {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      master = ac.createGain(); master.gain.value = 0.5; master.connect(ac.destination);
+      musicGain = ac.createGain(); musicGain.gain.value = 0.10; musicGain.connect(master);
+      sfxGain = ac.createGain(); sfxGain.gain.value = 0.22; sfxGain.connect(master);
+      noiseBuf = ac.createBuffer(1, ac.sampleRate * 0.5, ac.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { ac = null; }
+  }
+  function tone(f, t0, dur, type = 'square', vol = 1, dest = sfxGain, slide = 0) {
+    if (!ac) return; const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t0); if (slide) o.frequency.linearRampToValueAtTime(f * slide, t0 + dur);
+    g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    o.connect(g); g.connect(dest); o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  function noise(t0, dur, vol = 1) {
+    if (!ac) return; const s = ac.createBufferSource(), g = ac.createGain(); s.buffer = noiseBuf;
+    g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur); s.connect(g); g.connect(sfxGain); s.start(t0); s.stop(t0 + dur);
+  }
+  const N = n => 440 * Math.pow(2, (n - 69) / 12);
+  const fx = {
+    blip() { tone(1760, ac.currentTime, 0.025, 'square', 0.25); },
+    select() { const t = ac.currentTime; tone(1046, t, 0.05); tone(1568, t + 0.05, 0.07); },
+    cancel() { const t = ac.currentTime; tone(784, t, 0.05); tone(523, t + 0.05, 0.07); },
+    bump() { tone(110, ac.currentTime, 0.08, 'square', 0.6); },
+    door() { const t = ac.currentTime; noise(t, 0.08, 0.4); tone(220, t + 0.05, 0.1, 'triangle'); },
+    encounter() { const t = ac.currentTime; [0, 3, 7, 12, 15, 19, 24].forEach((n, i) => tone(N(64 + n), t + i * 0.045, 0.08)); },
+    hit() { const t = ac.currentTime; noise(t, 0.15, 0.9); tone(180, t, 0.12, 'square', 0.6, sfxGain, 0.4); },
+    miss() { tone(600, ac.currentTime, 0.25, 'triangle', 0.6, sfxGain, 0.4); },
+    good() { const t = ac.currentTime; [72, 76, 79, 84].forEach((n, i) => tone(N(n), t + i * 0.06, 0.12)); },
+    bad() { const t = ac.currentTime; tone(N(60), t, 0.15); tone(N(55), t + 0.15, 0.3); },
+    shake() { const t = ac.currentTime; tone(300, t, 0.06); tone(250, t + 0.08, 0.06); },
+    caught() { const t = ac.currentTime; [[72, 0], [76, .12], [79, .24], [84, .36], [79, .5], [84, .62]].forEach(([n, d]) => tone(N(n), t + d, 0.16)); },
+    levelup() { const t = ac.currentTime; [[67, 0], [71, .1], [74, .2], [79, .3], [74, .45], [79, .55]].forEach(([n, d]) => tone(N(n), t + d, 0.12)); },
+    heal() { const t = ac.currentTime; [[72, 0], [72, .15], [72, .3], [68, .45], [70, .6], [72, .8]].forEach(([n, d]) => tone(N(n), t + d, 0.16, 'triangle', 0.9)); },
+    faint() { tone(500, ac.currentTime, 0.6, 'square', 0.5, sfxGain, 0.2); },
+    badge() { const t = ac.currentTime; [[67, 0], [72, .15], [76, .3], [79, .45], [84, .65], [88, .85]].forEach(([n, d]) => tone(N(n), t + d, 0.2)); },
+  };
+  // Music: original loops in Persian-flavoured modes (Chahargah / Shur / Homayun colours)
+  const _ = -1;
+  const SONGS = {
+    town: { bpm: 104, root: 60, lead: [7, _, 8, 7, 4, _, 5, 4, 1, _, 0, _, 4, _, _, _, 7, _, 8, 11, 12, _, 11, 8, 7, _, 5, 4, 5, _, _, _], bass: [0, _, _, _, 7, _, _, _, 1, _, _, _, 0, _, _, _, 5, _, _, _, 4, _, _, _, 7, _, _, _, 0, _, _, _] },
+    route: { bpm: 132, root: 62, lead: [0, 3, 5, 7, 8, _, 7, 5, 3, _, 1, 3, 0, _, _, _, 7, 8, 10, 12, 10, 8, 7, 5, 3, 5, 3, 1, 0, _, _, _], bass: [0, _, 0, _, 7, _, 7, _, 5, _, 5, _, 0, _, 0, _, 3, _, 3, _, 5, _, 5, _, 7, _, 7, _, 0, _, 0, _] },
+    battle: { bpm: 156, root: 64, lead: [12, _, 13, 12, 10, 8, 7, _, 8, _, 7, 5, 4, _, 1, _, 0, 1, 4, 5, 7, _, 8, 7, 5, 4, 1, 4, 0, _, _, _], bass: [0, 12, 0, 12, 0, 12, 0, 12, 1, 13, 1, 13, 1, 13, 1, 13, 5, 17, 5, 17, 4, 16, 4, 16, 1, 13, 1, 13, 0, 12, 0, 12] },
+    boss: { bpm: 150, root: 62, lead: [0, _, 1, _, 4, _, 5, 7, 8, _, 7, _, 5, 4, 5, _, 7, 8, 11, 12, 11, 8, 7, 5, 4, _, 1, _, 0, _, _, _], bass: [0, 0, 12, 0, 0, 12, 0, 12, 5, 5, 17, 5, 4, 16, 4, 16, 8, 8, 20, 8, 7, 19, 7, 19, 1, 13, 1, 13, 0, 12, 0, 12] },
+    end: { bpm: 96, root: 60, lead: [12, _, 11, 8, 7, _, 8, _, 7, 5, 4, _, 5, _, _, _, 4, 5, 7, 8, 11, _, 12, _, 11, 8, 7, 5, 4, _, 0, _], bass: [0, _, _, _, 5, _, _, _, 4, _, _, _, 0, _, _, _, 1, _, _, _, 5, _, _, _, 7, _, _, _, 0, _, _, _] },
+  };
+  let cur = null, step = 0, nextT = 0, timer = null;
+  function play(name) {
+    if (cur === name) return; cur = name; step = 0;
+    if (timer) clearInterval(timer); timer = null;
+    if (!ac || !name || !OPTS.music) return;
+    nextT = ac.currentTime + 0.05;
+    timer = setInterval(() => {
+      const song = SONGS[cur]; if (!song || !OPTS.music) return;
+      const dt = 60 / song.bpm / 2;
+      while (nextT < ac.currentTime + 0.2) {
+        const i = step % song.lead.length;
+        if (song.lead[i] >= 0) tone(N(song.root + 12 + song.lead[i]), nextT, dt * 1.6, 'square', 0.5, musicGain);
+        if (song.bass[i] >= 0) tone(N(song.root - 12 + song.bass[i]), nextT, dt * 0.9, 'triangle', 0.9, musicGain);
+        step++; nextT += dt;
+      }
+    }, 60);
+  }
+  return {
+    init() { init(); if (ac && ac.state === 'suspended') ac.resume(); if (ac && cur && !timer && OPTS.music) { const c = cur; cur = null; play(c); } },
+    fx(n) { if (!ac || !OPTS.sfx) return; try { fx[n] && fx[n](); } catch (e) { } },
+    music(n) { play(n); },
+    refresh() { const c = cur; cur = null; play(c); },
+  };
+})();
+
+// ---- input: one handler at a time (stack) ----
+const held = { up: false, down: false, left: false, right: false };
+const handlers = [];
+const pushH = h => handlers.push(h);
+const popH = h => { const i = handlers.lastIndexOf(h); if (i >= 0) handlers.splice(i, 1); };
+function press(btn) { SND.init(); touchPlay(); const h = handlers[handlers.length - 1]; if (h) h(btn); }
+const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right', z: 'a', Z: 'a', ' ': 'a', Enter: 'a', j: 'a', x: 'b', X: 'b', Escape: 'b', Backspace: 'b', k: 'b', m: 'start', M: 'start', Shift: 'start', Tab: 'start' };
+window.addEventListener('keydown', e => {
+  const typing = document.activeElement && document.activeElement.tagName === 'INPUT';
+  if (typing) { SND.init(); touchPlay(); return; }
+  const b = KEYMAP[e.key]; if (!b) return;
+  e.preventDefault();
+  if (b in held) { if (!held[b]) { held[b] = true; press(b); } else return; }
+  else if (!e.repeat) press(b);
+});
+window.addEventListener('keyup', e => { const b = KEYMAP[e.key]; if (b in held) held[b] = false; });
+window.addEventListener('blur', () => { for (const k in held) held[k] = false; });
+function bindTouch() {
+  document.querySelectorAll('[data-btn]').forEach(el => {
+    const b = el.dataset.btn;
+    const down = e => { e.preventDefault(); el.classList.add('on'); if (b in held) held[b] = true; press(b); };
+    const up = e => { el.classList.remove('on'); if (b in held) held[b] = false; };
+    el.addEventListener('pointerdown', down); el.addEventListener('pointerup', up); el.addEventListener('pointerleave', up); el.addEventListener('pointercancel', up);
+  });
+}
+
+// ===== LENGUAMON art: procedural pixel tiles, characters, monsters =====
+const TS = 16;
+const C = {
+  grass: '#8cd060', grass2: '#6cb048', grassD: '#3c8a34', grassDD: '#2a6428',
+  path: '#ecd6a0', path2: '#d8bc84', sand: '#f2e0b0', sand2: '#e0c890',
+  water: '#40bcd8', water2: '#a8ecf4', rim: '#ecdcbc', rim2: '#c8b48c',
+  cyp: '#2c6a3c', cyp2: '#4c9a4c', cypD: '#1a4628', trunk: '#6a4424',
+  tree: '#3f8f3c', tree2: '#68b850', fruit: '#d82838', fruit2: '#ff7080',
+  rock: '#a8a8b0', rockD: '#6a6a78', rockL: '#d8d8e0',
+  adobe: '#dcaa6c', adobe2: '#c08c50', adobeL: '#ecc48c',
+  dome: '#30b4b0', domeL: '#98e4dc', domeD: '#16767c', gold: '#f0c040', goldD: '#b08018',
+  kashi: '#2858a8', kashiL: '#f4f0e0', kashiT: '#30b4b0',
+  wood: '#8a5a30', woodL: '#b88048', woodD: '#5a3418', glass: '#284878', glassL: '#5888c0',
+  out: '#202030', white: '#f8f4e8', red: '#c83038', navy: '#283878',
+  floor: '#c89058', floorD: '#a87040', carpet: '#a8303a', carpet2: '#c84a48', wallIn: '#f0e4c8', wallInD: '#d8c8a0',
+  board: '#2a5a3a', brass: '#e8b840', brassD: '#a07818', spiceO: '#f0a020', spiceY: '#f0d040', spiceR: '#a02838', spiceG: '#8ab848',
+};
+function R(ctx, x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+function P(ctx, pts, c) { ctx.fillStyle = c; for (let i = 0; i < pts.length; i += 2) ctx.fillRect(pts[i], pts[i + 1], 1, 1); }
+
+// ---- ground layers ----
+function gGrass(c, x, y) { R(c, 0, 0, 16, 16, C.grass); const h = (x * 7 + y * 13) % 4; P(c, h < 2 ? [2, 3, 3, 3, 10, 9, 11, 9, 6, 13] : [5, 2, 12, 5, 13, 5, 3, 11, 9, 14], C.grass2); }
+function gSand(c, x, y) { R(c, 0, 0, 16, 16, C.sand); P(c, (x + y) % 2 ? [3, 4, 11, 2, 7, 11, 13, 13] : [5, 6, 12, 9, 2, 13], C.sand2); }
+function gPath(c, x, y) { R(c, 0, 0, 16, 16, C.path); P(c, (x + y) % 2 ? [4, 3, 12, 7, 6, 12] : [2, 9, 10, 2, 13, 13], C.path2); }
+function gFloor(c) { R(c, 0, 0, 16, 16, C.floor); R(c, 0, 7, 16, 1, C.floorD); R(c, 0, 15, 16, 1, C.floorD); R(c, 5, 0, 1, 7, C.floorD); R(c, 11, 8, 1, 7, C.floorD); }
+function gCarpet(c, x, y, nb) {
+  R(c, 0, 0, 16, 16, C.carpet);
+  // medallion pattern
+  const ph = (x + y) % 2;
+  if (ph) { P(c, [7, 4, 8, 4, 6, 5, 9, 5, 5, 6, 10, 6, 5, 9, 10, 9, 6, 10, 9, 10, 7, 11, 8, 11], C.gold); R(c, 7, 7, 2, 2, C.navy); }
+  else { P(c, [2, 2, 13, 2, 2, 13, 13, 13], C.gold); R(c, 6, 6, 4, 4, C.carpet2); P(c, [7, 7, 8, 8], C.gold); }
+  const bd = (side) => { };
+  if (!nb.u) { R(c, 0, 0, 16, 3, C.navy); P(c, [2, 1, 6, 1, 10, 1, 14, 1], C.gold); }
+  if (!nb.d) { R(c, 0, 13, 16, 3, C.navy); P(c, [2, 14, 6, 14, 10, 14, 14, 14], C.gold); }
+  if (!nb.l) { R(c, 0, 0, 3, 16, C.navy); P(c, [1, 3, 1, 7, 1, 11], C.gold); }
+  if (!nb.r) { R(c, 13, 0, 3, 16, C.navy); P(c, [14, 3, 14, 7, 14, 11], C.gold); }
+}
+
+// ---- tile painters: (ctx, x, y, nb, map) ----
+const TILE = {
+  '.': { g: gGrass }, ':': { g: gGrass, enc: true, d(c, x, y) { for (const [bx, by] of [[1, 2], [9, 2], [5, 9], [13, 9]]) { R(c, bx, by + 2, 1, 4, C.grassD); R(c, bx + 1, by, 1, 6, C.grassDD); R(c, bx + 2, by + 1, 1, 5, C.grassD); R(c, bx + 3, by + 3, 1, 3, C.grassDD); } } },
+  '=': { g: gPath }, ',': { g: gSand },
+  '*': { g: gGrass, d(c, x, y) { for (const [fx, fy] of [[3, 3], [10, 9]]) { P(c, [fx, fy - 1, fx - 1, fy, fx + 1, fy, fx, fy + 1], (x + y) % 2 ? C.fruit2 : C.white); P(c, [fx, fy], C.gold); P(c, [fx, fy + 2, fx + 1, fy + 3], C.grassD); } } },
+  '~': { g: gGrass, solid: true, d(c, x, y, nb) {
+      R(c, 0, 0, 16, 16, C.water); P(c, [3, 5, 4, 5, 5, 4, 10, 11, 11, 11, 12, 10, 9, 3, 10, 3], C.water2);
+      if (!nb.u) { R(c, 0, 0, 16, 3, C.rim); R(c, 0, 3, 16, 1, C.rim2); }
+      if (!nb.d) { R(c, 0, 13, 16, 3, C.rim); R(c, 0, 12, 16, 1, C.water2); }
+      if (!nb.l) { R(c, 0, 0, 3, 16, C.rim); R(c, 3, 0, 1, 16, C.rim2); }
+      if (!nb.r) { R(c, 13, 0, 3, 16, C.rim); R(c, 12, 0, 1, 16, C.rim2); }
+      if (!nb.u) P(c, [5, 1, 10, 1], C.kashi); if (!nb.d) P(c, [5, 14, 10, 14], C.kashi);
+    } },
+  'T': { g: gGrass, solid: true, d(c) {
+      R(c, 7, 13, 2, 3, C.trunk);
+      const rows = [[7, 9], [6, 10], [6, 10], [5, 11], [5, 11], [4, 12], [4, 12], [4, 12], [4, 12], [5, 11], [5, 11], [6, 10], [7, 9]];
+      rows.forEach(([a, b], i) => { R(c, a - 1, i, b - a + 2, 1, C.cypD); R(c, a, i, b - a, 1, C.cyp); });
+      P(c, [7, 2, 6, 4, 7, 5, 6, 7, 7, 8, 6, 10, 8, 3, 9, 6, 9, 9], C.cyp2);
+    } },
+  'P': { g: gGrass, solid: true, d(c) {
+      R(c, 7, 11, 2, 5, C.trunk);
+      R(c, 3, 2, 10, 9, C.grassDD); R(c, 2, 4, 12, 5, C.grassDD); R(c, 4, 1, 8, 11, C.grassDD);
+      R(c, 4, 2, 8, 8, C.tree); R(c, 3, 4, 10, 4, C.tree); R(c, 5, 2, 4, 2, C.tree2); R(c, 4, 4, 2, 2, C.tree2);
+      for (const [fx, fy] of [[5, 6], [10, 4], [8, 8], [11, 8]]) { R(c, fx, fy, 2, 2, C.fruit); P(c, [fx, fy], C.fruit2); }
+    } },
+  'R': { g: (c, x, y, nb) => (nb.L === ',' || nb.R === ',' ? gSand(c, x, y) : gGrass(c, x, y)), solid: true, d(c) { R(c, 2, 5, 12, 10, C.rockD); R(c, 3, 4, 10, 10, C.rock); R(c, 4, 5, 5, 3, C.rockL); R(c, 3, 13, 10, 1, C.rockD); } },
+  'F': { g: gGrass, solid: true, d(c, x, y) { R(c, 0, 4, 16, 12, C.adobe); R(c, 0, 3, 16, 2, C.adobeL); R(c, 0, 15, 16, 1, C.adobe2); R(c, 0, 9, 16, 1, C.adobe2); R(c, (x % 2) ? 4 : 11, 5, 1, 4, C.adobe2); R(c, (x % 2) ? 9 : 2, 10, 1, 5, C.adobe2); if (x % 3 === 0) { R(c, 6, 5, 3, 3, C.kashi); P(c, [7, 6], C.kashiL); } } },
+  'S': { g: gGrass, solid: true, sign: true, d(c) { R(c, 7, 9, 2, 7, C.woodD); R(c, 2, 2, 12, 8, C.woodD); R(c, 3, 3, 10, 6, C.woodL); R(c, 4, 4, 8, 1, C.wood); R(c, 4, 6, 6, 1, C.wood); } },
+  'A': { g: gSand, solid: true, d(c) { for (let i = 0; i < 16; i += 4) { R(c, i, 0, 2, 11, C.red); R(c, i + 2, 0, 2, 11, C.white); } for (let i = 0; i < 16; i += 4) R(c, i + 1, 11, 2, 2, C.red); R(c, 0, 0, 16, 1, C.woodD); } },
+  'K': { g: gSand, solid: true, d(c, x) { R(c, 0, 6, 16, 10, C.wood); R(c, 0, 6, 16, 2, C.woodL); R(c, 0, 15, 16, 1, C.woodD); const sp = [C.spiceO, C.spiceR, C.spiceY, C.spiceG]; for (let i = 0; i < 3; i++) { const col = sp[(x + i) % 4]; R(c, 1 + i * 5, 3, 4, 3, col); R(c, 2 + i * 5, 2, 2, 1, col); } } },
+  'n': { g: gGrass, solid: true, d(c, x, y, nb) {
+      const left = nb.R === 'n';
+      if (left) { R(c, 4, 6, 12, 10, C.domeD); R(c, 6, 4, 10, 12, C.domeD); R(c, 5, 7, 11, 9, C.dome); R(c, 7, 5, 9, 11, C.dome); R(c, 7, 8, 3, 4, C.domeL); R(c, 9, 6, 2, 2, C.domeL); R(c, 15, 0, 1, 5, C.gold); P(c, [14, 1], C.gold); }
+      else { R(c, 0, 6, 12, 10, C.domeD); R(c, 0, 4, 10, 12, C.domeD); R(c, 0, 7, 11, 9, C.dome); R(c, 0, 5, 9, 11, C.dome); R(c, 0, 0, 1, 5, C.gold); P(c, [1, 1], C.gold); R(c, 2, 10, 4, 1, C.domeD); }
+    } },
+  '^': { g: gGrass, solid: true, d(c, x, y, nb) {
+      if (nb.U === 'n') { R(c, 0, 0, 16, 8, C.dome); R(c, 0, 0, 16, 1, C.dome); if (nb.R === 'n') R(c, 7, 0, 3, 5, C.domeL); }
+      else { R(c, 0, 3, 16, 5, C.adobeL); for (let i = 0; i < 16; i += 4) R(c, i, 1, 2, 2, C.adobeL); }
+      R(c, 0, 8, 16, 8, C.kashi); R(c, 0, 8, 16, 1, C.gold); R(c, 0, 15, 16, 1, C.gold);
+      P(c, [3, 11, 2, 12, 4, 12, 3, 13, 11, 11, 10, 12, 12, 12, 11, 13], C.kashiL); P(c, [3, 12, 11, 12], C.gold); P(c, [7, 10, 7, 14, 6, 12, 8, 12], C.kashiT);
+      if (nb.L !== '^') R(c, 0, 1, 1, 15, C.out); if (nb.R !== '^') R(c, 15, 1, 1, 15, C.out);
+    } },
+  '#': { g: gGrass, solid: true, d(c, x, y, nb) { wall(c, x, y, nb); } },
+  'h': { g: gGrass, solid: true, d(c, x, y, nb) { wall(c, x, y, nb); R(c, 4, 3, 8, 10, C.woodD); R(c, 5, 4, 6, 8, C.glass); R(c, 6, 3, 4, 1, C.woodD); R(c, 7, 2, 2, 1, C.woodD); R(c, 7, 4, 2, 8, C.gold); R(c, 5, 7, 6, 1, C.gold); P(c, [6, 5, 9, 9], C.glassL); } },
+  'D': { g: gGrass, solid: false, door: true, d: doorDraw }, 'H': { g: gGrass, door: true, d: doorDraw }, 'M': { g: gGrass, door: true, d: doorDraw }, 'C': { g: gGrass, door: true, d: doorDraw },
+  // interiors
+  'w': { g: gFloor, solid: true, d(c, x, y) { R(c, 0, 0, 16, 16, C.wallIn); R(c, 0, 0, 16, 4, C.wallInD); R(c, 0, 9, 16, 4, C.kashi); P(c, [2, 10, 6, 10, 10, 10, 14, 10, 4, 11, 8, 11, 12, 11, 0, 11], C.kashiL); R(c, 0, 9, 16, 1, C.gold); R(c, 0, 13, 16, 1, C.gold); R(c, 0, 15, 16, 1, C.wallInD); } },
+  'f': { g: gFloor }, 'c': { g: gCarpet },
+  'E': { g: gFloor, exit: true, d(c) { R(c, 2, 4, 12, 10, C.red); R(c, 3, 5, 10, 8, C.carpet2); P(c, [3, 14, 6, 14, 9, 14, 12, 14], C.gold); } },
+  'b': { g: gFloor, solid: true, d(c) { R(c, 1, 0, 14, 16, C.woodD); R(c, 2, 1, 12, 14, C.wood); R(c, 2, 7, 12, 1, C.woodD); const cols = [C.red, C.kashi, C.gold, C.spiceG, C.dome]; for (let i = 0; i < 6; i++) { R(c, 3 + i * 2, 2, 1, 5, cols[i % 5]); R(c, 3 + i * 2, 9, 1, 5, cols[(i + 2) % 5]); } } },
+  'm': { g: gFloor, solid: true, d(c) { R(c, 5, 2, 6, 2, C.brassD); R(c, 4, 4, 8, 8, C.brassD); R(c, 5, 4, 6, 8, C.brass); R(c, 6, 5, 2, 5, '#fff0a0'); R(c, 11, 7, 3, 1, C.brassD); R(c, 5, 12, 6, 2, C.brassD); R(c, 4, 14, 8, 1, C.woodD); R(c, 7, 0, 2, 2, C.red); } },
+  't': { g: gCarpet, solid: true, d(c) { R(c, 1, 5, 14, 7, C.woodD); R(c, 2, 5, 12, 5, C.woodL); R(c, 2, 11, 2, 3, C.woodD); R(c, 12, 11, 2, 3, C.woodD); R(c, 5, 3, 2, 3, '#e8c8a0'); P(c, [5, 3, 6, 3], C.red); R(c, 9, 4, 3, 2, C.white); } },
+  'k': { g: gCarpet, solid: true, d(c) { R(c, 2, 4, 12, 9, C.navy); R(c, 3, 5, 10, 7, C.spiceO); P(c, [5, 7, 8, 7, 11, 7, 6, 9, 9, 9], C.red); } },
+  'u': { g: gFloor, solid: true, counter: true, d(c) { R(c, 0, 3, 16, 13, C.woodD); R(c, 0, 3, 16, 4, C.woodL); R(c, 0, 7, 16, 1, C.woodD); R(c, 3, 9, 10, 4, C.wood); } },
+  'Z': { g: gFloor, solid: true, d(c, x) { R(c, 0, 1, 16, 12, C.woodD); R(c, 0, 2, 16, 10, C.board); if (x % 2) { P(c, [3, 6, 4, 7, 5, 7, 6, 6, 8, 5, 8, 6, 8, 7, 10, 7, 11, 7, 12, 6], C.white); } else { P(c, [4, 5, 5, 5, 6, 5, 4, 8, 6, 8, 10, 6, 11, 6, 12, 5, 12, 7], C.white); } R(c, 0, 13, 16, 2, C.woodL); } },
+  'd': { g: gFloor, solid: true, d(c) { R(c, 2, 5, 12, 6, C.woodD); R(c, 3, 5, 10, 4, C.woodL); R(c, 3, 11, 2, 4, C.woodD); R(c, 11, 11, 2, 4, C.woodD); R(c, 5, 6, 4, 2, C.white); } },
+  'p': { g: gFloor, solid: true, d(c) { R(c, 5, 10, 6, 5, '#c0603a'); R(c, 4, 10, 8, 2, '#d8784a'); R(c, 4, 3, 8, 7, C.tree); R(c, 6, 1, 4, 3, C.tree2); R(c, 3, 5, 2, 3, C.tree2); R(c, 11, 5, 2, 3, C.tree); } },
+};
+function wall(c, x, y, nb) { R(c, 0, 0, 16, 16, C.adobe); R(c, 0, 5, 16, 1, C.adobe2); R(c, 0, 11, 16, 1, C.adobe2); R(c, (x * 5) % 16, 0, 1, 5, C.adobe2); R(c, (x * 5 + 8) % 16, 6, 1, 5, C.adobe2); R(c, (x * 5 + 3) % 16, 12, 1, 4, C.adobe2); if (nb.L !== '#' && nb.L !== 'h' && !TILE[nb.L]?.door) R(c, 0, 0, 1, 16, C.out); if (nb.R !== '#' && nb.R !== 'h' && !TILE[nb.R]?.door) R(c, 15, 0, 1, 16, C.out); if (nb.D !== '#' && nb.D !== 'h' && !TILE[nb.D]?.door) R(c, 0, 15, 16, 1, C.adobe2); }
+function doorDraw(c, x, y, nb) { wall(c, x, y, nb); R(c, 2, 2, 12, 14, C.kashiT); R(c, 3, 1, 10, 1, C.kashiT); R(c, 3, 3, 10, 13, C.woodD); R(c, 4, 4, 8, 12, C.wood); R(c, 5, 2, 6, 2, C.woodD); R(c, 7, 4, 2, 12, C.woodD); P(c, [5, 7, 10, 7, 5, 11, 10, 11], C.gold); P(c, [4, 2, 11, 2], C.gold); }
+
+// render a whole map into an offscreen canvas
+function renderMap(m) {
+  const cv = document.createElement('canvas'); cv.width = m.w * TS; cv.height = m.h * TS;
+  const ctx = cv.getContext('2d');
+  for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+    const ch = m.grid[y][x], t = TILE[ch] || TILE['.'];
+    const at = (xx, yy) => (m.grid[yy] && m.grid[yy][xx]) || ' ';
+    const same = (xx, yy) => { const o = at(xx, yy); return o === ch || (ch === 'c' && 't k'.includes(o) && o !== ' ') || (ch === '~' && o === '~'); };
+    const nb = { u: same(x, y - 1), d: same(x, y + 1), l: same(x - 1, y), r: same(x + 1, y), U: at(x, y - 1), D: at(x, y + 1), L: at(x - 1, y), R: at(x + 1, y) };
+    ctx.save(); ctx.translate(x * TS, y * TS);
+    if (t.g) t.g(ctx, x, y, nb, m);
+    if (t.d) t.d(ctx, x, y, nb, m);
+    ctx.restore();
+  }
+  return cv;
+}
+
+// ---- characters ----
+const LOOKS = {
+  player: { skin: '#f4c8a0', hair: '#3a2818', top: '#2858a8', top2: '#183878', legs: '#303848' },
+  haydeh: { skin: '#f0c49c', scarf: '#7a3a8a', scarf2: '#a860b8', top: '#f0ece0', top2: '#c8c0b0', legs: '#404058', glasses: true },
+  maman: { skin: '#f0c49c', scarf: '#c84858', scarf2: '#e87888', top: '#5a8a4a', top2: '#3a6a30', legs: '#3a3040' },
+  reza: { skin: '#e8b890', hair: '#909090', top: '#f0f0f0', top2: '#c8c8c8', legs: '#5a3a20', stache: true },
+  mahmoud: { skin: '#e0b088', hair: '#e0e0e0', top: '#6a5a40', top2: '#4a3a28', legs: '#403020', stache: true },
+  babak: { skin: '#e8b890', hair: '#201810', top: '#806040', top2: '#5a4028', legs: '#302820', stache: true },
+  nasrin: { skin: '#f4c8a0', scarf: '#2f8a8a', scarf2: '#58b8b0', top: '#f0d070', top2: '#c8a040', legs: '#404058' },
+  arash: { skin: '#f0c49c', hair: '#2a1a10', top: '#d83040', top2: '#a01828', legs: '#283048' },
+  farhad: { skin: '#e8b890', hair: '#1a1008', top: '#48a060', top2: '#287040', legs: '#383020' },
+  golnaz: { skin: '#f4c8a0', scarf: '#e07830', scarf2: '#f8a860', top: '#3a5aa8', top2: '#283c78', legs: '#303040' },
+  dariush: { skin: '#e0b088', hair: '#181010', top: '#1a8a8a', top2: '#0c5c5c', legs: '#202030', stache: true, beard: true },
+  kian: { skin: '#f4c8a0', hair: '#5a3818', top: '#f0c020', top2: '#c89000', legs: '#3858a8', small: true },
+  maryam: { skin: '#f0c49c', scarf: '#3858b8', scarf2: '#6888e0', top: '#a83a5a', top2: '#782040', legs: '#303040' },
+  navid: { skin: '#e8b890', hair: '#3a2818', top: '#c87830', top2: '#8a4a18', legs: '#403020' },
+  leila: { skin: '#f0c49c', scarf: '#f0a020', scarf2: '#ffd060', top: '#c83038', top2: '#901820', legs: '#2a2a3a' },
+  omid: { skin: '#e8b890', hair: '#2a1a10', top: '#8858c8', top2: '#5a3090', legs: '#302838' },
+  parisa: { skin: '#f4c8a0', scarf: '#58a848', scarf2: '#88d070', top: '#f0e8d8', top2: '#c8c0a8', legs: '#3a4060' },
+  shirin: { skin: '#f4c8a0', scarf: '#e05888', scarf2: '#ff90b8', top: '#30a8a0', top2: '#187870', legs: '#303048', flower: true },
+};
+function drawChar(ctx, px, py, L, dir, step) {
+  const o = C.out, s = L.small ? 1 : 0;
+  const top = 1 + s * 2;
+  const rr = (x, y, w, h, c) => R(ctx, px + x, py + y, w, h, c);
+  // legs
+  const legY = 13;
+  const lA = step === 1 ? -1 : 0, lB = step === 2 ? -1 : 0;
+  rr(4, legY + lA, 4, 3 - lA, o); rr(8, legY + lB, 4, 3 - lB, o);
+  rr(5, legY + lA, 2, 2 - lA, L.legs); rr(9, legY + lB, 2, 2 - lB, L.legs);
+  // body
+  rr(3, 8 + s, 10, 6 - s, o); rr(4, 9 + s, 8, 4 - s, L.top); rr(4, 12, 8, 1, L.top2);
+  if (dir === 'down' || dir === 'up') { rr(3, 10 + s, 1, 2, L.skin); rr(12, 10 + s, 1, 2, L.skin); }
+  else rr(dir === 'left' ? 9 : 6, 10 + s, 1, 2, L.skin);
+  // head
+  rr(3, top - 1, 10, 9, o);
+  const hc = L.scarf || L.hair;
+  rr(4, top, 8, 7, hc);
+  if (dir === 'down') {
+    rr(5, top + 2, 6, 5, L.skin); if (!L.scarf) rr(5, top + 2, 6, 1, hc);
+    rr(6, top + 4, 1, 1, o); rr(9, top + 4, 1, 1, o);
+    if (L.glasses) { rr(5, top + 3, 3, 1, o); rr(8, top + 3, 3, 1, o); }
+    if (L.stache) rr(6, top + 6, 4, 1, L.hair);
+    if (L.beard) rr(5, top + 6, 6, 1, L.hair);
+    if (L.scarf) { rr(4, top + 6, 1, 2, hc); rr(11, top + 6, 1, 2, hc); rr(5, top, 6, 1, L.scarf2); }
+  } else if (dir === 'up') {
+    if (L.scarf) { rr(5, top + 1, 6, 1, L.scarf2); rr(4, top + 6, 8, 2, hc); }
+  } else {
+    const L2 = dir === 'left';
+    rr(L2 ? 4 : 6, top + 2, 6, 5, L.skin); rr(L2 ? 9 : 4, top + 1, 3, 6, hc);
+    rr(L2 ? 5 : 10, top + 4, 1, 1, o);
+    if (L.glasses) rr(L2 ? 4 : 9, top + 3, 3, 1, o);
+    if (L.stache) rr(L2 ? 4 : 9, top + 6, 3, 1, L.hair);
+    if (L.scarf) rr(L2 ? 9 : 4, top + 6, 3, 2, hc);
+  }
+  if (L.flower) { rr(11, top - 1, 2, 2, '#fff070'); rr(12, top - 2, 1, 1, C.fruit2); }
+}
+
+// ---- monsters: deterministic symmetric pixel creatures from the word ----
+const MON_CACHE = {};
+function monsterCanvas(w) {
+  if (MON_CACHE[w.key]) return MON_CACHE[w.key];
+  const N = 24, H = 12, r = rng(hashStr(w.key + '#lm'));
+  const pal = TYPES[w.type].pal;
+  const g = Array.from({ length: N }, () => new Array(N).fill(0));
+  const shape = Math.floor(r() * 4);
+  for (let y = 2; y < N - 1; y++) for (let x = 0; x < H; x++) {
+    const dx = (H - 0.5 - x) / H, dy = (y - N * 0.55) / (N * 0.5);
+    let d = shape === 0 ? Math.hypot(dx * 1.1, dy) : shape === 1 ? Math.hypot(dx * 0.8, dy * 1.25) : shape === 2 ? Math.max(Math.abs(dx), Math.abs(dy) * 0.95) : Math.hypot(dx * 1.3, dy * 0.85);
+    const p = d < 0.45 ? 0.95 : d < 0.9 ? 0.75 - (d - 0.45) * 1.2 : 0.0;
+    if (r() < p) g[y][x] = 1;
+  }
+  // features: ears/horns, feet
+  const ear = Math.floor(r() * 3);
+  if (ear) { const ex = 3 + Math.floor(r() * 4); for (let i = 0; i < 4; i++) { g[3 + i][ex] = 1; if (ear === 2) g[3 + i][ex + 1] = 1; } }
+  for (let i = 0; i < 3; i++) g[N - 2][4 + i + Math.floor(r() * 3)] = 1;
+  // smooth
+  for (let it = 0; it < 2; it++) { const c = g.map(row => row.slice()); for (let y = 1; y < N - 1; y++) for (let x = 1; x < H; x++) { let n = 0; for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) if (a || b) n += c[y + a][x + b] || 0; if (c[y][x] && n < 2) g[y][x] = 0; if (!c[y][x] && n > 5) g[y][x] = 1; } }
+  // mirror
+  for (let y = 0; y < N; y++) for (let x = 0; x < H; x++) g[y][N - 1 - x] = g[y][x];
+  const cv = document.createElement('canvas'); cv.width = N; cv.height = N; const ctx = cv.getContext('2d');
+  const filled = (x, y) => x >= 0 && y >= 0 && x < N && y < N && g[y][x];
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    if (g[y][x]) { const edge = !filled(x - 1, y) || !filled(x + 1, y) || !filled(x, y - 1) || !filled(x, y + 1); R(ctx, x, y, 1, 1, edge ? pal[2] : (y < N * 0.45 || filled(x, y + 3) === 0 && y > N * 0.7 ? pal[0] : pal[1])); }
+    else if (filled(x - 1, y) || filled(x + 1, y) || filled(x, y - 1) || filled(x, y + 1)) R(ctx, x, y, 1, 1, C.out);
+  }
+  // belly pattern (a little Persian tile diamond)
+  const by = Math.floor(N * 0.62); if (filled(11, by) && filled(12, by)) { P(ctx, [11, by - 1, 12, by - 1, 10, by, 13, by, 11, by + 1, 12, by + 1], pal[0]); }
+  // eyes
+  let ey = -1; for (let y = 5; y < N * 0.55; y++) if (filled(8, y) && filled(9, y) && filled(8, y + 1)) { ey = y + 1; break; }
+  if (ey > 0) { const ex = 7 + Math.floor(r() * 2); for (const x of [ex, N - 1 - ex - 1]) { R(ctx, x, ey, 2, 2, C.white); R(ctx, x + (x < H ? 1 : 0), ey + 1, 1, 1, C.out); } R(ctx, 11, ey + 3, 2, 1, C.out); }
+  MON_CACHE[w.key] = cv; return cv;
+}
+const MON_URL = {};
+function monUrl(w) { return MON_URL[w.key] || (MON_URL[w.key] = monsterCanvas(w).toDataURL()); }
+function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w)}" alt="${esc(w.name)}">`; }
+const CHAR_URL = {};
+function charUrl(look, dir = 'down') { const k = look + dir; if (CHAR_URL[k]) return CHAR_URL[k]; const cv = document.createElement('canvas'); cv.width = 16; cv.height = 16; drawChar(cv.getContext('2d'), 0, 0, LOOKS[look], dir, 0); return (CHAR_URL[k] = cv.toDataURL()); }
+
+// ===== LENGUAMON UI: text box, menus, fades, Persian markup =====
+const F = (fa, tr) => `<span class="fa"><span class="fs" dir="rtl" lang="fa">${esc(fa)}</span><span class="ft">${esc(tr)}</span></span>`;
+const W = w => F(w.fa, splitAlts(w.tr)[0]);
+const B = s => `<b>${esc(s)}</b>`;
+const nm = () => esc(S ? S.name : '');
+
+function speedMs() { return [8, 22, 40][OPTS.speed] ?? 22; }
+
+// typewriter that reveals plain text char by char and Persian blocks whole
+function typeInto(el, html) {
+  el.innerHTML = html;
+  const units = [];
+  (function walk(n) {
+    for (const ch of [...n.childNodes]) {
+      if (ch.nodeType === 3) { units.push({ t: ch, s: ch.textContent }); ch.textContent = ''; }
+      else if (ch.classList && ch.classList.contains('fa')) { ch.style.visibility = 'hidden'; units.push({ e: ch }); }
+      else if (ch.tagName === 'IMG') { ch.style.visibility = 'hidden'; units.push({ e: ch }); }
+      else walk(ch);
+    }
+  })(el);
+  let ui = 0, ci = 0, done = false, timer = null, n = 0;
+  const finish = () => { for (const u of units) { if (u.t) u.t.textContent = u.s; else u.e.style.visibility = 'visible'; } done = true; clearInterval(timer); };
+  const p = new Promise(res => {
+    const tick = () => {
+      if (done) { res(); return; }
+      const u = units[ui]; if (!u) { finish(); res(); return; }
+      if (u.e) { u.e.style.visibility = 'visible'; ui++; SND.fx('blip'); return; }
+      ci++; u.t.textContent = u.s.slice(0, ci); if (++n % 3 === 0) SND.fx('blip');
+      if (ci >= u.s.length) { ui++; ci = 0; }
+    };
+    timer = setInterval(() => { tick(); if (done) { clearInterval(timer); res(); } }, speedMs());
+  });
+  return { p, skip: () => { if (!done) { finish(); } }, isDone: () => done };
+}
+
+const TB = () => $('#textbox');
+// say(pages): each page is html. Resolves after the last page is acknowledged.
+// opts.keep: leave last page visible (for a question + menu)
+async function say(pages, opts = {}) {
+  if (!Array.isArray(pages)) pages = [pages];
+  const box = TB(), body = box.querySelector('.tb-body'), arrow = box.querySelector('.tb-arrow');
+  box.classList.add('show');
+  for (let i = 0; i < pages.length; i++) {
+    arrow.classList.remove('show');
+    const tw = typeInto(body, pages[i]);
+    const last = i === pages.length - 1;
+    await new Promise(res => {
+      let ready = false;
+      const h = b => {
+        if (b !== 'a' && b !== 'b') return;
+        if (!tw.isDone()) { tw.skip(); return; }
+        if (ready) { popH(h); SND.fx('blip'); res(); }
+      };
+      pushH(h);
+      const waitDone = setInterval(() => {
+        if (tw.isDone()) {
+          clearInterval(waitDone); ready = true;
+          if (last && opts.keep) { popH(h); res(); return; }
+          arrow.classList.add('show');
+          if (opts.auto) setTimeout(() => { if (handlers.includes(h)) { popH(h); res(); } }, opts.auto);
+        }
+      }, 16);
+    });
+  }
+  arrow.classList.remove('show');
+  if (!opts.keep) box.classList.remove('show');
+}
+function hideText() { TB().classList.remove('show'); }
+
+// generic vertical/2-column menu. items: strings or {html, disabled}
+function choose(items, opts = {}) {
+  return new Promise(res => {
+    const el = document.createElement('div');
+    el.className = 'box menu ' + (opts.cls || '');
+    Object.assign(el.style, opts.style || {});
+    const cols = opts.cols || 1;
+    el.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+    const rows = items.map((it, i) => {
+      const d = document.createElement('div'); d.className = 'mi' + (it.disabled ? ' dis' : '');
+      d.innerHTML = `<span class="cur">▶</span><span>${typeof it === 'string' ? esc(it) : it.html}</span>`;
+      d.addEventListener('pointerdown', e => { e.stopPropagation(); if (it.disabled) return; idx = i; draw(); finish(i); });
+      el.appendChild(d); return d;
+    });
+    (opts.parent || $('#screen')).appendChild(el);
+    let idx = opts.start || 0;
+    const draw = () => rows.forEach((r, i) => r.classList.toggle('sel', i === idx));
+    draw();
+    const finish = v => { popH(h); el.remove(); res(v); };
+    const h = b => {
+      const n = items.length;
+      if (b === 'up') idx = (idx - cols + n) % n; else if (b === 'down') idx = (idx + cols) % n;
+      else if (b === 'left' && cols > 1) idx = (idx - 1 + n) % n; else if (b === 'right' && cols > 1) idx = (idx + 1) % n;
+      else if (b === 'a') { if (items[idx].disabled) { SND.fx('bump'); return; } SND.fx('select'); finish(idx); return; }
+      else if ((b === 'b' || (b === 'start' && opts.startCloses)) && opts.cancel !== false) { SND.fx('cancel'); finish(-1); return; }
+      else return;
+      SND.fx('blip'); draw();
+      if (opts.onMove) opts.onMove(idx);
+    };
+    pushH(h);
+  });
+}
+async function ask(q, yes = 'YES', no = 'NO') {
+  await say(q, { keep: true });
+  const r = await choose([yes, no], { cls: 'yn' });
+  hideText();
+  return r === 0;
+}
+function fade(on, ms = 250) { const f = $('#fade'); f.style.transitionDuration = ms + 'ms'; f.classList.toggle('on', on); return sleep(ms); }
+async function flash(n = 3) { const f = $('#flash'); for (let i = 0; i < n; i++) { f.classList.add('on'); await sleep(70); f.classList.remove('on'); await sleep(70); } }
+function waitA() { return new Promise(res => { const h = b => { if (b === 'a' || b === 'b' || b === 'start') { popH(h); res(b); } }; pushH(h); }); }
+
+// text input inside the screen (name entry); resolves with the string
+function textInput(label, max = 10) {
+  return new Promise(res => {
+    const el = document.createElement('div'); el.className = 'box namebox';
+    el.innerHTML = `<div class="nb-l">${label}</div><input maxlength="${max}" autocomplete="off" autocapitalize="characters" spellcheck="false"><div class="btnrow"><button class="okbtn">OK</button></div>`;
+    $('#screen').appendChild(el);
+    const inp = el.querySelector('input'); setTimeout(() => inp.focus(), 50);
+    const block = () => { }; pushH(block);
+    const done = () => { const v = inp.value.trim().toUpperCase().replace(/[^A-Z0-9 \-]/g, ''); if (!v) { inp.focus(); return; } SND.fx('select'); popH(block); el.remove(); res(v); };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); done(); } e.stopPropagation(); });
+    el.querySelector('.okbtn').addEventListener('click', done);
+  });
+}
+
+// ===== LENGUAMON world: maps, NPCs, movement, menus =====
+const MAP_SRC = {
+  world: {
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTT', 'T*.*..*..==..*..*.*T', 'T.~~~~...3=...~~~~.T', 'T.~~~~..*==*..~~~~.T', 'T*.......==.......*T',
+      'TP..**...==...**..PT', 'T........==...S....T', 'TTTTTTTT.==.TTTTTTTT', 'T::::*...==...*::::T', 'T::::....==....::::T',
+      'T..PP....==a...PP..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T', 'T*::::...==...::::*T', 'T...R....==....R...T',
+      'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T', 'T........==........T', 'T..S.....==.....o..T',
+      'TFFFFFFFF2FFFFFFFFFT',
+      'T,,AAA,,,==,,,AAA,,T', 'T,,KKK,,q==,,,KKK,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,,,::::T', 'T::::,,R,==,R,,::::T',
+      'T::::,,,,==,,,,::::T', 'T,,,,,,,,==,,,,,,,,T', 'T,AAA,,,,==,,e,AAA,T', 'T,KKK,,,,==,,,,KKK,T', 'T,,,,::::==::::,,,,T',
+      'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,,,::::T', 'T::::,,S,==,,,,::::T',
+      'T::::,,,,==,,i,::::T', 'TT,,,,,,,==,,,,,,,TT',
+      'TFFFFFFFF1FFFFFFFFFT',
+      'T...P....==....P...T', 'T::::....==....::::T', 'T::::....==..g.::::T', 'T::::....==....::::T', 'T.....*..==..*.....T',
+      'TP..:::::==:::::..PT', 'T...:::::==:::::...T', 'T...:::::==:::::...T', 'T....R...==...R....T', 'T*.......==.......*T',
+      'T::::..v.==....::::T', 'T::::....==....::::T', 'T::::..S.==....::::T', 'T........==........T',
+      'TTTTTTTTT9TTTTTTTTTT',
+      'T....*...==...*....T', 'T........==........T', 'T..nn....==...nn...T', 'T.^^^^...==.^^^^^^.T', 'T.#hh#...==.#h##h#.T',
+      'T.#H##...==.##M###.T', 'T..=.....==...=....T', 'T..============....T', 'T.S......==....S...T', 'TP.......==..~~~..PT',
+      'T..s.....==..~~~...T', 'T........==........T', 'T........==...nn...T', 'T........==.^^^^^^.T', 'T.P......==.#h##h#.T',
+      'T........==.##C###.T', 'T.....*..==...=..*.T', 'T........=======...T', 'TTTTTTTTTTTTTTTTTTTT',
+    ],
+    bases: { 1: '=', 2: '=', 3: '=', 9: '=', a: '.', o: '.', q: ',', e: ',', i: ',', g: '.', v: '.', s: '.' },
+    signs: [
+      `ROSE GARDEN ${F('باغ گل‌ها', "bagh-e golha")}<br>Shirin waits by the pools. She speaks only Persian!`,
+      `${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words bloom here.`,
+      `${ROUTE_NAMES[2]}<br>NUMBERS, FAMILY, TIME and BAZAAR words wander the stalls.`,
+      `${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the tall grass.`,
+      `GOLESTAN VILLAGE ${F('روستای گلستان', 'rousta-ye golestan')}<br>A village of flowers and first words.`,
+      `PROFESSOR HAYDEH'S SCHOOL ${F('مدرسه', 'madreseh')}<br>Lenguamon research and Persian lessons.`,
+    ],
+    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 } },
+  },
+  house: { rows: ['wwwwwwwwww', 'wbbfffffmw', 'wfcccccffw', 'wfcktkcfxw', 'wfcccccffw', 'wffffffffw', 'wpffffffpw', 'wwwwEwwwww'], bases: { x: 'f' }, exit: { to: 'world', door: 'H' } },
+  school: { rows: ['wwwwwwwwww', 'wZZZZbbbpw', 'wfffyffffw', 'wffffffffw', 'wdfdfdfdfw', 'wffffffzfw', 'wdfdfdffpw', 'wwwwEwwwww'], bases: { y: 'f', z: 'f' }, exit: { to: 'world', door: 'M' } },
+  teahouse: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffrfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcjw', 'wccccccccw', 'wwwwEwwwww'], bases: { r: 'f', j: 'c' }, exit: { to: 'world', door: 'C' } },
+};
+const MAPS = {};
+const NPC_POS = {}; // marker -> {map,x,y}
+function buildMaps() {
+  for (const [id, src] of Object.entries(MAP_SRC)) {
+    const grid = src.rows.map(r => r.split(''));
+    const m = { ...src, id, w: grid[0].length, h: grid.length, grid, signs: [], doors: {} };
+    let si = 0;
+    for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+      const ch = grid[y][x];
+      if (src.bases && src.bases[ch]) { NPC_POS[ch] = { map: id, x, y }; grid[y][x] = src.bases[ch]; }
+      else if (ch === 'S') { m.signs.push({ x, y, text: (src.signs || [])[si++] || '' }); }
+      else if (src.doors && src.doors[ch]) { m.doors[ch] = { x, y, ...src.doors[ch] }; }
+    }
+    m.canvas = renderMap(m);
+    MAPS[id] = m;
+  }
+}
+function regionOf(map, y) { if (map !== 'world') return 0; if (y >= 54) return 0; if (y >= 39) return 1; if (y >= 21) return 2; return 3; }
+
+// ---- NPCs ----
+const NPCS = [];
+function npc(marker, def) { NPCS.push({ marker, dir: 'down', ...def }); }
+function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
+function npcAt(map, x, y) { for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === map && p.x === x && p.y === y) return n; } return null; }
+
+// ---- player & world state ----
+const PL = { x: 0, y: 0, dir: 'down', moving: false, t0: 0, fx: 0, fy: 0, step: 0, walkPh: 0 };
+const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+const MOVE_MS = 170;
+let curMap = null, worldBusy = false, encounterCooldown = 0;
+const cv = () => $('#cv');
+function solidAt(m, x, y) {
+  if (x < 0 || y < 0 || x >= m.w || y >= m.h) return true;
+  const t = TILE[m.grid[y][x]]; if (!t || t.solid) return true;
+  if (npcAt(m.id, x, y)) return true;
+  return false;
+}
+function placePlayer(map, x, y, dir) { S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
+function musicForPlace() { const r = regionOf(S.map, S.y); SND.music(r === 0 ? 'town' : 'route'); }
+
+function drawWorld() {
+  const c = cv().getContext('2d'); c.imageSmoothingEnabled = false;
+  R(c, 0, 0, 160, 144, '#101018');
+  if (!curMap) return;
+  let px = PL.x * TS, py = PL.y * TS;
+  if (PL.moving) { const k = clamp((performance.now() - PL.t0) / MOVE_MS, 0, 1); const [dx, dy] = DIRS[PL.dir]; px = (PL.x - dx * (1 - k)) * TS; py = (PL.y - dy * (1 - k)) * TS; }
+  const mw = curMap.w * TS, mh = curMap.h * TS;
+  let cx = px - 72, cy = py - 64;
+  cx = mw <= 160 ? (mw - 160) / 2 : clamp(cx, 0, mw - 160);
+  cy = mh <= 144 ? (mh - 144) / 2 : clamp(cy, 0, mh - 144);
+  cx = Math.round(cx); cy = Math.round(cy);
+  c.drawImage(curMap.canvas, -cx, -cy);
+  const ents = [];
+  for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[n.look], n.dir, 0) }); }
+  let step = 0; if (PL.moving) { const k = (performance.now() - PL.t0) / MOVE_MS; step = k < 0.5 ? (PL.walkPh ? 1 : 2) : 0; }
+  ents.push({ y: py, draw: () => drawChar(c, Math.round(px - cx), Math.round(py - cy - 2), LOOKS.player, PL.dir, step) });
+  ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+  // tall grass over feet
+  const t = curMap.grid[PL.y] && curMap.grid[PL.y][PL.x];
+  if (t === ':' && !PL.moving) { c.save(); c.beginPath(); c.rect(px - cx, py - cy + 10, 16, 6); c.clip(); c.drawImage(curMap.canvas, -cx, -cy); c.restore(); }
+}
+let rafOn = false;
+function loop() {
+  if (worldActive()) tickWorld();
+  if (!$('#battle').classList.contains('show') && !$('#title').classList.contains('show')) drawWorld();
+  requestAnimationFrame(loop);
+}
+function worldActive() { return handlers[handlers.length - 1] === worldH && !worldBusy; }
+function tickWorld() {
+  const now = performance.now();
+  if (PL.moving) {
+    if (now - PL.t0 >= MOVE_MS) { PL.moving = false; onStep(); }
+    else return;
+  }
+  if (!worldActive()) return;
+  for (const d of ['up', 'down', 'left', 'right']) {
+    if (!held[d]) continue;
+    PL.dir = d; S.dir = d;
+    const [dx, dy] = DIRS[d], nx = PL.x + dx, ny = PL.y + dy;
+    if (solidAt(curMap, nx, ny)) { if (now - (PL.lastBump || 0) > 350) { SND.fx('bump'); PL.lastBump = now; } return; }
+    PL.x = nx; PL.y = ny; S.x = nx; S.y = ny; PL.moving = true; PL.t0 = now; PL.walkPh ^= 1;
+    return;
+  }
+}
+async function onStep() {
+  const ch = curMap.grid[PL.y][PL.x];
+  // doors
+  const door = Object.values(curMap.doors || {}).find(d => d.x === PL.x && d.y === PL.y);
+  if (door) { await run(() => warp(door.to, door.tx, door.ty, 'up')); return; }
+  if (TILE[ch] && TILE[ch].exit && curMap.exit) { const d = MAPS.world.doors[curMap.exit.door]; await run(() => warp('world', d.x, d.y + 1, 'down')); return; }
+  // region change music
+  musicForPlace();
+  // guard / scripted tiles
+  if (curMap.id === 'world' && PL.y === 54 && PL.x === 9 && !S.flags.starter) { }
+  if (TILE[ch] && TILE[ch].enc) {
+    if (encounterCooldown > 0) { encounterCooldown--; return; }
+    if (rand() < 0.13) { await run(() => wildEncounter(regionOf('world', PL.y))); encounterCooldown = 2; }
+  }
+}
+async function warp(to, x, y, dir) {
+  SND.fx('door'); await fade(true, 180);
+  placePlayer(to, x, y, dir); writeSave(); drawWorld();
+  await fade(false, 180);
+}
+// run a script while the world is paused
+async function run(fn) { worldBusy = true; try { await fn(); } finally { worldBusy = false; } }
+
+function worldH(b) {
+  if (worldBusy || PL.moving) return;
+  if (b === 'a') run(interact);
+  else if (b === 'start') run(startMenu);
+}
+async function interact() {
+  const [dx, dy] = DIRS[PL.dir];
+  let tx = PL.x + dx, ty = PL.y + dy;
+  const t = curMap.grid[ty] && TILE[curMap.grid[ty][tx]];
+  if (t && t.counter) { tx += dx; ty += dy; }
+  const n = npcAt(curMap.id, tx, ty);
+  if (n) { const back = { up: 'down', down: 'up', left: 'right', right: 'left' }; const od = n.dir; n.dir = back[PL.dir]; await n.talk(n); if (!n.fixed) n.dir = n.keepDir ? od : n.dir; writeSave(); return; }
+  const sg = (curMap.signs || []).find(s => s.x === tx && s.y === ty);
+  if (sg && PL.dir === 'up') { await say(sg.text); return; }
+  if (sg) { await say('The sign is facing the other way.'); }
+}
+
+// ---- team helpers ----
+const maxHp = lvl => 12 + lvl * 2;
+const monW = m => WORD[m.key];
+function makeMon(w) { return { key: w.key, lvl: w.level, xp: 0, hp: maxHp(w.level) }; }
+function healTeam() { for (const m of S.team) m.hp = maxHp(m.lvl); }
+const lead = () => S.team.find(m => m.hp > 0);
+const teamAlive = () => S.team.some(m => m.hp > 0);
+function caughtInRoute(r) { return wordsOfRoute(r).filter(w => S.caught[w.key]).length; }
+function caughtCount() { return Object.keys(S.caught).filter(k => WORD[k]).length; }
+function hpBar(m, max) { const pct = clamp(m.hp / max, 0, 1); const col = pct > 0.5 ? '#38c060' : pct > 0.2 ? '#f0c020' : '#e03030'; return `<span class="hpbar"><i style="width:${(pct * 100).toFixed(1)}%;background:${col}"></i></span>`; }
+
+// ---- start menu and screens ----
+async function startMenu() {
+  SND.fx('select');
+  let idx = 0;
+  while (true) {
+    const items = [
+      { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'DAFTAR', { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
+    const r = await choose(items, { cls: 'startmenu', start: idx, startCloses: true });
+    if (r < 0 || r === 6) return;
+    idx = r;
+    if (r === 0) await dexScreen();
+    else if (r === 1) await teamScreen(false);
+    else if (r === 2) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
+    else if (r === 3) await say([`${B(S.name)}<br>KASHI BADGES: ${['b1', 'b2', 'b3'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`, `Route 1: ${caughtInRoute(1)}/${wordsOfRoute(1).length} · Route 2: ${caughtInRoute(2)}/${wordsOfRoute(2).length} · Route 3: ${caughtInRoute(3)}/${wordsOfRoute(3).length}<br>Save fades in about ${hoursLeft(S)}h if you stop playing.`]);
+    else if (r === 4) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your save stays alive as long as you play at least once every 48 hours.']); }
+    else if (r === 5) await optionsScreen();
+  }
+}
+async function optionsScreen() {
+  let idx = 0;
+  while (true) {
+    const items = [
+      `TRANSLITERATION: ${OPTS.translit ? 'ON' : 'OFF'}`, `MUSIC: ${OPTS.music ? 'ON' : 'OFF'}`, `SOUND FX: ${OPTS.sfx ? 'ON' : 'OFF'}`, `TEXT SPEED: ${['FAST', 'MID', 'SLOW'][OPTS.speed]}`, 'BACK'];
+    const r = await choose(items, { cls: 'opts', start: idx });
+    if (r < 0 || r === 4) return; idx = r;
+    if (r === 0) OPTS.translit = !OPTS.translit;
+    if (r === 1) { OPTS.music = !OPTS.music; SND.refresh(); }
+    if (r === 2) OPTS.sfx = !OPTS.sfx;
+    if (r === 3) OPTS.speed = (OPTS.speed + 1) % 3;
+    saveOpts();
+  }
+}
+function dexEntryHtml(w) {
+  const caught = S.caught[w.key], seen = S.seen[w.key];
+  if (!seen && !caught) return `<div class="dx-d"><div class="dx-q">?</div><div><b>-----</b><br>Not seen yet.<br><small>${ROUTE_NAMES[w.route]}</small></div></div>`;
+  const st = S.stats[w.key] || [0, 0];
+  return `<div class="dx-d">${monImg(w)}<div><b>${esc(w.name)}</b> <small>Lv${w.level} ${TYPES[w.type].label}</small><br>${W(w)}<br><small>"${esc(w.en)}"${caught ? ` · ✓ ${st[0]} ✗ ${st[1]}` : ' · seen'}</small></div></div>`;
+}
+async function dexScreen() {
+  const el = document.createElement('div'); el.className = 'layer dex show'; $('#screen').appendChild(el);
+  let idx = 0; const per = 8;
+  const draw = () => {
+    const w = WORDS[idx]; const start = clamp(idx - 2, 0, WORDS.length - per);
+    let list = '';
+    for (let i = start; i < start + per; i++) {
+      const x = WORDS[i]; const c = S.caught[x.key], s = S.seen[x.key];
+      list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(3, '0')} ${c ? '◆' : s ? '◇' : ' '} ${c || s ? esc(x.name) : '-----'}</div>`;
+    }
+    el.innerHTML = `<div class="box dx"><div class="dx-h">LENGUADEX <span>◆${caughtCount()} ◇${Object.keys(S.seen).length} / ${WORDS.length}</span></div>${dexEntryHtml(w)}<div class="dx-l">${list}</div><div class="dx-f">↑↓ move · ←→ page · A: add to team · B: back</div></div>`;
+  };
+  draw();
+  await new Promise(res => {
+    const h = async b => {
+      if (b === 'up') idx = (idx - 1 + WORDS.length) % WORDS.length;
+      else if (b === 'down') idx = (idx + 1) % WORDS.length;
+      else if (b === 'left') idx = clamp(idx - per, 0, WORDS.length - 1);
+      else if (b === 'right') idx = clamp(idx + per, 0, WORDS.length - 1);
+      else if (b === 'b' || b === 'start') { SND.fx('cancel'); popH(h); el.remove(); res(); return; }
+      else if (b === 'a') {
+        const w = WORDS[idx];
+        if (!S.caught[w.key]) { SND.fx('bump'); return; }
+        if (S.team.some(m => m.key === w.key)) { await say(`${esc(w.name)} is already on your team.`); return; }
+        if (S.team.length < 6) { S.team.push(makeMon(w)); SND.fx('good'); await say(`${esc(w.name)} joined your team!`); }
+        else {
+          await say(`Your team is full. Swap out which Lenguamon for ${esc(w.name)}?`, { keep: true });
+          const r = await choose(S.team.map(m => `${monW(m).name} Lv${m.lvl}`), { cls: 'teamsel' }); hideText();
+          if (r >= 0) { const old = S.team[r]; S.team[r] = makeMon(w); await say(`${esc(monW(old).name)} went back to the Lenguadex. ${esc(w.name)} joined the team!`); }
+        }
+        draw(); writeSave(); return;
+      } else return;
+      SND.fx('blip'); draw();
+    };
+    pushH(h);
+  });
+}
+async function teamScreen(inBattle) {
+  while (true) {
+    const items = S.team.map((m, i) => ({ html: `<span class="tm">${monImg(monW(m), 'tiny')}<span>${esc(monW(m).name)}<br><small>Lv${m.lvl} ${hpBar(m, maxHp(m.lvl))} ${m.hp}/${maxHp(m.lvl)}</small></span></span>` }));
+    const r = await choose(items, { cls: 'team' });
+    if (r < 0) return null;
+    const m = S.team[r], w = monW(m);
+    const sub = await choose(inBattle ? ['SEND OUT', 'INFO', 'CANCEL'] : ['MAKE LEAD', 'INFO', 'CANCEL'], { cls: 'sub' });
+    if (sub === 0) {
+      if (m.hp <= 0) { await say(`${esc(w.name)} has no energy left!`); continue; }
+      if (inBattle) return r;
+      S.team.splice(r, 1); S.team.unshift(m); SND.fx('good'); await say(`${esc(w.name)} is now your lead Lenguamon.`); writeSave();
+    } else if (sub === 1) {
+      await say([`${esc(w.name)} ${W(w)}<br>"${esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}`]);
+    }
+  }
+}
+
+// ===== LENGUAMON battles: typed quizzes, catching, conversation bosses =====
+function stat(w, ok) { const s = S.stats[w.key] || (S.stats[w.key] = [0, 0]); s[ok ? 0 : 1]++; }
+
+// build a 4-option question. dir: 'en2fa' (type the Persian) or 'fa2en' (type the English)
+function makeQuestion(w, dir) {
+  const field = dir === 'en2fa' ? 'trForms' : 'enForms';
+  const overlaps = (a, b) => a[field].some(f => b[field].includes(f)) || a.key === b.key;
+  const tiers = [WORDS.filter(x => x.route === w.route && x.type === w.type), WORDS.filter(x => x.route === w.route), WORDS];
+  const picks = [];
+  for (const tier of tiers) {
+    for (const x of shuffle(tier)) {
+      if (picks.length >= 3) break;
+      if (overlaps(x, w) || picks.some(p => overlaps(p, x))) continue;
+      // prefer distractors of similar length so long phrases are not giveaways
+      if (tier !== WORDS && Math.abs(x.tr0.length - w.tr0.length) > 14 && rand() < 0.7) continue;
+      picks.push(x);
+    }
+    if (picks.length >= 3) break;
+  }
+  const opts = shuffle([w, ...picks]).map(x => ({
+    word: x, correct: x === w, forms: x[field],
+    html: dir === 'en2fa' ? W(x) : `<span class="en">${esc(x.en0)}</span>`,
+  }));
+  const prompt = dir === 'en2fa'
+    ? `How do you say <b>${esc(w.en0)}</b> in Persian?`
+    : `What does ${W(w)} mean?`;
+  return { w, dir, prompt, opts, answerHtml: `${W(w)} = <b>${esc(w.en0)}</b>`, hint: dir === 'en2fa' ? 'Type the Persian (Latin letters)' : 'Type the English' };
+}
+// grade typed text against the options: nearest option wins, within a typo tolerance
+function grade(q, typed) {
+  const t = norm(typed); if (!t) return null;
+  let best = null, bestD = 1e9, correctD = 1e9;
+  for (const o of q.opts) { for (const f of o.forms) { const d = lev(t, f); if (d < bestD) { bestD = d; best = o; } if (o.correct && d < correctD) correctD = d; } }
+  const cf = q.opts.find(o => o.correct).forms.reduce((a, f) => lev(t, f) <= lev(t, a) ? f : a);
+  const ok = best && best.correct && correctD <= tolFor(cf.length);
+  return { ok, chosen: best, exact: correctD === 0 };
+}
+// show the quiz panel; resolves {ok, ms, chosen}
+function quiz(q, title) {
+  return new Promise(res => {
+    const el = $('#quiz');
+    el.innerHTML = `<div class="box qz"><div class="qz-t">${title || ''}</div><div class="qz-p">${q.prompt}</div>
+      <div class="qz-o${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
+      <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}"><button>ENTER</button></form></div>`;
+    el.classList.add('show'); window.__q = q;
+    const inp = el.querySelector('input'); const t0 = performance.now();
+    setTimeout(() => inp.focus(), 30);
+    const block = () => { }; pushH(block);
+    let done = false;
+    el.querySelector('form').addEventListener('submit', async e => {
+      e.preventDefault(); if (done) return;
+      const g = grade(q, inp.value); if (!g) { inp.focus(); return; }
+      done = true; inp.blur();
+      const ci = q.opts.findIndex(o => o.correct), chi = q.opts.indexOf(g.chosen);
+      el.querySelectorAll('.qo')[ci].classList.add('right');
+      if (!g.ok && chi >= 0 && chi !== ci) el.querySelectorAll('.qo')[chi].classList.add('wrong');
+      SND.fx(g.ok ? 'good' : 'bad');
+      await sleep(g.ok ? 700 : 1300);
+      el.classList.remove('show'); el.innerHTML = ''; popH(block);
+      res({ ok: g.ok, ms: performance.now() - t0, chosen: g.chosen });
+    });
+    inp.addEventListener('keydown', e => e.stopPropagation());
+  });
+}
+
+// ---- battle screen ----
+const BT = { foe: null, me: null, boss: null };
+function bShow(on) { $('#battle').classList.toggle('show', on); }
+function bDraw() {
+  const f = BT.foe, m = BT.me;
+  const fw = f.w, mw = m ? monW(m) : null;
+  $('#b-foe').innerHTML = BT.boss
+    ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
+    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
+  $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${charUrl(BT.boss.look)}">` : monImg(fw, 'foe');
+  if (m) {
+    $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
+    $('#b-me-spr').innerHTML = monImg(mw, 'me');
+  }
+}
+async function anim(sel, cls, ms = 400) { const e = $(sel); if (!e) return; e.classList.remove(cls); void e.offsetWidth; e.classList.add(cls); await sleep(ms); e.classList.remove(cls); }
+const dmgRoll = base => Math.max(1, Math.round(base * (0.85 + rand() * 0.3)));
+
+function chooseWild(route) {
+  const pool = wordsOfRoute(route);
+  const top = Math.max(...S.team.map(m => m.lvl), 5);
+  let elig = pool.filter(w => w.level <= top + 6);
+  if (elig.length < 10) elig = pool.slice().sort((a, b) => a.level - b.level).slice(0, 10);
+  const weights = elig.map(w => (S.caught[w.key] ? 1 : S.seen[w.key] ? 3 : 4));
+  let t = rand() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < elig.length; i++) { t -= weights[i]; if (t <= 0) return elig[i]; }
+  return elig[0];
+}
+function reviewWord(except) {
+  const pool = WORDS.filter(w => (S.seen[w.key] || S.caught[w.key]) && w.key !== except.key);
+  if (pool.length < 4) return null;
+  const scored = pool.map(w => { const s = S.stats[w.key] || [0, 0]; return { w, s: s[1] * 2 - s[0] + rand() * 3 }; }).sort((a, b) => b.s - a.s);
+  return scored[Math.floor(rand() * Math.min(6, scored.length))].w;
+}
+
+async function battleIntro(music) {
+  SND.music(music); SND.fx('encounter');
+  await flash(3); await fade(true, 150);
+  bShow(true); bDraw(); hideText();
+  await fade(false, 150);
+}
+async function battleOutro() {
+  hideText(); await fade(true, 200); bShow(false); BT.boss = null; musicForPlace(); drawWorld(); await fade(false, 200);
+}
+async function gainXp(m, amt) {
+  const w = monW(m); m.xp += amt;
+  await say(`${esc(w.name)} gained ${amt} EXP. Points!`);
+  while (m.xp >= m.lvl * 8) {
+    m.xp -= m.lvl * 8; const oldMax = maxHp(m.lvl); m.lvl++; m.hp += maxHp(m.lvl) - oldMax;
+    SND.fx('levelup'); bDraw(); await say(`${esc(w.name)} grew to level ${m.lvl}!`);
+  }
+}
+// returns true if the player still has a Lenguamon standing
+async function handleFaint() {
+  const w = monW(BT.me); SND.fx('faint'); await anim('#b-me-spr', 'faint', 600);
+  await say(`${esc(w.name)} ran out of words!`);
+  if (!teamAlive()) return false;
+  await say('Choose your next Lenguamon.');
+  let r = null; while (r === null || r < 0) r = await teamScreen(true);
+  BT.me = S.team[r]; bDraw(); await say(`Go! ${esc(monW(BT.me).name)}!`); return true;
+}
+async function blackout() {
+  await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to Agha Reza's teahouse...`]);
+  await fade(true, 300); bShow(false); BT.boss = null;
+  healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
+  await say([`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`, 'Your Lenguamon are rested and ready. Words take practice. Try again!']);
+}
+// the enemy's turn. lastQ = the question the player just answered (or null)
+async function foeTurn(lastOk, lastQ) {
+  const f = BT.foe, m = BT.me, fw = f.w;
+  const name = BT.boss ? BT.boss.name : `Wild ${fw.name}`;
+  let hit = lastOk ? rand() < 0.35 : true;
+  let move = lastQ && !lastOk ? lastQ.answerHtml : BT.boss ? 'a rapid-fire question' : W(fw);
+  await say(`${esc(name)} used ${move}!`);
+  if (!hit) { SND.fx('miss'); await say(`${esc(name)}'s attack missed!`); return true; }
+  const dmg = dmgRoll((3 + (BT.boss ? BT.boss.lvl : f.lvl) * 0.7) * (lastOk ? 0.7 : 1));
+  SND.fx('hit'); await anim('#b-me-spr', 'hurt', 450);
+  m.hp = Math.max(0, m.hp - dmg); bDraw();
+  if (m.hp <= 0) return handleFaint();
+  return true;
+}
+
+async function wildEncounter(route) {
+  if (!S.team.length) return;
+  const w = chooseWild(route);
+  const firstTime = !S.seen[w.key] && !S.caught[w.key];
+  S.seen[w.key] = true;
+  BT.foe = { w, lvl: w.level, max: maxHp(w.level), hp: maxHp(w.level) }; BT.me = lead(); BT.boss = null;
+  await battleIntro('battle');
+  await say(`A wild ${B(w.name)} appeared!`);
+  if (firstTime) await say([`NEW WORD! ${W(w)}`, `${B(w.name)} means "${esc(w.en)}".<br>In Persian you say: ${W(w)}`]);
+  else if (S.caught[w.key]) await say(`(${W(w)} is already in your Lenguadex.)`);
+  await say(`Go! ${B(monW(BT.me).name)}!`);
+  let menuIdx = 0;
+  while (true) {
+    bDraw();
+    await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
+    const r = await choose(['FIGHT', `DAFTAR x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
+    hideText(); menuIdx = r;
+    if (r === 0) {
+      // the attack is a typed quiz: the wild word (in Persian) or a review word
+      const rv = rand() < 0.4 ? reviewWord(w) : null;
+      const qw = rv || w;
+      const st = S.stats[qw.key] || [0, 0];
+      const dir = qw === w ? 'en2fa' : (st[0] === 0 ? 'fa2en' : (rand() < 0.5 ? 'en2fa' : 'fa2en'));
+      const q = makeQuestion(qw, dir);
+      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
+      stat(qw, res.ok);
+      if (res.ok) {
+        const crit = res.ms < 5000;
+        await say(`${esc(monW(BT.me).name)} used ${W(monW(BT.me))}!`);
+        SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 450);
+        const dmg = dmgRoll(5 + BT.me.lvl * 0.9) * (crit ? 1.5 : 1) | 0;
+        BT.foe.hp = Math.max(0, BT.foe.hp - dmg); bDraw();
+        if (crit) await say('Quick answer! A critical hit!');
+        if (BT.foe.hp <= 0) {
+          SND.fx('faint'); await anim('#b-foe-spr', 'faint', 600);
+          await say(`Wild ${esc(w.name)} fainted!`);
+          await gainXp(BT.me, 4 + w.level * 3); break;
+        }
+      } else {
+        SND.fx('miss'); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
+      }
+      if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
+    } else if (r === 1) {
+      if (S.daftar <= 0) { await say("You're out of DAFTARS! Agha Reza at the teahouse can give you more."); continue; }
+      S.daftar--;
+      await say(`${esc(S.name)} opened a DAFTAR! Write the word to catch it!`);
+      const q = makeQuestion(w, 'en2fa');
+      const res = await quiz(q, 'Write it in your DAFTAR');
+      stat(w, res.ok);
+      if (!res.ok) {
+        await say([`The ink smudged! The word slipped off the page.`, `The answer was ${q.answerHtml}.`]);
+        if (!(await foeTurn(false, q))) { await blackout(); return; }
+        continue;
+      }
+      const p = clamp(1 - 0.75 * BT.foe.hp / BT.foe.max + (res.ms < 6000 ? 0.1 : 0), 0.25, 0.97);
+      const shakes = rand() < p ? 3 : Math.floor(rand() * 3);
+      $('#b-foe-spr').innerHTML = `<div class="daftar-ico"></div>`;
+      for (let i = 0; i < shakes; i++) { SND.fx('shake'); await anim('#b-foe-spr', 'shake', 500); }
+      if (shakes === 3) {
+        SND.fx('caught'); S.caught[w.key] = true;
+        await say(`Gotcha! ${B(w.name)} ${W(w)} was written into your Lenguadex!`);
+        if (S.team.length < 6 && !S.team.some(m => m.key === w.key)) { S.team.push(makeMon(w)); await say(`${esc(w.name)} joined your team!`); }
+        else await say(`${esc(w.name)} was stored in your Lenguadex. (Swap it in from the Lenguadex menu.)`);
+        await gainXp(BT.me, 2 + w.level * 2);
+        break;
+      } else {
+        bDraw(); await say(['Oh no! The word broke free!', 'Weaken it more before writing it down.']);
+        if (!(await foeTurn(true, null))) { await blackout(); return; }
+      }
+    } else if (r === 2) {
+      const i = await teamScreen(true);
+      if (i === null || i < 0 || S.team[i] === BT.me) continue;
+      await say(`Come back, ${esc(monW(BT.me).name)}! Go, ${esc(monW(S.team[i]).name)}!`);
+      BT.me = S.team[i]; bDraw();
+      if (!(await foeTurn(true, null))) { await blackout(); return; }
+    } else if (r === 3) {
+      SND.fx('door'); await say('Got away safely!'); break;
+    }
+  }
+  writeSave(); await battleOutro();
+}
+
+// ---- conversation bosses ----
+// each line: [npc Persian, npc translit, npc English, reply Persian, reply translit, reply English]
+const BOSSES = {
+  b1: {
+    name: 'DARIUSH', look: 'dariush', lvl: 9, route: 1, need: 12, showEn: true, optEn: true,
+    lines: [
+      ['سلام!', 'salam!', 'Hello!', 'سلام، خوبی؟', 'salam, khubi?', 'Hello, how are you?'],
+      ['مرسی، خوبم. تو چطوری؟', 'merci, khubam. to chetori?', "Thanks, I'm good. How are you?", 'من هم خوبم، مرسی', 'man ham khubam, merci', "I'm good too, thanks"],
+      ['اسمت چیه؟', 'esmet chie?', "What's your name?", 'اسم من {NAME} است', 'esm-e man {NAME} ast', 'My name is {NAME}'],
+      ['خوشبختم!', 'khoshbakhtam!', 'Nice to meet you!', 'من هم خوشبختم', 'man ham khoshbakhtam', 'Nice to meet you too'],
+      ['اهل کجایی؟', 'ahl-e kojayi?', 'Where are you from?', 'من اهل آمریکا هستم', 'man ahl-e amrika hastam', "I'm from America"],
+      ['فارسی بلدی؟', 'farsi baladi?', 'Do you know Persian?', 'یه کم فارسی بلدم', 'ye kam farsi baladam', 'I know a little Persian'],
+      ['...!!! (Dariush says something very fast)', '...!!!', '(something very fast)', 'ببخشید، نمی‌فهمم. دوباره بگو', 'bebakhshid, nemifahmam. dobare begu', "Sorry, I don't understand. Say it again"],
+      ['خسته نباشی!', 'khasteh nabashi!', 'Good work!', 'سلامت باشی', 'salamat bashi', 'Be well (thanks!)'],
+      ['خداحافظ!', 'khodahafez!', 'Goodbye!', 'خداحافظ، روز خوبی داشته باشی', 'khodahafez, ruz-e khubi dashte bashi', 'Goodbye, have a nice day'],
+    ],
+  },
+  b2: {
+    name: 'LEILA', look: 'leila', lvl: 16, route: 2, need: 12, showEn: true, optEn: false,
+    lines: [
+      ['سلام، خوش آمدید! بفرمایید.', 'salam, khosh amadid! befarmaid.', 'Hello, welcome! Go ahead.', 'سلام، این چنده؟', 'salam, in chande?', 'Hello, how much is this?'],
+      ['پنجاه هزار تومن.', 'panjah hezar toman.', '50,000 toman.', 'خیلی گرونه!', 'kheyli geroone!', "That's very expensive!"],
+      ['باشه، چهل هزار تومن.', 'bashe, chehel hezar toman.', 'Okay, 40,000 toman.', 'عالی! مرسی', "a'li! merci", 'Great! Thanks'],
+      ['چند سالته؟', 'chand saleteh?', 'How old are you?', 'من سی سال دارم', 'man si sal daram', "I'm thirty years old"],
+      ['خواهر یا برادر داری؟', 'khahar ya baradar dari?', 'Do you have a sister or brother?', 'بله، یک خواهر دارم', 'baleh, yek khahar daram', 'Yes, I have one sister'],
+      ['بچه داری؟', 'bache dari?', 'Do you have children?', 'نه، بچه ندارم', 'na, bache nadaram', "No, I don't have children"],
+      ['ساعت چنده؟', 'saat chande?', 'What time is it?', 'ساعت سه بعد از ظهر است', "saat se-e ba'd az zohr ast", "It's 3 in the afternoon"],
+      ['امروز چندشنبه است؟', 'emrooz chand shanbe ast?', 'What day is today?', 'امروز جمعه است', 'emrooz jomeh ast', 'Today is Friday'],
+      ['فردا میای بازار؟', 'farda miyay bazar?', 'Will you come to the bazaar tomorrow?', 'بله، فردا صبح', 'baleh, farda sobh', 'Yes, tomorrow morning'],
+    ],
+  },
+  b3: {
+    name: 'SHIRIN', look: 'shirin', lvl: 24, route: 3, need: 12, showEn: false, optEn: false,
+    lines: [
+      ['سلام! حالت چطوره؟', 'salam! halet chetore?', 'Hello! How are you doing?', 'خیلی خوبم، مرسی. تو چطوری؟', 'kheyli khubam, merci. to chetori?', "I'm very good, thanks. How are you?"],
+      ['من کمی خسته‌ام.', 'man kami khasteh-am.', "I'm a little tired.", 'خسته نباشی!', 'khasteh nabashi!', 'Good work! (Don\'t be tired!)'],
+      ['گرسنه‌ای؟', 'gorosneh-i?', 'Are you hungry?', 'بله، خیلی گرسنه‌ام', 'baleh, kheyli gorosneh-am', "Yes, I'm very hungry"],
+      ['چه غذایی دوست داری؟', 'che ghazayi doost dari?', 'What food do you like?', 'کباب کوبیده دوست دارم', 'kabab koobideh doost daram', 'I like kabab koobideh'],
+      ['بفرمایید، نوش جان!', 'befarmaid, noosh-e jan!', 'Here you go, enjoy!', 'مرسی، خیلی خوشمزه است!', 'merci, kheyli khoshmazeh ast!', "Thanks, it's very delicious!"],
+      ['هوا چطوره؟', 'hava chetore?', "How's the weather?", 'هوا آفتابی و گرمه', 'hava aftabi va garme', "It's sunny and warm"],
+      ['امروز سر کار رفتی؟', 'emrooz sar-e kaar rafti?', 'Did you go to work today?', 'بله، صبح سر کار رفتم', 'baleh, sobh sar-e kaar raftam', 'Yes, I went to work this morning'],
+      ['چشم‌هات چه رنگیه؟', 'cheshmat che rangi-e?', 'What color are your eyes?', 'چشم‌های من قهوه‌ای است', 'cheshm-haye man ghahvei ast', 'My eyes are brown'],
+      ['فارسیت خیلی خوب شده! دمت گرم!', 'farsit kheyli khub shode! damet garm!', 'Your Persian got really good! Well done!', 'خیلی ممنون، من هم خوشحالم', 'kheyli mamnoon, man ham khoshhalam', "Thank you so much, I'm happy too"],
+      ['خداحافظ، موفق باشی!', 'khodahafez, movafagh bashi!', 'Goodbye, good luck!', 'مرسی، خداحافظ!', 'merci, khodahafez!', 'Thanks, goodbye!'],
+    ],
+  },
+};
+function bossReplyWord(b, line) {
+  const sub = s => s.replace(/\{NAME\}/g, S.name);
+  const tr = sub(line[4]);
+  return { key: 'boss|' + norm(tr), tr0: tr, en0: sub(line[5]), fa: line[3].replace(/\{NAME\}/g, S.name), trForms: [norm(tr)], enForms: [norm(sub(line[5]))] };
+}
+async function bossBattle(id) {
+  const b = BOSSES[id];
+  BT.boss = { ...b, total: b.lines.length, left: b.lines.length };
+  BT.foe = { w: WORD[WORDS[0].key], lvl: b.lvl, max: 1, hp: 1 };
+  BT.me = lead();
+  await battleIntro('boss');
+  await say(`${b.name} wants to have a conversation! Answer each line in Persian.`);
+  if (b.showEn) await say(`(${b.name} will give you English hints. Type the best Persian reply.)`);
+  else await say(`(No English hints this time. Listen to the Persian and reply!)`);
+  await say(`Go! ${B(monW(BT.me).name)}!`);
+  const queue = b.lines.map((l, i) => i);
+  while (queue.length) {
+    bDraw();
+    const li = queue.shift(), line = b.lines[li];
+    const ans = bossReplyWord(b, line);
+    const others = shuffle(b.lines.filter((l, i) => i !== li)).slice(0, 3).map(l => bossReplyWord(b, l));
+    const fx = s => s.replace(/\{NAME\}/g, S.name);
+    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: F(x.fa, x.tr0) + (b.optEn ? `<span class="en sm">${esc(x.en0)}</span>` : '') }));
+    const q = {
+      boss: true, w: ans, opts, hint: 'Type your reply (Latin letters)',
+      prompt: `<span class="who">${esc(b.name)}:</span> ${F(fx(line[0]), fx(line[1]))}${b.showEn ? `<span class="en sm">"${esc(fx(line[2]))}"</span>` : ''}`,
+      answerHtml: `${F(ans.fa, ans.tr0)} <small>"${esc(ans.en0)}"</small>`,
+    };
+    const res = await quiz(q, 'Your reply');
+    if (res.ok) {
+      await say(`${esc(monW(BT.me).name)} replied: ${F(ans.fa, ans.tr0)}`);
+      SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 400);
+      BT.boss.left--; bDraw();
+      if (!b.showEn) await say(`(${b.name} said: "${esc(fx(line[2]))}" · You said: "${esc(ans.en0)}")`);
+      if (!BT.boss.left) break;
+      if (!(await foeTurn(true, null))) { await blackout(); return false; }
+    } else {
+      queue.push(li);
+      await say([`That reply didn't fit the conversation!`, `A good reply: ${q.answerHtml}`]);
+      if (!(await foeTurn(false, q))) { await blackout(); return false; }
+    }
+  }
+  SND.fx('badge');
+  await say(`${b.name}: ${F('آفرین!', 'afarin!')} Bravo! That was a real conversation!`);
+  writeSave(); await battleOutro();
+  return true;
+}
+
+// ===== LENGUAMON story: NPCs, intro, title, ending =====
+const T = (who, html) => `${who}: ${html}`;
+function nextGoal() {
+  if (!S.flags.starter) return 'Visit Professor Haydeh at the school.';
+  if (!S.flags.b1) return `Catch at least ${BOSSES.b1.need} words on ${ROUTE_NAMES[1]} (you have ${caughtInRoute(1)}), then talk to DARIUSH at the north gate.`;
+  if (!S.flags.b2) return `Catch at least ${BOSSES.b2.need} words on ${ROUTE_NAMES[2]} (you have ${caughtInRoute(2)}), then talk to LEILA at the bazaar gate.`;
+  if (!S.flags.b3) return `Catch at least ${BOSSES.b3.need} words on ${ROUTE_NAMES[3]} (you have ${caughtInRoute(3)}), then find SHIRIN in the Rose Garden.`;
+  return `You beat the game! Keep filling your Lenguadex: ${caughtCount()} / ${WORDS.length}.`;
+}
+async function healScene(who) {
+  SND.fx('heal'); healTeam(); await fade(true, 200); await sleep(250); await fade(false, 200);
+}
+
+npc('x', { look: 'maman', dir: 'left', talk: async () => {
+  if (!S.flags.starter) { await say([T('MAMAN', `${F('صبح بخیر', 'sobh bekheir')}, ${nm()} jan! Good morning!`), 'Professor Haydeh is looking for you. Her school is across the square, just to the east.', `Don't forget: say ${F('سلام', 'salam')} when you walk in!`]); return; }
+  await say(T('MAMAN', `${nm()} jan, you look tired. ${F('خسته نباشی', 'khasteh nabashi')}! Rest a little.`));
+  await healScene(); await say(['Your Lenguamon are full of energy!', T('MAMAN', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`)]);
+} });
+npc('y', { look: 'haydeh', talk: async () => {
+  if (!S.flags.starter) { await starterScene(); return; }
+  if (S.flags.b3 && !S.flags.ending) { await endingScene(); return; }
+  await say([T('HAYDEH', `${F('سلام', 'salam')}, ${nm()}! How is your Lenguadex?`), `You have caught ${B(caughtCount())} words.`, `NEXT: ${nextGoal()}`]);
+  if (S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('HAYDEH: Take some fresh DAFTARS. You now have 5.'); }
+} });
+npc('z', { look: 'arash', dir: 'up', talk: async () => {
+  await say([T('ARASH', `I'm studying for Shirin's conversation challenge.`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
+} });
+npc('r', { look: 'reza', talk: async () => {
+  await say(T('AGHA REZA', `${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`));
+  await healScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('AGHA REZA: And here, take some DAFTARS for your journey. You now have 5.'); }
+} });
+npc('j', { look: 'mahmoud', dir: 'left', talk: async () => {
+  await say([T('AGHA MAHMOUD', 'An old Persian saying:'), F('قطره قطره جمع گردد، وانگهی دریا شود', 'ghatreh ghatreh jam gardad, vangahi darya shavad'), '"Drop by drop it gathers, and then it becomes a sea." Learn a few words every day!']);
+} });
+npc('9', { look: 'babak', where: () => S.flags.starter ? [8, 54] : null, talk: async () => {
+  if (!S.flags.starter) { await say([T('AGHA BABAK', `${F('صبر کن', 'sabr kon')}! Wait!`), 'Wild Lenguamon live in the tall grass up north. You need your own Lenguamon first!', 'Go see Professor Haydeh at the school.']); return; }
+  await say(T('AGHA BABAK', `The path is open. ${F('موفق باشی', 'movafagh bashi')}! Good luck!`));
+} });
+npc('s', { look: 'nasrin', talk: async () => {
+  await say([T('KHANOM NASRIN', 'Wild Lenguamon hide in the dark tall grass.'), 'Weaken them with quiz attacks, then write them in your DAFTAR to catch them!', 'If you get tired, Agha Reza\'s teahouse is in the south-east corner.']);
+} });
+npc('v', { look: 'farhad', dir: 'right', talk: async () => {
+  await say([T('FARHAD', `To get someone's attention, say ${F('ببخشید', 'bebakhshid')}.`), 'It means "excuse me" AND "sorry". Very useful!']);
+} });
+npc('g', { look: 'golnaz', dir: 'left', talk: async () => {
+  await say([T('GOLNAZ', `When someone speaks too fast, say ${F('نمی‌فهمم', 'nemifahmam')}: "I don't understand".`), `Then ask: ${F('لطفا دوباره بگو', 'lotfan dobare begu')}, "please say it again".`]);
+} });
+npc('1', { look: 'dariush', where: () => S.flags.b1 ? [11, 39] : null, talk: async () => {
+  if (S.flags.b1) { await say(T('DARIUSH', `${F('خسته نباشی', 'khasteh nabashi')}, ${nm()}! The Bazaar Road is open. Leila is waiting at the next gate.`)); return; }
+  await gateBoss('b1', 'DARIUSH', 'Keeper of the GREETINGS GATE', ROUTE_NAMES[1]);
+} });
+npc('i', { look: 'kian', dir: 'left', talk: async () => {
+  await say([T('KIAN', `I can count to ten! ${F('یک، دو، سه', 'yek, do, se')}...`), F('چهار، پنج، شش، هفت، هشت، نه، ده!', 'chahar, panj, shesh, haft, hasht, noh, dah!'), 'Hehe! Can you?']);
+} });
+npc('e', { look: 'maryam', talk: async () => {
+  await say([T('MARYAM', `At the bazaar, ask ${F('قیمتش چنده؟', 'gheymatesh chande?')}: "how much does it cost?"`), `If it costs too much, say ${F('خیلی گرونه!', 'kheyli geroone!')} and the price drops!`]);
+} });
+npc('q', { look: 'navid', dir: 'right', talk: async () => {
+  await say([T('NAVID', `We pay in ${F('تومن', 'toman')}. ${F('هزار', 'hezar')} means one thousand.`), `So ${F('پنجاه هزار تومن', 'panjah hezar toman')} is 50,000 toman. Saffron? Pistachios? Sumac?`]);
+} });
+npc('2', { look: 'leila', where: () => S.flags.b2 ? [11, 21] : null, talk: async () => {
+  if (S.flags.b2) { await say(T('LEILA', `${F('دمت گرم', 'damet garm')}! Well done! The Rose Garden is north. Shirin speaks only Persian, so be ready!`)); return; }
+  await gateBoss('b2', 'LEILA', 'Keeper of the BAZAAR GATE', ROUTE_NAMES[2]);
+} });
+npc('o', { look: 'omid', dir: 'left', talk: async () => {
+  await say([T('OMID', `When someone serves you food, they say ${F('نوش جان', 'noosh-e jan')}.`), `And if the food is great, tell them: ${F('خیلی خوشمزه است', 'kheyli khoshmazeh ast')}!`]);
+} });
+npc('a', { look: 'parisa', dir: 'left', talk: async () => {
+  await say([T('PARISA', `${F('هوا چطوره؟', 'hava chetore?')} means "how's the weather?"`), `Today it's ${F('آفتابی', 'aftabi')}: sunny! Shirin loves to talk about the weather.`]);
+} });
+npc('3', { look: 'shirin', talk: async () => {
+  if (S.flags.b3) { await say(T('SHIRIN', `${F('سلام', 'salam')}, ${nm()}! ${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}! Go tell Professor Haydeh!`)); return; }
+  await gateBoss('b3', 'SHIRIN', 'Keeper of the ROSE GARDEN', ROUTE_NAMES[3]);
+} });
+
+async function gateBoss(id, name, title, routeName) {
+  const b = BOSSES[id];
+  const have = caughtInRoute(b.route);
+  await say(T(name, `${F('سلام', 'salam')}! I am ${name}, ${title}.`));
+  if (have < b.need) {
+    await say([`To pass, you must hold a conversation with me in Persian.`, `But first, catch at least ${B(b.need)} Lenguamon on ${esc(routeName)}. You have ${B(have)}.`, `${F('موفق باشی', 'movafagh bashi')}! Come back soon.`]);
+    return;
+  }
+  if (!(await ask(`${name}: Are you ready to talk? ${F('آماده‌ای؟', 'amadeyi?')}`))) { await say(T(name, `${F('باشه', 'bashe')}. Come back when you are ready.`)); return; }
+  if (!teamAlive()) { await say('Your Lenguamon are too tired. Rest first!'); return; }
+  const won = await bossBattle(id);
+  if (!won) return;
+  S.flags[id] = true; S.daftar += 5; healTeam();
+  SND.fx('badge');
+  await say([`${esc(S.name)} received the ${B(['', 'TURQUOISE', 'SAFFRON', 'ROSE'][+id[1]] + ' KASHI BADGE')}!`, `${name} also gave you 5 DAFTARS, and your Lenguamon were healed.`]);
+  writeSave();
+  if (id === 'b3') await say(T(name, `Now go back to Professor Haydeh. She will be so proud of you! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}!`));
+}
+
+async function starterScene() {
+  const hello = WORD[WORDS.find(w => w.tr0 === 'salam').key];
+  await say([T('HAYDEH', `Ah, ${nm()}! ${F('سلام', 'salam')}! You came!`), 'Today you begin your journey into the Persian language.', 'Every journey begins with one word. And the first word everyone learns is...']);
+  const p = $('#portrait'); p.innerHTML = monImg(hello, 'big'); p.classList.add('show');
+  SND.fx('caught');
+  await say([`${B('HELLO')}! In Persian: ${W(hello)}`, `${esc(S.name)} received ${B('HELLO')}!`]);
+  p.classList.remove('show');
+  S.team.push(makeMon(hello)); S.caught[hello.key] = true; S.seen[hello.key] = true; S.daftar = 5; S.flags.starter = true;
+  await say([
+    T('HAYDEH', 'Wild Lenguamon live in the tall grass to the north.'),
+    'When you battle, your attacks are quiz questions. You get 4 choices, and you TYPE the right answer.',
+    'Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!',
+    `Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`,
+    'Long words and phrases are higher level and tougher. Short words are a good place to start.',
+    'Each gatekeeper will test you with a real conversation. Beat all three and you can hold a beginner conversation in Persian!',
+    `One more thing: if you stop playing for 48 hours, your notebook ink fades and the journey starts over. Practice a little every day!`,
+    T('HAYDEH', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`),
+  ]);
+  writeSave();
+}
+async function endingScene() {
+  S.flags.ending = true; writeSave();
+  SND.music('end');
+  await say([
+    T('HAYDEH', `${nm()}! Three KASHI BADGES! ${F('آفرین', 'afarin')}!`),
+    'You greeted Dariush, bargained with Leila, and chatted with Shirin, all in Persian.',
+    'You can now hold a beginner conversation: greetings, names, where you are from, numbers, family, time, food, feelings, and the weather.',
+    `${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`,
+  ]);
+  const el = $('#portrait'); el.innerHTML = `<div class="end"><div class="end-t">THE END</div><div>${F('پایان', 'payan')}</div><div class="end-s">${esc(S.name)} · ${caughtCount()} / ${WORDS.length} Lenguamon</div><div class="end-s">Keep filling your Lenguadex!</div></div>`; el.classList.add('show');
+  await waitA(); el.classList.remove('show'); musicForPlace();
+  await say(T('HAYDEH', `There are still ${WORDS.length - caughtCount()} words out there. ${F('ادامه بده', 'edameh bedeh')}: keep going!`));
+}
+
+// ---- title & new game ----
+async function titleScreen(expired) {
+  const t = $('#title');
+  const sample = shuffle(WORDS).slice(0, 3);
+  t.innerHTML = `<div class="tt-bg"></div><div class="tt-logo">LENGUAMON</div><div class="tt-sub">PERSIAN EDITION ${F('فارسی', 'farsi')}</div><div class="tt-mons">${sample.map(w => monImg(w)).join('')}</div><div class="tt-press">PRESS A / ENTER</div><div class="tt-ver">v1 · English → Persian</div>`;
+  t.classList.add('show'); SND.music(null);
+  await waitA(); SND.init(); SND.music('town'); SND.fx('select');
+  t.querySelector('.tt-press').remove();
+  if (expired) await say([`Your last journey as ${esc(expired.name)} faded.`, 'More than 48 hours passed without play, so the notebook ink disappeared. A new adventure begins!']);
+  while (true) {
+    const { save } = readSave();
+    const items = save ? [{ html: `CONTINUE<br><small>${esc(save.name)} · ${Object.keys(save.caught).length} words · ${hoursLeft(save)}h left</small>` }, 'NEW GAME', 'OPTIONS'] : ['NEW GAME', 'OPTIONS'];
+    const r = await choose(items, { cls: 'titlemenu', cancel: false });
+    const pickd = save ? ['cont', 'new', 'opt'][r] : ['new', 'opt'][r];
+    if (pickd === 'opt') { await optionsScreen(); continue; }
+    if (pickd === 'cont') { S = save; break; }
+    if (pickd === 'new') {
+      if (save && !(await ask('Start a new game? Your current save will be erased.'))) continue;
+      t.classList.remove('show'); t.innerHTML = '';
+      await newGameIntro(); break;
+    }
+  }
+  t.classList.remove('show'); t.innerHTML = '';
+  await enterWorld();
+}
+async function newGameIntro() {
+  const p = $('#portrait');
+  p.innerHTML = `<img class="mon big" src="${charUrl('haydeh')}">`; p.classList.add('show');
+  await say([`${F('سلام', 'salam')}! Welcome to the world of LENGUAMON!`, 'My name is HAYDEH. People call me the Lenguamon Professor!', 'This world is full of creatures called LENGUAMON: LANGUAGE MONSTERS!', 'Every Lenguamon is a word or a phrase. Catch them, and you learn them!']);
+  await say('First, which language do you speak?', { keep: true });
+  await choose(['ENGLISH', { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
+  await say('And which language would you like to learn?', { keep: true });
+  await choose([{ html: `PERSIAN ${F('فارسی', 'farsi')}` }, { html: 'MORE SOON...', disabled: true }], { cls: 'yn', cancel: false }); hideText();
+  await say([`${F('فارسی', 'farsi')}! Wonderful choice.`, 'Now, tell me. What is your name?'], { keep: true });
+  const name = await textInput('YOUR NAME?', 10); hideText();
+  S = newState(name); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
+  await say([`${esc(name)}! What a great name.`, `In Persian you introduce yourself like this: ${F(`اسم من ${name} است`, `esm-e man ${name} ast`)}`, 'Your very own LENGUAMON adventure is about to begin!', 'A world of words awaits. Let\'s go!']);
+  p.classList.remove('show'); p.innerHTML = '';
+  S.map = 'house'; S.x = 5; S.y = 5; S.dir = 'up';
+}
+async function enterWorld() {
+  await fade(true, 1);
+  placePlayer(S.map, S.x, S.y, S.dir); writeSave(); drawWorld();
+  pushH(worldH);
+  await fade(false, 300);
+  if (!S.flags.starter && S.map === 'house') await run(() => say(T('MAMAN', `${nm()} jan! Come here, talk to me.`)));
+}
+
+// ===== LENGUAMON boot =====
+function layout() {
+  const W = window.innerWidth, H = window.innerHeight, narrow = W < 600;
+  const chromeW = narrow ? 22 : 64;              // shell + bezel + screen border, left and right
+  const chromeH = narrow ? 44 : 140;             // bezel top bar + paddings (+ key hints on desktop)
+  const controls = narrow ? Math.min(260, Math.max(200, H * 0.3)) : 150;
+  let u = Math.min((W - chromeW) / 160, (H - chromeH - controls) / 144, 900 / 160);
+  u = Math.max(1.6, Math.floor(u * 8) / 8);
+  document.documentElement.style.setProperty('--u', u + 'px');
+}
+window.addEventListener('resize', layout);
+window.addEventListener('orientationchange', () => setTimeout(layout, 200));
+// keep the game screen visible when the phone keyboard opens
+if (window.visualViewport) visualViewport.addEventListener('resize', () => { if (document.activeElement && document.activeElement.tagName === 'INPUT') window.scrollTo(0, 0); });
+
+(function boot() {
+  applyOpts(); layout(); buildMaps(); bindTouch();
+  requestAnimationFrame(loop);
+  const { expired } = readSave();
+  titleScreen(expired);
+})();
+
+</script>
+</body>
+</html>

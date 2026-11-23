@@ -1,37 +1,65 @@
-# Lenguamon
+# Lenguamon: Persian Edition (v1)
 
-A Game Boy Color style language learning game. Instead of catching Pokemon, you catch **Lenguamon** (Language Monsters): vocabulary words and phrases that fill your **Lenguadex**.
+A tiny Game Boy Color style language game. Catch **Lenguamon** (language monsters): every monster is an English word or phrase, and you learn its Persian to catch it.
 
-Version 1 teaches conversational Persian (Farsi) to a native English speaker who is starting from zero. The word bank comes from Kurt's Farsi class vocabulary (Weeks 1-11).
+- Native language: English. Target language: Persian (Farsi). More languages later.
+- Runs in any browser. One self-contained file: `index.html` (about 120 KB, no network requests). Play it on GitHub Pages or open the file directly.
+- Saves in your browser. A save is erased if you do not play for 48 hours.
 
-## Play
+## How to play
 
-Open `index.html` in a browser, or play the hosted version on GitHub Pages.
+| Action | Keyboard | Phone |
+|---|---|---|
+| Move | Arrows or WASD | D-pad |
+| A (talk, confirm) | Z, Space, Enter | A |
+| B (back) | X, Esc | B |
+| Menu | M or Shift | START |
 
-## How it works
+1. Pick your name. Professor Haydeh gives you your first Lenguamon: **HELLO** (salam).
+2. Walk into the tall grass to meet wild words.
+3. **FIGHT** = a quiz. You see 4 choices and type the answer. Right answer: your attack lands (fast answers are critical hits). Wrong answer: you miss and the wild word attacks you using the answer you needed.
+4. Use a **DAFTAR** (notebook) to catch a weakened word by typing its Persian.
+5. Enemy level = length of the Persian word or phrase, so long phrases are tougher.
+6. Each route ends with a gatekeeper who tests you with a real conversation in Persian. Catch 12 words on that route to challenge them.
+   - Dariush (Greetings Path): greetings and introductions, with English hints
+   - Leila (Bazaar Road): prices, age, family, time, days
+   - Shirin (Rose Garden): food, feelings, weather, daily life, no English hints
+7. Beat Shirin, then talk to Professor Haydeh for the ending.
 
-- Name your trainer, choose your language (Persian only in v1, more coming later), and receive your free starter Lenguamon **"Hello" (salam)** from **Professor Haydeh**.
-- Explore Golshan Town, Route 1, and Shiraz Town with its bazaar and tea house. Wild Lenguamon appear in the grass.
-- Battles are typed-answer quizzes: you get the English meaning and a read-only bank of 4 Farsi options, and you must type the correct Farsi transliteration. Right answer, your attack lands. Wrong answer, you miss, and the enemy's counterattack shows you the correct word.
-- Enemy level scales with how long the word or phrase is.
-- Weaken a wild Lenguamon below half HP and a CATCH quiz appears: answer one bonus question correctly to catch it.
-- Beat Ostad Dariush's 7-line conversation trial in the tea house to win.
-- Every word shows its Persian script with the transliteration underneath. A Settings toggle turns the transliteration off when you are ready.
-- Every Lenguamon has its own procedurally generated pixel monster, seeded by the word itself.
-- Sound is original chiptune-style beeps synthesized with WebAudio. No audio files, no external assets, no frameworks. The whole game is one 92 KB HTML file.
+Options (START > OPTIONS): transliteration on/off, music, sound effects, text speed.
 
-## Controls
+## Project layout
 
-- PC: arrow keys or WASD to move, Enter or Z to talk/confirm, Esc or X for menu/back.
-- Phone: on-screen D-pad and A/B buttons.
+```
+src/words.js    word bank (400 entries): translit | english | script | route | type
+src/core.js     utils, answer matching, options, 48h save, chiptune audio, input
+src/art.js      procedural pixel tiles, characters and monster sprites
+src/ui.js       text box, menus, Persian markup
+src/world.js    maps, NPC placement, movement, start menu, Lenguadex, team
+src/battle.js   quiz battles, catching, conversation bosses
+src/story.js    NPC dialogue, intro, title, ending
+src/style.css   look and feel
+src/shell.html  page shell
+build.py        joins everything into dist/index.html
+data/farsi-word-bank.csv   original course word bank
+```
 
-## Saving
+Build: `python3 build.py`. It writes `index.html` (for GitHub Pages) and `dist/index.html`.
 
-Your progress saves automatically in the browser (localStorage). The save expires on a rolling 48-hour window: come back more than 48 hours after your last session and you start over. No account, no cross-device sync yet (on the roadmap).
+## Word bank sources
 
-## Roadmap
+- Kurt's `farsi-word-bank.csv` (ICF course weeks 1-11, Quizlet, Instagram lists)
+- High-frequency conversational words checked against the Persian top-1000 list from the `wordfreq` library
+- Beginner phrase lists: MSU Open Books "Common Words and Phrases" and Omniglot Persian phrases
 
-- More languages
-- More words (top 1000 Persian words) and more towns/routes
+Persian script for the course words was added for this game; transliteration follows the course spelling.
+
+## History
+
+The first commit on `main` is an earlier single-file prototype (Golshan Town, one conversation trial). This version replaced it.
+
+## Roadmap ideas
+
 - Cross-device save sync
-- Hand-drawn monster art
+- More languages
+- Audio pronunciation clips
