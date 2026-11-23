@@ -132,7 +132,7 @@ button { font: inherit; cursor: pointer; }
 .b-spr img { width: 100%; height: 100%; }
 .b-spr.foe { right: calc(var(--u) * 14); top: calc(var(--u) * 2); }
 .b-spr.me { left: calc(var(--u) * 12); top: calc(var(--u) * 46); }
-.b-spr.me img { transform: scaleX(-1); }
+
 .b-spr img.foe { animation: bob 1.6s ease-in-out infinite; }
 .b-spr img.trainer { width: 100%; height: 100%; }
 .b-spr.hurt { animation: hurt .45s steps(2) 1; }
@@ -1222,7 +1222,7 @@ const sh = (tag, o, inner) => inner === undefined ? `<${tag} ${A(o)}/>` : `<${ta
 const mir = d => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (m, x, y) => `${(64 - +x).toFixed(1)},${y}`);
 const both = (d, attrs) => sh('path', { d, ...attrs }) + sh('path', { d: mir(d), ...attrs });
 
-function monsterSvg(w) {
+function monsterSvg(w, flip = false) {
   const sp = speciesOf(w), r = rng(hashStr(w.key + '|look'));
   const col = TYPES[w.type].pal;
   const X = new Set(sp.extra || []);
@@ -1522,20 +1522,22 @@ function monsterSvg(w) {
     const x1 = 32 - collarW / 2, x2 = 32 + collarW / 2, y = collarY, sag = Math.min(3.5, collarW / 9);
     collar += sh('path', { d: `M${x1},${y} Q32,${y + sag * 2} ${x2},${y} L${x2},${y + 5.4} Q32,${y + 5.4 + sag * 2} ${x1},${y + 5.4} Z`, fill: col[2], stroke: OL, 'stroke-width': 1 });
     const len = Math.min(collarW - 2, sp.name.length * 2.1);
-    collar += sh('path', { id: 'cp', d: `M${32 - len / 2},${y + 4.1} Q32,${y + 4.1 + sag * 2} ${32 + len / 2},${y + 4.1}`, fill: 'none' });
-    collar += `<text font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="3.7" fill="#ffffff"><textPath href="#cp" textLength="${len.toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</textPath></text>`;
+    const q = (len / collarW) ** 2, ye = y + 4.1 + sag * (1 - q);
+    collar += sh('path', { id: 'cp', d: `M${(32 - len / 2).toFixed(2)},${ye.toFixed(2)} Q32,${(ye + 2 * sag * q).toFixed(2)} ${(32 + len / 2).toFixed(2)},${ye.toFixed(2)}`, fill: 'none' });
+    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="3.7" fill="#ffffff"><textPath href="#cp" textLength="${len.toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</textPath></text>`;
   } else {
     collar += sh('rect', { x: 8, y: 50, width: 44, height: 7, rx: 3.5, fill: col[2], stroke: OL, 'stroke-width': 1 });
-    collar += `<text x="30" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.name.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
+    collar += `<text ${flip ? 'transform="translate(64 0) scale(-1 1)" ' : ''}x="${flip ? 34 : 30}" y="55.3" text-anchor="middle" font-family="Verdana,Arial,sans-serif" font-weight="700" font-size="4" fill="#fff" textLength="${Math.min(40, sp.name.length * 2.3).toFixed(1)}" lengthAdjust="spacingAndGlyphs">${label}</text>`;
   }
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);
   const order = isFish ? back + head + body + front + face + collar : longBill ? back + body + head + face + front + collar : back + body + collar + head + face + front;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -8 68 74">${shadow}${order}</svg>`;
+  const inner = shadow + order;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -8 68 74">${flip ? `<g transform="translate(64 0) scale(-1 1)">${inner}</g>` : inner}</svg>`;
 }
 const MON_URL = {};
-function monUrl(w) { return MON_URL[w.key] || (MON_URL[w.key] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w))); }
-function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w)}" alt="${esc(w.name)}">`; }
+function monUrl(w, flip = false) { const k = w.key + (flip ? '|f' : ''); return MON_URL[k] || (MON_URL[k] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(monsterSvg(w, flip))); }
+function monImg(w, cls = '') { return `<img class="mon ${cls}" src="${monUrl(w, cls === 'me')}" alt="${esc(w.name)}">`; }
 
 // ===== LENGUAMON portraits: invented caricatures for bosses and the professor =====
 // ---- character portraits (bosses, professor): invented caricatures, not real people ----
