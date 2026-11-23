@@ -227,7 +227,7 @@ const NPCS = [];
 const isGirl = () => !!(S && S.gender === 'girl');
 const G = (boy, girl) => (isGirl() ? girl : boy);
 function npc(marker, def) { NPCS.push({ marker, dir: 'down', ...def }); }
-function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
+function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; if (n.tmp) return { map: p.map, x: n.tmp.x, y: n.tmp.y }; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
 function npcAt(map, x, y) { for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === map && p.x === x && p.y === y) return n; } return null; }
 
 // ---- player & world state ----
@@ -258,7 +258,7 @@ function drawWorld() {
   cx = Math.round(cx * SCALE) / SCALE; cy = Math.round(cy * SCALE) / SCALE;
   c.drawImage(curMap.canvas, -cx, -cy, mw, mh);
   const ents = [];
-  for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[(isGirl() && n.lookG) || n.look], n.dir, 0) }); }
+  for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => { drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[(isGirl() && n.lookG) || n.look], n.dir, 0); if (n.alert) drawAlert(c, p.x * TS - cx, p.y * TS - cy - 2); } }); }
   let step = 0; if (PL.moving) { const k = (performance.now() - PL.t0) / MOVE_MS; step = k < 0.5 ? (PL.walkPh ? 1 : 2) : 0; }
   ents.push({ y: py, draw: () => drawChar(c, px - cx, py - cy - 2, playerLook(), PL.dir, step) });
   ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
@@ -300,6 +300,8 @@ async function onStep() {
   if (TILE[ch] && TILE[ch].exit && curMap.exit) { const to = curMap.exit.to, d = MAPS[to].doors[curMap.exit.door]; await run(() => warp(to, d.x, d.y + 1, 'down')); return; }
   // region change music
   musicForPlace();
+  // trainers who can see you
+  if (await checkTrainers()) return;
   // guard / scripted tiles
   if (TILE[ch] && TILE[ch].enc && !S.flags.noEnc) {
     if (encounterCooldown > 0) { encounterCooldown--; return; }
@@ -445,4 +447,10 @@ async function teamScreen(inBattle) {
       await say([`${esc(w.name)} ${W(w)}<br>"${LANG === 'en' ? PF(w.en) : esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}${EVO[m.key] && (m.stage || 0) < 2 ? `<br>Grows into a phrase at Lv${WORD[EVO[m.key]].level}` : (m.stage || 0) >= 2 ? '<br>Fully evolved ★★' : ''}`]);
     }
   }
+}
+
+function drawAlert(c, x, y) {
+  rrect(c, x + 4.5, y - 10, 7, 8.5, 2, '#fffdf4', C.out, .6);
+  c.beginPath(); c.moveTo(x + 7, y - 1.6); c.lineTo(x + 8, y); c.lineTo(x + 9, y - 1.6); c.fillStyle = '#fffdf4'; c.fill();
+  c.fillStyle = '#c82838'; c.fillRect(x + 7.3, y - 8.6, 1.4, 4); c.fillRect(x + 7.3, y - 3.6, 1.4, 1.3);
 }

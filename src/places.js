@@ -2,9 +2,10 @@
 
 // ---- teahouses in Isfahan and Shiraz, run by Agha Reza's brothers (or, for a girl hero, the brothers' wives) ----
 async function teaHost(name, vest, lines) {
+  S.rest = (S.rest || 0) + 1;
   await say(lines.map(l => T(name, l)));
   await teaScene(vest, name);
-  await say(LANG === 'en' ? ['Your Lenguamon had coffee and pie and feel refreshed!', T(name, 'Enjoy, hon! Come back anytime.')] : ['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  await say(LANG === 'en' ? ['Your Lenguamon had a coffee and feel refreshed!', T(name, 'Enjoy! Come back anytime.')] : ['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some ${DAF()}S too. You now have 5.`); }
 }
 npc('!', { look: 'hassan', lookG: 'parvin', talk: () => isGirl() ? teaHost('KHANOM PARVIN', null, [

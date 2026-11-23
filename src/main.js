@@ -14,7 +14,7 @@ window.addEventListener('orientationchange', () => setTimeout(layout, 200));
 if (window.visualViewport) visualViewport.addEventListener('resize', () => { if (document.activeElement && document.activeElement.tagName === 'INPUT') window.scrollTo(0, 0); });
 
 (function boot() {
-  applyOpts(); layout(); buildMaps(); bindTouch();
+  applyOpts(); layout(); buildMaps(); placeTrainers(); bindTouch();
   requestAnimationFrame(loop);
   try { const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (raw && raw.lang) useLanguage(raw.lang); } catch (e) { }
   titleScreen();

@@ -74,7 +74,7 @@ function bDraw() {
   const fw = f.w, mw = m ? monW(m) : null;
   $('#b-foe').innerHTML = BT.boss
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
-    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>`;
+    : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>${BT.trainer ? `<div class="tdots">${'●'.repeat(BT.trainer.left)}${'○'.repeat(BT.trainer.total - BT.trainer.left)}</div>` : ''}`;
   $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe') + monTag(fw);
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
@@ -146,7 +146,7 @@ async function battleIntro(music) {
   await fade(false, 150);
 }
 async function battleOutro() {
-  hideText(); await fade(true, 200); bShow(false); BT.boss = null; musicForPlace(); drawWorld(); await fade(false, 200);
+  BT.trainer = null; hideText(); await fade(true, 200); bShow(false); BT.boss = null; musicForPlace(); drawWorld(); await fade(false, 200);
 }
 async function gainXp(m, amt) {
   const w = monW(m); m.xp += amt;
@@ -177,7 +177,7 @@ async function blackout() {
 // the enemy's turn. lastQ = the question the player just answered (or null)
 async function foeTurn(lastOk, lastQ) {
   const f = BT.foe, m = BT.me, fw = f.w;
-  const name = BT.boss ? BT.boss.name : `Wild ${fw.name}`;
+  const name = BT.boss ? BT.boss.name : BT.trainer ? `${BT.trainer.short}'s ${fw.name}` : `Wild ${fw.name}`;
   let hit = lastOk ? rand() < (BT.boss ? 0.25 : 0.35) : true;
   let move = lastQ && !lastOk ? lastQ.answerHtml : BT.boss ? 'a rapid-fire question' : W(fw);
   await say(`${esc(name)} used ${move}!`);
