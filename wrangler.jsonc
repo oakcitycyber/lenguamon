@@ -1,0 +1,10 @@
+{
+  // Cloudflare Workers static site. Only the built game in dist/ is published;
+  // source code, the word bank CSV and the README stay off the web.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lenguamon",
+  "compatibility_date": "2026-11-19",
+  "assets": { "directory": "./dist" },
+  "workers_dev": true,
+  "preview_urls": false
+}
