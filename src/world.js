@@ -3,18 +3,18 @@ const MAP_SRC = {
   world: {
     rows: [
       // SHIRAZ: Eram-style garden and the tomb of Hafez
-      'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T........3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
-      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.....*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
-      'T*~~~~*..==..*~~~~*T', 'T........==........T', 'TTTTTTTT.==.TTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTT', 'TT.T.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T......S.3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
+      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.......S==........T', 'T*~~~~*..==..*~~~~*T',
+      'T*~~~~*..==..*~~~~*T', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
       // ROUTE 3: Shiraz road
       'T::::*...==...*::::T', 'T::::....==....::::T', 'T..LL....==a...LL..T', 'T.......:==:.......T', 'T*::::..:==:..::::*T',
       'T*::::...==...::::*T', 'T...R....==....R...T', 'T.::::...==...::::.T', 'TP::::...==...::::PT', 'T.::::*..==..*::::.T',
       'T........==........T', 'T..S.....==.....o..T',
       'TFFFFFFFF2FFFFFFFFFT',
       // ISFAHAN: bazaar, Shah Mosque, Si-o-se-pol over the Zayandeh river
-      'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,,IVVI,,T',
+      'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,S,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,SIVVI,,T',
       'T::::,,,,==,,IVVI,,T', 'T,,,,,,S,==,,,,,,,,T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T',
-      'T,,,,,,,,==,,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
+      'T,,,,,,,,==S,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
       'T,,,,::::==::::,,,,T', 'T,,R,::::==::::,R,,T', 'T,,,,,,,,==,,,,,,,,T', 'T::::,,,,==,,i,::::T', 'T::::,,L,==,,,L::::T',
       'TT,,,,,,,==,,,,,,,TT',
       'TFFFFFFFF1FFFFFFFFFT',
@@ -24,20 +24,32 @@ const MAP_SRC = {
       'T::::,,v,==,,,,::::T', 'T::::,,,,==,,,,::::T', 'T::::,,S,==,,,,::::T', 'T,,,,,,,,==,,,,,,,,T',
       'TFFFFFFFF9FFFFFFFFFT',
       // YAZD: windcatchers and the Amir Chakhmaq complex
-      'T,,,,J,,,==,,,J,,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,Y,,,,,==,,,Y,,Y,T', 'T,QQQQ,,,==,QQQQQQ,T', 'T,#hh#,,,==,#h##h#,T',
-      'T,#H##,,,==,##M###,T', 'T,,=,,,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,,,,,,,==,,~~~,,JT',
-      'T,,s,,,,,==,,~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
-      'TIWWWWI,,==,##C###,T', 'T,,,,,,,,==,,,=,,,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
+      'T,,,,J,,,==,,,J,,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,Y,,S,,==,,,Y,,Y,T', 'T,QQQQ,,,==,QQQQQQ,T', 'T,#hh#,,,==,#h##h#,T',
+      'T,#H##,,,==,##M###,T', 'T,,=,S,,,==,,,=,,,,T', 'T,,============,,,,T', 'T,S,,,,,,==,,,,S,,,T', 'TJ,,,,,,,==,,~~~,,JT',
+      'T,,s,,,,,==,S~~~,,,T', 'T,,,,,,,,==,,,,,,,,T', 'T,,,,,,,,==,,,nn,,,T', 'TIWWWWI,,==,^^^^^^,T', 'TIWWWWI,,==,#h##h#,T',
+      'TIWWWWIS,==,##C###,T', 'T,,,,,,,,==,,,=,S,,T', 'T,J,,,,,,=======,,JT', 'TTTTTTTTTTTTTTTTTTTT',
     ],
     bases: { 1: '=', 2: '=', 3: '=', 9: '=', l: '.', a: '.', o: '.', q: ',', e: ',', i: ',', g: ',', v: ',', s: ',' },
-    signs: [
-      `SHIRAZ ${F('شیراز', 'shiraz')}<br>City of poets and gardens. Up ahead is the tomb of Hafez ${F('آرامگاه حافظ', 'aramgah-e hafez')}, seized by THE CENSOR!`,
-      `${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words bloom here.`,
-      `ISFAHAN ${F('اصفهان نصف جهان', 'esfahan nesf-e jahan')}<br>"Isfahan is half the world!" The Shah Mosque is to the east. Si-o-se-pol bridge crosses the Zayandeh river ahead.`,
-      `${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the desert brush.`,
-      `YAZD ${F('یزد', 'yazd')}<br>City of windcatchers ${F('بادگیر', 'badgir')}. The Amir Chakhmaq complex stands to the south-west.`,
-      `PROFESSOR HAYDEH'S SCHOOL ${F('مدرسه', 'madreseh')}<br>Lenguamon research and Persian lessons.`,
-    ],
+    // signs keyed by "x,y": what it is, where it is, and why it matters to Persians
+    signs: {
+      '7,3': [`TOMB OF HAFEZ ${F('آرامگاه حافظ', 'aramgah-e hafez')}<br>Hafezieh, Shiraz.`, 'Hafez, a 14th-century poet, is the most loved poet in Iran. His book of poems, the Divan, is in almost every Persian home.', 'Families open it at random to read their fortune (fal-e hafez), especially on Yalda, the longest night of the year.'],
+      '14,6': [`ERAM GARDEN ${F('باغ ارم', 'bagh-e eram')}<br>Shiraz.`, 'A classic Persian garden: long pools, rows of cypress and roses, laid out as a picture of paradise.', "Persian gardens are a UNESCO World Heritage site, and the English word 'paradise' comes from an old Persian word for a walled garden."],
+      '8,8': [`SHIRAZ ${F('شیراز', 'shiraz')}<br>Fars province, south-west Iran.`, 'The city of poets, roses and gardens, home of Hafez and Saadi, the two great poets of Persian.', 'THE CENSOR has seized the tomb of Hafez up ahead!'],
+      '2,11': [`CYPRESS ${F('سرو', 'sarv')}`, 'In Persian art and poetry the cypress stands for life, freedom and standing tall, and it appears in carpets and paisley (boteh) designs.', 'The Cypress of Abarkuh in Yazd province is believed to be more than 4,000 years old.'],
+      '3,24': [`${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words live here.`],
+      '5,28': [`GRAND BAZAAR ${F('بازار بزرگ', 'bazar-e bozorg')}<br>Isfahan.`, 'One of the oldest and longest covered bazaars in the Middle East, running for kilometres up to Naqsh-e Jahan Square.', 'Bazaars are the heart of Iranian city life: spices, carpets, copperwork, tea, and plenty of bargaining.'],
+      '12,30': [`SHAH MOSQUE ${F('مسجد شاه', 'masjed-e shah')}<br>Naqsh-e Jahan Square, Isfahan.`, 'Built from 1611 to 1630 under Shah Abbas I, and also called the Imam Mosque.', 'Its blue tilework and dome are masterpieces of Persian architecture. The square around it is a UNESCO World Heritage site.'],
+      '7,32': [`ISFAHAN ${F('اصفهان', 'esfahan')}<br>Central Iran, on the Zayandeh River.`, `People say ${F('اصفهان نصف جهان', 'esfahan nesf-e jahan')}: "Isfahan is half the world."`, 'It was the capital of the Safavid empire and is famous for its squares, bridges, tilework and handicrafts.'],
+      '11,36': [`SI-O-SE-POL ${F('سی و سه پل', 'si-o-se pol')}<br>Over the Zayandeh River, Isfahan.`, "Its name means 'thirty-three bridges', for its 33 arches. It was built around 1602 under Shah Abbas I.", 'For 400 years Isfahanis have met, walked and sung under its arches on summer evenings.'],
+      '7,60': [`${ROUTE_NAMES[1]}<br>GREETINGS, QUESTIONS and CLASSROOM words hide in the desert brush.`],
+      '6,65': [`WINDCATCHER ${F('بادگیر', 'badgir')}<br>Yazd.`, 'These towers catch the desert breeze and send it down into the house to cool it: natural air conditioning, used in Iran for centuries.', 'Yazd is called the city of windcatchers.'],
+      '5,69': [`YOUR HOUSE ${F('خانه', 'khaneh')}`, 'A Yazdi home built of sun-dried mud brick (khesht). The thick walls stay cool by day and warm at night.', 'Family and hospitality are at the center of Persian life. Guests are always offered tea and fruit.'],
+      '2,71': [`YAZD ${F('یزد', 'yazd')}<br>Central Iran, between two great deserts.`, 'One of the oldest living cities on earth and a UNESCO World Heritage city.', 'A center of Zoroastrian heritage, famous for windcatchers, underground water channels (qanats) and sweets.'],
+      '15,71': [`PROFESSOR HAYDEH'S SCHOOL ${F('مدرسه', 'madreseh')}`, 'Persian has been a language of poetry and science for more than a thousand years.', 'Scholars like Avicenna (Ibn Sina) and Omar Khayyam came from Iran. Here you study its words!'],
+      '12,73': [`COURTYARD POOL ${F('حوض', 'hoz')}`, 'Water is precious in the desert, so Persian homes and gardens are built around a pool that cools the air and reflects the sky.'],
+      '7,78': [`AMIR CHAKHMAQ COMPLEX ${F('امیر چخماق', 'amir chakhmaq')}<br>Yazd.`, 'A 15th-century square, mosque and bazaar, famous for its tall façade of arched niches.', 'It is one of the best-known landmarks of Yazd and a gathering place on holidays.'],
+      '16,79': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}`, 'Tea is the heart of Iranian hospitality, served strong in small glasses with sugar cubes (ghand).', 'In teahouses friends talk, read poetry and play backgammon (takhte-nard).'],
+    },
     doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 } },
   },
   house: { rows: ['wwwwwwwwww', 'wbbfffffmw', 'wfcccccffw', 'wfcktkcfxw', 'wfcccccffw', 'wffffffffw', 'wpffffffpw', 'wwwwEwwwww'], bases: { x: 'f' }, exit: { to: 'world', door: 'H' } },
@@ -54,7 +66,7 @@ function buildMaps() {
     for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
       const ch = grid[y][x];
       if (src.bases && src.bases[ch]) { NPC_POS[ch] = { map: id, x, y }; grid[y][x] = src.bases[ch]; }
-      else if (ch === 'S') { m.signs.push({ x, y, text: (src.signs || [])[si++] || '' }); }
+      else if (ch === 'S') { m.signs.push({ x, y, text: (src.signs || {})[`${x},${y}`] || ['(The sign is too faded to read.)'] }); }
       else if (src.doors && src.doors[ch]) { m.doors[ch] = { x, y, ...src.doors[ch] }; }
     }
     m.canvas = renderMap(m);
