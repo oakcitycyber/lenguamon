@@ -82,6 +82,43 @@ function bDraw() {
 async function anim(sel, cls, ms = 400) { const e = $(sel); if (!e) return; e.classList.remove(cls); void e.offsetWidth; e.classList.add(cls); await sleep(ms); e.classList.remove(cls); }
 const dmgRoll = base => Math.max(1, Math.round(base * (0.85 + rand() * 0.3)));
 
+
+// ---- strike animations: lunge, impact burst, flash, damage numbers, dodges ----
+function fxAt(sel) {
+  const scr = $('#screen').getBoundingClientRect(), r = $(sel).getBoundingClientRect();
+  return { x: r.left - scr.left + r.width / 2, y: r.top - scr.top + r.height / 2, w: r.width };
+}
+function burstSvg(color, big) {
+  let pts = ''; const n = big ? 12 : 9;
+  for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n, rr = i % 2 ? 18 : (big ? 48 : 40); pts += `${(50 + Math.cos(a) * rr).toFixed(1)},${(50 + Math.sin(a) * rr).toFixed(1)} `; }
+  return `<svg viewBox="0 0 100 100"><polygon points="${pts}" fill="${color}" stroke="#2b1d16" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="50" r="12" fill="#ffffff"/></svg>`;
+}
+function spawnFx(sel, html, cls, ms = 700) {
+  const p = fxAt(sel), d = document.createElement('div');
+  d.className = 'fx ' + cls; d.style.left = p.x + 'px'; d.style.top = p.y + 'px'; d.style.setProperty('--w', p.w + 'px'); d.innerHTML = html;
+  $('#screen').appendChild(d); setTimeout(() => d.remove(), ms);
+}
+// attacker: 'me' or 'foe'. dmg: number or null. Resolves when the animation is done.
+async function strike(attacker, hit, dmg, crit) {
+  const target = attacker === 'me' ? 'foe' : 'me';
+  const aSel = `#b-${attacker}-spr`, tSel = `#b-${target}-spr`;
+  const lunge = anim(aSel, attacker === 'me' ? 'lunge-me' : 'lunge-foe', 380);
+  await sleep(170);
+  if (hit) {
+    SND.fx('hit');
+    spawnFx(tSel, burstSvg(attacker === 'me' ? (crit ? '#ffd040' : '#fff070') : '#ff7a4a', crit), 'burst' + (crit ? ' big' : ''), 450);
+    if (attacker === 'foe' || crit) anim('#screen', 'shake-screen', 350);
+    if (dmg != null) spawnFx(tSel, `-${dmg}`, 'dmg' + (attacker === 'foe' ? ' bad' : ''), 900);
+    if (crit) spawnFx(tSel, 'CRITICAL!', 'dmg crit', 900);
+    await anim(tSel, 'hurt', 450);
+  } else {
+    SND.fx('miss');
+    spawnFx(tSel, 'MISS', 'dmg miss', 900);
+    await anim(tSel, target === 'foe' ? 'dodge-foe' : 'dodge-me', 420);
+  }
+  await lunge;
+}
+
 function chooseWild(route) {
   const pool = wordsOfRoute(route);
   const top = Math.max(...S.team.map(m => m.lvl), 5);
@@ -130,7 +167,9 @@ async function blackout() {
   await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to Agha Reza's teahouse...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
   healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say([`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`, 'Your Lenguamon are rested and ready. Words take practice. Try again!']);
+  await say(`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  await teaScene();
+  await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
 // the enemy's turn. lastQ = the question the player just answered (or null)
 async function foeTurn(lastOk, lastQ) {
@@ -139,9 +178,9 @@ async function foeTurn(lastOk, lastQ) {
   let hit = lastOk ? rand() < (BT.boss ? 0.25 : 0.35) : true;
   let move = lastQ && !lastOk ? lastQ.answerHtml : BT.boss ? 'a rapid-fire question' : W(fw);
   await say(`${esc(name)} used ${move}!`);
-  if (!hit) { SND.fx('miss'); await say(`${esc(name)}'s attack missed!`); return true; }
+  if (!hit) { await strike('foe', false); await say(`${esc(name)}'s attack missed!`); return true; }
   const dmg = dmgRoll(BT.boss ? (3 + BT.boss.lvl * 0.5) * (lastOk ? 0.5 : 1) : (3 + f.lvl * 0.7) * (lastOk ? 0.7 : 1));
-  SND.fx('hit'); await anim('#b-me-spr', 'hurt', 450);
+  await strike('foe', true, dmg);
   m.hp = Math.max(0, m.hp - dmg); bDraw();
   if (m.hp <= 0) return handleFaint();
   return true;
@@ -178,8 +217,8 @@ async function wildEncounter(route) {
       if (res.ok) {
         const crit = res.ms < 5000;
         await say(`${esc(monW(BT.me).name)} used ${W(monW(BT.me))}!`);
-        SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 450);
         const dmg = dmgRoll(5 + BT.me.lvl * 0.9) * (crit ? 1.5 : 1) | 0;
+        await strike('me', true, dmg, crit);
         BT.foe.hp = Math.max(0, BT.foe.hp - dmg); bDraw();
         if (crit) await say('Quick answer! A critical hit!');
         if (BT.foe.hp <= 0) {
@@ -188,7 +227,7 @@ async function wildEncounter(route) {
           await gainXp(BT.me, 4 + w.level * 3); break;
         }
       } else {
-        SND.fx('miss'); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
+        await strike('me', false); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
       }
       if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
     } else if (r === 1) {
@@ -318,7 +357,7 @@ async function bossBattle(id) {
     const res = await quiz(q, 'Your reply');
     if (res.ok) {
       await say(`${esc(monW(BT.me).name)} replied: ${F(ans.fa, ans.tr0)}`);
-      SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 400);
+      await strike('me', true, null);
       BT.boss.left--; bDraw();
       if (!b.showEn) await say(`(${b.name} said: "${esc(fx(line[2]))}" · You said: "${esc(ans.en0)}")`);
       if (!BT.boss.left) break;

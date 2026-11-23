@@ -27,7 +27,7 @@ npc('z', { look: 'arash', dir: 'up', talk: async () => {
 } });
 npc('r', { look: 'reza', talk: async () => {
   await say(T('AGHA REZA', `${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`));
-  await healScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  await teaScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('AGHA REZA: And here, take some DAFTARS for your journey. You now have 5.'); }
 } });
 npc('j', { look: 'mahmoud', dir: 'left', talk: async () => {

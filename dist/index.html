@@ -212,6 +212,34 @@ button { font: inherit; cursor: pointer; }
 
 .gender { display: flex; justify-content: center; gap: calc(var(--u) * 10); padding-top: calc(var(--u) * 20); }
 .gender img { width: calc(var(--u) * 44); height: calc(var(--u) * 44); }
+.tea { position: absolute; inset: 0; background: #2a1a12; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: teaIn .4s ease-out; }
+.tea img { width: 100%; height: auto; display: block; }
+.tea-cap { margin-top: calc(var(--u) * 4); color: #fbf6e8; }
+.tea-cap .fs { color: #ffd860; } .tea-cap .ft { color: #9fe8e0; }
+@keyframes teaIn { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+/* strike animations */
+.b-spr.lunge-me { animation: lungeMe .38s ease-out; }
+@keyframes lungeMe { 40% { transform: translate(calc(var(--u) * 22), calc(var(--u) * -14)) scale(1.08); } }
+.b-spr.lunge-foe { animation: lungeFoe .38s ease-out; }
+@keyframes lungeFoe { 40% { transform: translate(calc(var(--u) * -22), calc(var(--u) * 14)) scale(1.08); } }
+.b-spr.dodge-foe { animation: dodgeFoe .42s ease-out; }
+@keyframes dodgeFoe { 40% { transform: translateX(calc(var(--u) * 14)) rotate(8deg); } }
+.b-spr.dodge-me { animation: dodgeMe .42s ease-out; }
+@keyframes dodgeMe { 40% { transform: translateX(calc(var(--u) * -14)) rotate(-8deg); } }
+.b-spr.hurt { animation: hurt2 .45s steps(1) 1; }
+@keyframes hurt2 { 0%, 40%, 80% { opacity: .25; filter: brightness(2.2) sepia(1) hue-rotate(-30deg); transform: translateX(calc(var(--u) * 2)); } 20%, 60%, 100% { opacity: 1; filter: none; transform: translateX(calc(var(--u) * -2)); } }
+#screen.shake-screen { animation: shakeScr .35s ease-in-out; }
+@keyframes shakeScr { 20% { transform: translate(calc(var(--u) * -2), calc(var(--u) * 1)); } 40% { transform: translate(calc(var(--u) * 2), calc(var(--u) * -1)); } 60% { transform: translate(calc(var(--u) * -1.5), 0); } 80% { transform: translate(calc(var(--u) * 1), calc(var(--u) * 1)); } }
+.fx { position: absolute; z-index: 45; pointer-events: none; transform: translate(-50%, -50%); }
+.fx.burst { width: calc(var(--w) * .8); height: calc(var(--w) * .8); animation: burst .45s ease-out forwards; }
+.fx.burst.big { width: var(--w); height: var(--w); }
+.fx.burst svg { width: 100%; height: 100%; }
+@keyframes burst { 0% { transform: translate(-50%, -50%) scale(.2) rotate(0); opacity: 1; } 60% { transform: translate(-50%, -50%) scale(1) rotate(25deg); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.15) rotate(35deg); opacity: 0; } }
+.fx.dmg { font-size: 1.5em; font-weight: 900; color: #fff070; text-shadow: 0 0 calc(var(--u) * .8) #2b1d16, calc(var(--u) * .6) calc(var(--u) * .6) 0 #2b1d16; animation: floatUp .9s ease-out forwards; white-space: nowrap; }
+.fx.dmg.bad { color: #ff6a5a; }
+.fx.dmg.miss { color: #ffffff; }
+.fx.dmg.crit { color: #ffb020; font-size: 1.05em; margin-top: calc(var(--u) * -10); }
+@keyframes floatUp { 0% { transform: translate(-50%, -30%) scale(.6); opacity: 0; } 20% { transform: translate(-50%, -70%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%, -190%) scale(1); opacity: 0; } }
 
 </style>
 </head>
@@ -1809,6 +1837,66 @@ function portraitSvg(id) {
 const PORTRAIT_URL = {};
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
 
+// ---- tea scene: Agha Reza serving you a glass of chai (shown for 3 seconds) ----
+function teaSceneSvg(L) {
+  const st = 'stroke="#2b1d16" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"';
+  const hair = L.hair, long = L.hairStyle === 'long';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+    <defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4e6c8"/><stop offset="1" stop-color="#e8d2a8"/></linearGradient>
+      <radialGradient id="glow" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>
+    <rect width="120" height="80" fill="url(#w)"/>
+    <rect y="22" width="120" height="7" fill="#2858a8"/><rect y="22" width="120" height="1" fill="#e0b040"/><rect y="28" width="120" height="1" fill="#e0b040"/>
+    ${[6, 18, 30, 42, 54, 66, 78, 90, 102, 114].map(x => `<path d="M${x},23.5 l2.5,2 l-2.5,2 l-2.5,-2 Z" fill="#f4f0e0"/><circle cx="${x}" cy="25.5" r=".8" fill="#30b4b0"/>`).join('')}
+    <path d="M44,6 C44,-2 76,-2 76,6 L76,20 L44,20 Z" fill="#7ac8e8" stroke="#6a4020" stroke-width="2"/><path d="M60,0 L60,20 M44,12 L76,12" stroke="#6a4020" stroke-width="1.4"/>
+    <rect y="60" width="120" height="20" fill="#a8303a"/><rect y="60" width="120" height="3" fill="#283878"/>
+    ${[10, 30, 50, 70, 90, 110].map(x => `<path d="M${x},66 l4,4 l-4,4 l-4,-4 Z" fill="#e0b040"/><circle cx="${x}" cy="70" r="1.2" fill="#283878"/>`).join('')}
+    <circle cx="60" cy="32" r="40" fill="url(#glow)"/>
+    <!-- samovar -->
+    <g transform="translate(8 30)"><rect x="4" y="26" width="16" height="4" rx="1" fill="#a07818" ${st}/><path d="M5,26 C3,14 5,8 12,8 C19,8 21,14 19,26 Z" fill="#e8b840" ${st}/>
+      <path d="M8,12 C7,16 7,20 8,24" stroke="#fff6c0" stroke-width="1.6" fill="none"/><rect x="9" y="3" width="6" height="5" rx="1" fill="#a07818" ${st}/>
+      <rect x="9" y="-3" width="6" height="6" rx="2" fill="#f4f0e0" ${st}/><path d="M19,20 L24,21 L24,22.5 L19,22" fill="#a07818" ${st}/>
+      <path d="M10,-6 C9,-9 12,-10 11,-13 M14,-6 C13,-9 16,-10 15,-13" stroke="#ffffff" stroke-width="1" fill="none" opacity=".8"/></g>
+    <!-- you -->
+    <g transform="translate(26 26)">
+      ${long ? `<rect x="5" y="4" width="14" height="22" rx="6" fill="${hair}" ${st}/>` : ''}
+      <rect x="5" y="22" width="14" height="22" rx="5" fill="${L.top}" ${st}/>
+      <rect x="7" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/><rect x="13" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/>
+      <ellipse cx="12" cy="13" rx="8" ry="8.5" fill="${L.skin}" ${st}/>
+      <path d="M4,13 C3,3 21,3 20,13 C17,8 14,8 12,9 C9,8 6,9 4,13 Z" fill="${hair}" ${st}/>
+      <ellipse cx="15" cy="13.5" rx="1" ry="1.3" fill="#1e1410"/><path d="M14,17 Q16,18.5 18,17" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
+      <ellipse cx="17" cy="16" rx="1.6" ry=".9" fill="#ff8a9a" opacity=".5"/>
+      <path d="M16,28 C22,30 25,32 27,33" stroke="${L.top}" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="28" cy="33.5" r="2" fill="${L.skin}" ${st}/>
+    </g>
+    <!-- Agha Reza -->
+    <g transform="translate(66 18)">
+      <rect x="6" y="28" width="22" height="28" rx="6" fill="#f0f0f0" ${st}/><path d="M10,32 L24,32 L23,52 L11,52 Z" fill="#ffffff" ${st}/>
+      <rect x="9" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/><rect x="19" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/>
+      <ellipse cx="17" cy="16" rx="10" ry="11" fill="#e8b890" ${st}/>
+      <path d="M7,14 C7,5 27,5 27,14 C24,9 20,9 17,10 C14,9 10,9 7,14 Z" fill="#a8a8a8" ${st}/>
+      <path d="M9,13 Q11,11 13,12.5 M21,12.5 Q23,11 25,13" stroke="#6a6a6a" stroke-width="1.2" fill="none"/>
+      <path d="M11,15.5 Q12,14.5 13,15.5 M21,15.5 Q22,14.5 23,15.5" stroke="#1e1410" stroke-width="1.2" fill="none"/>
+      <path d="M11,21 C14,19 20,19 23,21 C20,23 14,23 11,21 Z" fill="#8a8a8a"/><path d="M14,23.5 Q17,25.5 20,23.5" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
+      <ellipse cx="9.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/><ellipse cx="24.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/>
+      <path d="M8,34 C2,36 -2,38 -6,39" stroke="#f0f0f0" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M8,34 C2,36 -2,38 -6,39" stroke="#2b1d16" stroke-width="5.8" stroke-linecap="round" fill="none" opacity=".25"/>
+      <circle cx="-7" cy="39.5" r="2.4" fill="#e8b890" ${st}/>
+      <!-- tray with tea glass and sugar cubes -->
+      <ellipse cx="-12" cy="37" rx="12" ry="2.6" fill="#d8a838" ${st}/><ellipse cx="-12" cy="36.4" rx="10" ry="1.6" fill="#f0c860"/>
+      <path d="M-17,26 L-11,26 L-11.8,35 L-16.2,35 Z" fill="#b83a1a" stroke="#2b1d16" stroke-width=".9"/><path d="M-16.6,26 L-11.4,26 L-11.6,28 L-16.4,28 Z" fill="#f8f0e0" opacity=".7"/>
+      <ellipse cx="-14" cy="35.2" rx="3.6" ry="1" fill="#e8e0d0" stroke="#2b1d16" stroke-width=".6"/>
+      <path d="M-15,24 C-16,21 -13,20 -14,17 M-12.5,24 C-13.5,21 -10.5,20 -11.5,17" stroke="#ffffff" stroke-width=".9" fill="none" opacity=".85"/>
+      <rect x="-8" y="32.5" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/><rect x="-5" y="33" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/>
+    </g>
+  </svg>`;
+}
+async function teaScene() {
+  const p = $('#portrait');
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook()));
+  p.innerHTML = `<div class="tea"><img src="${url}" alt="Agha Reza serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
+  p.classList.add('show'); SND.fx('heal'); healTeam();
+  await sleep(3000);
+  p.classList.remove('show'); p.innerHTML = '';
+}
+
 // ===== LENGUAMON UI: text box, menus, fades, Persian markup =====
 const F = (fa, tr) => `<span class="fa"><span class="fs" dir="rtl" lang="fa">${esc(fa)}</span><span class="ft">${esc(tr)}</span></span>`;
 const W = w => F(w.fa, splitAlts(w.tr)[0]);
@@ -2301,6 +2389,43 @@ function bDraw() {
 async function anim(sel, cls, ms = 400) { const e = $(sel); if (!e) return; e.classList.remove(cls); void e.offsetWidth; e.classList.add(cls); await sleep(ms); e.classList.remove(cls); }
 const dmgRoll = base => Math.max(1, Math.round(base * (0.85 + rand() * 0.3)));
 
+
+// ---- strike animations: lunge, impact burst, flash, damage numbers, dodges ----
+function fxAt(sel) {
+  const scr = $('#screen').getBoundingClientRect(), r = $(sel).getBoundingClientRect();
+  return { x: r.left - scr.left + r.width / 2, y: r.top - scr.top + r.height / 2, w: r.width };
+}
+function burstSvg(color, big) {
+  let pts = ''; const n = big ? 12 : 9;
+  for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n, rr = i % 2 ? 18 : (big ? 48 : 40); pts += `${(50 + Math.cos(a) * rr).toFixed(1)},${(50 + Math.sin(a) * rr).toFixed(1)} `; }
+  return `<svg viewBox="0 0 100 100"><polygon points="${pts}" fill="${color}" stroke="#2b1d16" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="50" r="12" fill="#ffffff"/></svg>`;
+}
+function spawnFx(sel, html, cls, ms = 700) {
+  const p = fxAt(sel), d = document.createElement('div');
+  d.className = 'fx ' + cls; d.style.left = p.x + 'px'; d.style.top = p.y + 'px'; d.style.setProperty('--w', p.w + 'px'); d.innerHTML = html;
+  $('#screen').appendChild(d); setTimeout(() => d.remove(), ms);
+}
+// attacker: 'me' or 'foe'. dmg: number or null. Resolves when the animation is done.
+async function strike(attacker, hit, dmg, crit) {
+  const target = attacker === 'me' ? 'foe' : 'me';
+  const aSel = `#b-${attacker}-spr`, tSel = `#b-${target}-spr`;
+  const lunge = anim(aSel, attacker === 'me' ? 'lunge-me' : 'lunge-foe', 380);
+  await sleep(170);
+  if (hit) {
+    SND.fx('hit');
+    spawnFx(tSel, burstSvg(attacker === 'me' ? (crit ? '#ffd040' : '#fff070') : '#ff7a4a', crit), 'burst' + (crit ? ' big' : ''), 450);
+    if (attacker === 'foe' || crit) anim('#screen', 'shake-screen', 350);
+    if (dmg != null) spawnFx(tSel, `-${dmg}`, 'dmg' + (attacker === 'foe' ? ' bad' : ''), 900);
+    if (crit) spawnFx(tSel, 'CRITICAL!', 'dmg crit', 900);
+    await anim(tSel, 'hurt', 450);
+  } else {
+    SND.fx('miss');
+    spawnFx(tSel, 'MISS', 'dmg miss', 900);
+    await anim(tSel, target === 'foe' ? 'dodge-foe' : 'dodge-me', 420);
+  }
+  await lunge;
+}
+
 function chooseWild(route) {
   const pool = wordsOfRoute(route);
   const top = Math.max(...S.team.map(m => m.lvl), 5);
@@ -2349,7 +2474,9 @@ async function blackout() {
   await say([`${esc(S.name)} has no Lenguamon left to talk with!`, `${esc(S.name)} hurried back to Agha Reza's teahouse...`]);
   await fade(true, 300); bShow(false); BT.boss = null;
   healTeam(); placePlayer('teahouse', 5, 4, 'up'); writeSave(); drawWorld(); await fade(false, 300);
-  await say([`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`, 'Your Lenguamon are rested and ready. Words take practice. Try again!']);
+  await say(`AGHA REZA: ${F('خسته نباشی', 'khasteh nabashi')}! Sit, have some chai.`);
+  await teaScene();
+  await say('Your Lenguamon are rested and ready. Words take practice. Try again!');
 }
 // the enemy's turn. lastQ = the question the player just answered (or null)
 async function foeTurn(lastOk, lastQ) {
@@ -2358,9 +2485,9 @@ async function foeTurn(lastOk, lastQ) {
   let hit = lastOk ? rand() < (BT.boss ? 0.25 : 0.35) : true;
   let move = lastQ && !lastOk ? lastQ.answerHtml : BT.boss ? 'a rapid-fire question' : W(fw);
   await say(`${esc(name)} used ${move}!`);
-  if (!hit) { SND.fx('miss'); await say(`${esc(name)}'s attack missed!`); return true; }
+  if (!hit) { await strike('foe', false); await say(`${esc(name)}'s attack missed!`); return true; }
   const dmg = dmgRoll(BT.boss ? (3 + BT.boss.lvl * 0.5) * (lastOk ? 0.5 : 1) : (3 + f.lvl * 0.7) * (lastOk ? 0.7 : 1));
-  SND.fx('hit'); await anim('#b-me-spr', 'hurt', 450);
+  await strike('foe', true, dmg);
   m.hp = Math.max(0, m.hp - dmg); bDraw();
   if (m.hp <= 0) return handleFaint();
   return true;
@@ -2397,8 +2524,8 @@ async function wildEncounter(route) {
       if (res.ok) {
         const crit = res.ms < 5000;
         await say(`${esc(monW(BT.me).name)} used ${W(monW(BT.me))}!`);
-        SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 450);
         const dmg = dmgRoll(5 + BT.me.lvl * 0.9) * (crit ? 1.5 : 1) | 0;
+        await strike('me', true, dmg, crit);
         BT.foe.hp = Math.max(0, BT.foe.hp - dmg); bDraw();
         if (crit) await say('Quick answer! A critical hit!');
         if (BT.foe.hp <= 0) {
@@ -2407,7 +2534,7 @@ async function wildEncounter(route) {
           await gainXp(BT.me, 4 + w.level * 3); break;
         }
       } else {
-        SND.fx('miss'); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
+        await strike('me', false); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
       }
       if (!(await foeTurn(res.ok, q))) { await blackout(); return; }
     } else if (r === 1) {
@@ -2537,7 +2664,7 @@ async function bossBattle(id) {
     const res = await quiz(q, 'Your reply');
     if (res.ok) {
       await say(`${esc(monW(BT.me).name)} replied: ${F(ans.fa, ans.tr0)}`);
-      SND.fx('hit'); await anim('#b-foe-spr', 'hurt', 400);
+      await strike('me', true, null);
       BT.boss.left--; bDraw();
       if (!b.showEn) await say(`(${b.name} said: "${esc(fx(line[2]))}" · You said: "${esc(ans.en0)}")`);
       if (!BT.boss.left) break;
@@ -2583,7 +2710,7 @@ npc('z', { look: 'arash', dir: 'up', talk: async () => {
 } });
 npc('r', { look: 'reza', talk: async () => {
   await say(T('AGHA REZA', `${F('بفرمایید', 'befarmaid')}! Welcome to my ${F('چای‌خانه', 'chaykhaneh')}, the teahouse. A glass of chai?`));
-  await healScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
+  await teaScene(); await say(['Your Lenguamon drank chai and feel refreshed!', T('AGHA REZA', `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('AGHA REZA: And here, take some DAFTARS for your journey. You now have 5.'); }
 } });
 npc('j', { look: 'mahmoud', dir: 'left', talk: async () => {

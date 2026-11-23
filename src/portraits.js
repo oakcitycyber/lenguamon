@@ -90,3 +90,63 @@ function portraitSvg(id) {
 }
 const PORTRAIT_URL = {};
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
+
+// ---- tea scene: Agha Reza serving you a glass of chai (shown for 3 seconds) ----
+function teaSceneSvg(L) {
+  const st = 'stroke="#2b1d16" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"';
+  const hair = L.hair, long = L.hairStyle === 'long';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+    <defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4e6c8"/><stop offset="1" stop-color="#e8d2a8"/></linearGradient>
+      <radialGradient id="glow" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>
+    <rect width="120" height="80" fill="url(#w)"/>
+    <rect y="22" width="120" height="7" fill="#2858a8"/><rect y="22" width="120" height="1" fill="#e0b040"/><rect y="28" width="120" height="1" fill="#e0b040"/>
+    ${[6, 18, 30, 42, 54, 66, 78, 90, 102, 114].map(x => `<path d="M${x},23.5 l2.5,2 l-2.5,2 l-2.5,-2 Z" fill="#f4f0e0"/><circle cx="${x}" cy="25.5" r=".8" fill="#30b4b0"/>`).join('')}
+    <path d="M44,6 C44,-2 76,-2 76,6 L76,20 L44,20 Z" fill="#7ac8e8" stroke="#6a4020" stroke-width="2"/><path d="M60,0 L60,20 M44,12 L76,12" stroke="#6a4020" stroke-width="1.4"/>
+    <rect y="60" width="120" height="20" fill="#a8303a"/><rect y="60" width="120" height="3" fill="#283878"/>
+    ${[10, 30, 50, 70, 90, 110].map(x => `<path d="M${x},66 l4,4 l-4,4 l-4,-4 Z" fill="#e0b040"/><circle cx="${x}" cy="70" r="1.2" fill="#283878"/>`).join('')}
+    <circle cx="60" cy="32" r="40" fill="url(#glow)"/>
+    <!-- samovar -->
+    <g transform="translate(8 30)"><rect x="4" y="26" width="16" height="4" rx="1" fill="#a07818" ${st}/><path d="M5,26 C3,14 5,8 12,8 C19,8 21,14 19,26 Z" fill="#e8b840" ${st}/>
+      <path d="M8,12 C7,16 7,20 8,24" stroke="#fff6c0" stroke-width="1.6" fill="none"/><rect x="9" y="3" width="6" height="5" rx="1" fill="#a07818" ${st}/>
+      <rect x="9" y="-3" width="6" height="6" rx="2" fill="#f4f0e0" ${st}/><path d="M19,20 L24,21 L24,22.5 L19,22" fill="#a07818" ${st}/>
+      <path d="M10,-6 C9,-9 12,-10 11,-13 M14,-6 C13,-9 16,-10 15,-13" stroke="#ffffff" stroke-width="1" fill="none" opacity=".8"/></g>
+    <!-- you -->
+    <g transform="translate(26 26)">
+      ${long ? `<rect x="5" y="4" width="14" height="22" rx="6" fill="${hair}" ${st}/>` : ''}
+      <rect x="5" y="22" width="14" height="22" rx="5" fill="${L.top}" ${st}/>
+      <rect x="7" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/><rect x="13" y="42" width="4" height="10" rx="2" fill="${L.legs}" ${st}/>
+      <ellipse cx="12" cy="13" rx="8" ry="8.5" fill="${L.skin}" ${st}/>
+      <path d="M4,13 C3,3 21,3 20,13 C17,8 14,8 12,9 C9,8 6,9 4,13 Z" fill="${hair}" ${st}/>
+      <ellipse cx="15" cy="13.5" rx="1" ry="1.3" fill="#1e1410"/><path d="M14,17 Q16,18.5 18,17" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
+      <ellipse cx="17" cy="16" rx="1.6" ry=".9" fill="#ff8a9a" opacity=".5"/>
+      <path d="M16,28 C22,30 25,32 27,33" stroke="${L.top}" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="28" cy="33.5" r="2" fill="${L.skin}" ${st}/>
+    </g>
+    <!-- Agha Reza -->
+    <g transform="translate(66 18)">
+      <rect x="6" y="28" width="22" height="28" rx="6" fill="#f0f0f0" ${st}/><path d="M10,32 L24,32 L23,52 L11,52 Z" fill="#ffffff" ${st}/>
+      <rect x="9" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/><rect x="19" y="54" width="6" height="12" rx="2" fill="#5a3a20" ${st}/>
+      <ellipse cx="17" cy="16" rx="10" ry="11" fill="#e8b890" ${st}/>
+      <path d="M7,14 C7,5 27,5 27,14 C24,9 20,9 17,10 C14,9 10,9 7,14 Z" fill="#a8a8a8" ${st}/>
+      <path d="M9,13 Q11,11 13,12.5 M21,12.5 Q23,11 25,13" stroke="#6a6a6a" stroke-width="1.2" fill="none"/>
+      <path d="M11,15.5 Q12,14.5 13,15.5 M21,15.5 Q22,14.5 23,15.5" stroke="#1e1410" stroke-width="1.2" fill="none"/>
+      <path d="M11,21 C14,19 20,19 23,21 C20,23 14,23 11,21 Z" fill="#8a8a8a"/><path d="M14,23.5 Q17,25.5 20,23.5" stroke="#7a3a3a" stroke-width=".9" fill="none"/>
+      <ellipse cx="9.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/><ellipse cx="24.5" cy="19" rx="1.8" ry="1" fill="#ff8a9a" opacity=".45"/>
+      <path d="M8,34 C2,36 -2,38 -6,39" stroke="#f0f0f0" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M8,34 C2,36 -2,38 -6,39" stroke="#2b1d16" stroke-width="5.8" stroke-linecap="round" fill="none" opacity=".25"/>
+      <circle cx="-7" cy="39.5" r="2.4" fill="#e8b890" ${st}/>
+      <!-- tray with tea glass and sugar cubes -->
+      <ellipse cx="-12" cy="37" rx="12" ry="2.6" fill="#d8a838" ${st}/><ellipse cx="-12" cy="36.4" rx="10" ry="1.6" fill="#f0c860"/>
+      <path d="M-17,26 L-11,26 L-11.8,35 L-16.2,35 Z" fill="#b83a1a" stroke="#2b1d16" stroke-width=".9"/><path d="M-16.6,26 L-11.4,26 L-11.6,28 L-16.4,28 Z" fill="#f8f0e0" opacity=".7"/>
+      <ellipse cx="-14" cy="35.2" rx="3.6" ry="1" fill="#e8e0d0" stroke="#2b1d16" stroke-width=".6"/>
+      <path d="M-15,24 C-16,21 -13,20 -14,17 M-12.5,24 C-13.5,21 -10.5,20 -11.5,17" stroke="#ffffff" stroke-width=".9" fill="none" opacity=".85"/>
+      <rect x="-8" y="32.5" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/><rect x="-5" y="33" width="2.6" height="2.6" fill="#ffffff" stroke="#2b1d16" stroke-width=".5"/>
+    </g>
+  </svg>`;
+}
+async function teaScene() {
+  const p = $('#portrait');
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(teaSceneSvg(playerLook()));
+  p.innerHTML = `<div class="tea"><img src="${url}" alt="Agha Reza serving chai"><div class="tea-cap">${F('بفرمایید، چای!', 'befarmaid, chai!')}</div></div>`;
+  p.classList.add('show'); SND.fx('heal'); healTeam();
+  await sleep(3000);
+  p.classList.remove('show'); p.innerHTML = '';
+}
