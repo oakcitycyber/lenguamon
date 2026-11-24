@@ -15,8 +15,8 @@ async function healScene(who) {
 
 npc('x', { look: 'maman', dir: 'left', talk: async () => {
   if (!S.flags.starter) { await say([T('MAMAN', `${F('صبح بخیر', 'sobh bekheir')}, ${nm()} jan! Good morning!`), 'Professor Haydeh is looking for you. Her school is across the square, just to the east.', `Don't forget: say ${F('سلام', 'salam')} when you walk in!`]); return; }
-  await say(T('MAMAN', `${nm()} jan, you look tired. ${F('خسته نباشی', 'khasteh nabashi')}! Rest a little.`));
-  await healScene(); await say(['Your Lenguamon are full of energy!', T('MAMAN', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`)]);
+  await say(T('MAMAN', `${nm()} jan, you look tired. ${F('خسته نباشی', 'khasteh nabashi')}! Time for bed.`));
+  await sleepScene(); await say([T('MAMAN', `${F('صبح بخیر', 'sobh bekheir')}! Good morning!`), 'You and your Lenguamon are full of energy!', T('MAMAN', `${F('موفق باشی', 'movafagh bashi')}! Good luck!`)]);
 } });
 npc('y', { look: 'haydeh', talk: async () => {
   if (!S.flags.starter) { await starterScene(); return; }
@@ -89,9 +89,10 @@ async function gateBoss(id) {
   const won = await bossBattle(id);
   if (!won) return;
   S.flags[id] = true; S.daftar += 5; healTeam();
+  S.money = money() + 50;
   SND.fx('badge');
   const badge = en ? ['', 'ROUTE 66', 'GOLDEN GATE', 'SPACE NEEDLE', 'LIBERTY BELL', 'EMPIRE STATE'][+id[1]] + ' STAR BADGE' : ['', 'YAZD', 'ISFAHAN', 'SHIRAZ', 'KAVIR', 'TEHRAN'][+id[1]] + ' KASHI BADGE';
-  await say([`${esc(S.name)} earned the ${B(badge)}!`, `You found 5 ${en ? 'NOTEBOOKS' : 'DAFTARS'}, and your Lenguamon were healed.`]);
+  await say([`${esc(S.name)} earned the ${B(badge)}!`, `You found 5 ${en ? 'NOTEBOOKS' : 'DAFTARS'} and ${fmtMoney(50)}, and your Lenguamon were healed.`]);
   writeSave();
   if (en) { await afterBossEN(id); return; }
   if (id === 'b3') await say([T('SHIRIN', `You did it! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`), 'But THE CENSOR ran north toward Tehran. The road north of Shiraz is open now, past Persepolis and the Tomb of Cyrus. Follow him!']);

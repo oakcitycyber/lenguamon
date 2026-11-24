@@ -91,7 +91,7 @@ function choose(items, opts = {}) {
     });
     (opts.parent || $('#screen')).appendChild(el);
     let idx = opts.start || 0;
-    const draw = () => rows.forEach((r, i) => r.classList.toggle('sel', i === idx));
+    const draw = () => { rows.forEach((r, i) => r.classList.toggle('sel', i === idx)); const r = rows[idx]; if (r && r.parentElement && r.parentElement.scrollHeight > r.parentElement.clientHeight) r.scrollIntoView({ block: 'nearest' }); };
     draw();
     const finish = v => { popH(h); el.remove(); res(v); };
     const h = b => {

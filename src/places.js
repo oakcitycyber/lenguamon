@@ -7,6 +7,7 @@ async function teaHost(name, vest, lines) {
   await teaScene(vest, name);
   await say(LANG === 'en' ? ['Your Lenguamon had a coffee and feel refreshed!', T(name, 'Enjoy! Come back anytime.')] : ['Your Lenguamon drank chai and feel refreshed!', T(name, `${F('نوش جان', 'noosh-e jan')}! Enjoy!`)]);
   if (S.flags.starter && S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say(`${name}: Take some ${DAF()}S too. You now have 5.`); }
+  await shopMenu(name);
 }
 npc('!', { look: 'hassan', lookG: 'parvin', talk: () => isGirl() ? teaHost('KHANOM PARVIN', null, [
   `${F('خوش اومدی', 'khosh oomadi')}, ${F('عزیزم', 'azizam')}! Welcome, dear! I am Khanom Parvin.`,

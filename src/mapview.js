@@ -95,7 +95,7 @@ function evolvedMon(w, lvl) {
   return m;
 }
 function setupCyrus() {
-  S.cyrus = true; S.daftar = 99;
+  S.cyrus = true; S.daftar = 99; S.money = 999;
   Object.assign(S.flags, { starter: true, b1: true, b2: true, b3: true, b4: true, b5: true, ending: true, noEnc: true });
   for (const w of WORDS) { S.caught[w.key] = true; S.seen[w.key] = true; }
   const team = [evolvedMon(WORDS.find(w => w.tr0 === (LANG === 'en' ? "how's it going?" : 'salam')), 60)];

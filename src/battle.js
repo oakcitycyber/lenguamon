@@ -204,7 +204,7 @@ async function wildEncounter(route) {
     let r = 0;
     if (!first) {
       await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
-      r = await choose(['FIGHT', `${DAF()} x${S.daftar}`, 'TEAM', 'RUN'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
+      r = await choose(['FIGHT', `${DAF()} x${S.daftar}`, 'TEAM', 'RUN', 'BAG'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx });
       hideText(); menuIdx = r;
     }
     if (r === 0) {
@@ -227,7 +227,7 @@ async function wildEncounter(route) {
         if (BT.foe.hp <= 0) {
           SND.fx('faint'); await anim('#b-foe-spr', 'faint', 600);
           await say([`Wild ${esc(w.name)} fainted!`, `It was carrying the word ${W(w)} = "${M(w)}".`]);
-          await gainXp(BT.me, 4 + w.level * 3); break;
+          await gainXp(BT.me, 4 + w.level * 3); await earn(2 + Math.floor(w.level / 4), 'You found'); break;
         }
       } else {
         await strike('me', false); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
@@ -268,6 +268,8 @@ async function wildEncounter(route) {
       if (!(await foeTurn(true, null))) { await blackout(); return; }
     } else if (r === 3) {
       SND.fx('door'); await say('Got away safely!'); break;
+    } else if (r === 4) {
+      if (await useFoodMenu(true)) { if (!(await foeTurn(true, null))) { await blackout(); return; } }
     }
   }
   writeSave(); await battleOutro();
@@ -385,6 +387,7 @@ async function bossBattle(id) {
   const queue = b.lines.map((l, i) => i);
   while (queue.length) {
     bDraw();
+    if (BT.me.hp < maxHp(BT.me.lvl) / 2 && bagItems().length && (await ask(`${esc(monW(BT.me).name)} is tired. Eat or drink something first?`))) await useFoodMenu(true);
     const li = queue.shift(), line = b.lines[li];
     const ans = bossReplyWord(b, line);
     const others = shuffle(b.lines.filter((l, i) => i !== li)).slice(0, 3).map(l => bossReplyWord(b, l));

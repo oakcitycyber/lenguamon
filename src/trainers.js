@@ -227,7 +227,7 @@ async function trainerBattleFor(n, rematch) {
 async function rivalBattle(n) {
   const k = n.rival.stage, name = rivalName(), [hello, lose] = RIVAL_LINES[k];
   await say(T(name, hello.replace('{N}', esc(S.name))));
-  const won = await trainerBattle({ name: `${name}, YOUR RIVAL`, short: name }, rivalTeam(k), 'boss');
+  const won = await trainerBattle({ name: `${name}, YOUR RIVAL`, short: name, prize: 30 + k * 10 }, rivalTeam(k), 'boss');
   if (!won) { await say(T(name, "Ha! I knew I'd win. Go study, then come find me again!")); return; }
   S.rival = k + 1; S.daftar += 3;
   await say([T(name, lose), `${esc(name)} gave you 3 ${DAF()}S. You have ${S.daftar}.`]);
@@ -253,7 +253,8 @@ async function trainerBattle(tr, team, music) {
       let r = 0;
       if (!first) {
         await say(`What will ${esc(monW(BT.me).name)} do?`, { keep: true });
-        r = await choose(['FIGHT', 'TEAM'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx }); hideText(); menuIdx = r;
+        r = await choose(['FIGHT', 'TEAM', 'BAG'], { cols: 2, cls: 'bmenu', cancel: false, start: menuIdx }); hideText(); menuIdx = r;
+        if (r === 2) { if (await useFoodMenu(true)) { if (!(await foeTurn(true, null))) { BT.trainer = null; await blackout(); return false; } } continue; }
       }
       if (r === 1) {
         const j = await teamScreen(true);
@@ -289,6 +290,7 @@ async function trainerBattle(tr, team, music) {
   }
   SND.fx('badge');
   await say(`You defeated ${esc(tr.name)}!`);
+  await earn(tr.prize || team.reduce((a, o) => a + 3 + Math.floor(o.lvl / 3), 0), `${esc(tr.short)} paid you`);
   BT.trainer = null; writeSave(); await battleOutro();
   return true;
 }

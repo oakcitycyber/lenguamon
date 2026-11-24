@@ -283,3 +283,10 @@ button { font: inherit; cursor: pointer; }
 .bi-fa { display: block; margin-top: calc(var(--u) * 1); font-family: "Vazirmatn", "Noto Naskh Arabic", "Noto Sans Arabic", Tahoma, sans-serif; font-weight: 700; font-size: .86em; line-height: 1.45; color: #1d5a8a; text-align: right; }
 #textbox .bi-fa:last-child { padding-bottom: calc(var(--u) * 4); }
 .tdots { font-size: .8em; color: #c82838; letter-spacing: .15em; }
+
+/* shop and bag */
+.shop { left: calc(var(--u) * 2); right: calc(var(--u) * 2); top: calc(var(--u) * 2); max-height: calc(var(--u) * 96); overflow-y: auto; gap: calc(var(--u) * .8); font-size: .82em; }
+.shop .mi { white-space: normal; }
+.shopi { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: calc(var(--u) * 3); width: 100%; line-height: 1.1; }
+.shopi small { color: #50586a; font-size: .78em; text-align: right; }
+.shop .mi { width: 100%; }

@@ -120,8 +120,8 @@ function nextGoalEN() {
 // ---- Santa Fe ----
 npc('Ю', { look: 'maman', dir: 'left', talk: async () => {
   if (!S.flags.starter) { await say([T('MAMAN', `Good morning, ${nm()} ${PF('جان')}! ${PF('صبح بخیر')}`), "Professor Haydeh is waiting for you at her English school, across the street.", `Remember: in America people say ${E("how's it going?", 'اوضاع چطوره؟')} instead of "hello".`]); return; }
-  await say(T('MAMAN', `${nm()} ${PF('جان')}, you look ${E('exhausted', 'خیلی خسته')}. Sit down and rest.`));
-  await healScene(); await say(['Your Lenguamon are full of energy!', T('MAMAN', `${E('Good luck!', 'موفق باشی!')} Call me when you get there!`)]);
+  await say(T('MAMAN', `${nm()} ${PF('جان')}, you look ${E('exhausted', 'خیلی خسته')}. Time for bed!`));
+  await sleepScene(); await say([T('MAMAN', `${E('Good morning!', 'صبح بخیر!')}`), 'You and your Lenguamon are full of energy!', T('MAMAN', `${E('Good luck!', 'موفق باشی!')} Call me when you get there!`)]);
 } });
 npc('Я', { look: 'haydeh', talk: async () => {
   if (!S.flags.starter) { await starterSceneEN(); return; }

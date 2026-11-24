@@ -352,10 +352,10 @@ async function startMenu() {
   let idx = 0;
   while (true) {
     const items = [
-      { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'MAP', 'SAYINGS', DAF(), { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
+      { html: 'LENGUADEX', disabled: !S.flags.starter }, { html: 'LENGUAMON', disabled: !S.team.length }, 'BAG', 'MAP', 'SAYINGS', DAF(), { html: esc(S.name) }, 'SAVE', 'OPTIONS', 'EXIT'];
     const r = await choose(items, { cls: 'startmenu', start: idx, startCloses: true });
     if (r < 0) return;
-    if (r === 8) {
+    if (r === 9) {
       if (!(await ask('Return to the title screen? Your game will be saved.'))) continue;
       writeSave(); SND.music(null); await fade(true, 400);
       location.reload(); return;
@@ -363,16 +363,17 @@ async function startMenu() {
     idx = r;
     if (r === 0) await dexScreen();
     else if (r === 1) await teamScreen(false);
-    else if (r === 2) { if ((await mapScreen()) === 'moved') return; }
-    else if (r === 3) await sayingsScreen();
-    else if (r === 4 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
-    else if (r === 4) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
-    else if (r === 5) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
+    else if (r === 2) await useFoodMenu(false);
+    else if (r === 3) { if ((await mapScreen()) === 'moved') return; }
+    else if (r === 4) await sayingsScreen();
+    else if (r === 5 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
+    else if (r === 5) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
+    else if (r === 6) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>MONEY: ${fmtMoney(money())}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
       [1, 2, 3].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       [4, 5, 6].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
       `${LANG === 'en' ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS: ${sayCount()} / ${sayList().length}`]);
-    else if (r === 6) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your progress is saved on this device.']); }
-    else if (r === 7) await optionsScreen();
+    else if (r === 7) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your progress is saved on this device.']); }
+    else if (r === 8) await optionsScreen();
   }
 }
 async function optionsScreen() {
