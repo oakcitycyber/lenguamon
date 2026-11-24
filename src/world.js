@@ -211,6 +211,7 @@ function buildMaps() {
       else if (ch === 'S') { m.signs.push({ x, y, text: (src.signs || {})[`${x},${y}`] || ['(The sign is too faded to read.)'] }); }
       else if (src.doors && src.doors[ch]) { m.doors[ch] = { x, y, ...src.doors[ch] }; }
     }
+    decorateMap(m);
     m.canvas = renderMap(m);
     MAPS[id] = m;
   }
@@ -257,11 +258,13 @@ function drawWorld() {
   cy = mh <= 144 ? (mh - 144) / 2 : clamp(cy, 0, mh - 144);
   cx = Math.round(cx * SCALE) / SCALE; cy = Math.round(cy * SCALE) / SCALE;
   c.drawImage(curMap.canvas, -cx, -cy, mw, mh);
+  drawAmbient(c, cx, cy, 'under');
   const ents = [];
   for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === curMap.id) ents.push({ y: p.y * TS, draw: () => { drawChar(c, p.x * TS - cx, p.y * TS - cy - 2, LOOKS[(isGirl() && n.lookG) || n.look], n.dir, 0); if (n.alert) drawAlert(c, p.x * TS - cx, p.y * TS - cy - 2); } }); }
   let step = 0; if (PL.moving) { const k = (performance.now() - PL.t0) / MOVE_MS; step = k < 0.5 ? (PL.walkPh ? 1 : 2) : 0; }
   ents.push({ y: py, draw: () => drawChar(c, px - cx, py - cy - 2, playerLook(), PL.dir, step) });
   ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+  drawAmbient(c, cx, cy, 'over');
   // tall grass over feet
   const t = curMap.grid[PL.y] && curMap.grid[PL.y][PL.x];
   if (t === ':' && !PL.moving) { c.save(); c.beginPath(); c.rect(px - cx, py - cy + 10, 16, 6); c.clip(); c.drawImage(curMap.canvas, -cx, -cy, mw, mh); c.restore(); }

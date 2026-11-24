@@ -141,6 +141,7 @@ function renderMap(m) {
     if (typeof gritTile === 'function') gritTile(ctx, x, y, ch, nb, m);
     ctx.restore();
   }
+  if (typeof drawDecor === 'function') drawDecor(ctx, m);
   if (typeof drawSprites === 'function') drawSprites(ctx, m);
   return cv;
 }
