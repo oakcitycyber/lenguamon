@@ -306,3 +306,18 @@ Object.assign(SPRITES, {
     R(c, cx + .4, 2, 6, 5.6, '#2a3a8a');
   },
 });
+
+// ---- gym props that close off the left side of the gym floor ----
+TILE['ɱ'] = { g: gFloor, solid: true, d(c) { // a floor stand of meel clubs
+  el(c, 8, 14.6, 6.6, 1.2, 'rgba(0,0,0,.2)');
+  rrect(c, 1.5, 12, 13, 2.4, .5, C.woodD, C.out, .4);
+  for (const [cx, h] of [[3.6, 9], [6.6, 10.5], [9.6, 10.5], [12.6, 9]]) {
+    c.beginPath(); c.moveTo(cx - .55, 12 - h); c.lineTo(cx + .55, 12 - h); c.lineTo(cx + 1.6, 11); c.quadraticCurveTo(cx, 12.6, cx - 1.6, 11); c.closePath();
+    c.fillStyle = '#b8742e'; c.fill(); c.strokeStyle = C.out; c.lineWidth = .35; c.stroke(); R(c, cx - .9, 12 - h + 2.4, 1.8, .7, C.gold);
+  }
+} };
+TILE['ɯ'] = { g(c) { R(c, 0, 0, 16, 16, '#3a5a8a'); c.strokeStyle = 'rgba(0,0,0,.25)'; c.lineWidth = .4; c.strokeRect(0, 0, 16, 16); }, solid: true, d(c) { // a weight bench with a barbell
+  el(c, 8, 14.4, 7, 1.2, 'rgba(0,0,0,.25)');
+  R(c, 4, 9, 1.2, 5, '#5a5c62'); R(c, 10.8, 9, 1.2, 5, '#5a5c62'); rrect(c, 2.5, 7.4, 11, 2.6, 1, '#2a2a30', '#111', .4);
+  R(c, 1, 4.6, 14, .9, '#8a8e96'); for (const x of [1.4, 12.4]) rrect(c, x, 2.4, 2.2, 5.4, .6, '#1a1a20', '#000', .3);
+} };

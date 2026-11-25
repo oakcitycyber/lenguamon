@@ -2,7 +2,8 @@
 // us:      Seattle (top), Pacific Coast Highway, San Francisco, Route 66, Santa Fe (start, bottom)
 // usnorth: New York City (top), Pennsylvania farmland, Chicago, Rocky Mountains (bottom)
 const DINER_ROWS = (h, e) => ['▤▤▤▤▤▤▤▤▤▤', '▤◘◘◘◘◘◘♫◘▤', `▤▚▚▚▚${h}▚▚▚▤`, '▤▬▬▬▬▬▬▚▚▤', '▤▚▚▚▚▚▚▚▚▤', `▤◙▚◙▚▚◙▚${e || '◙'}▤`, '▤▚▚▚▚▚▚▚▚▤', '▤▤▤▤E▤▤▤▤▤'];
-const BOXING_ROWS = (c, a) => ['▤▤▤▤▤▤▤▤▤▤', '▤⚲⚲▤ȸȸ▤⚲⚲▤', `▤▒▒▒${c}▒▒▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', `▤▒▒${a}◫◫◫▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', '▤▒▒▒▒▒▒▒▒▤', '▤▤▤▤E▤▤▤▤▤'];
+// one way in: a weight bench closes the left side, so you pass all three boxers on the right before reaching the coach
+const BOXING_ROWS = (c, a) => ['▤▤▤▤▤▤▤▤▤▤', '▤⚲⚲▤ȸȸ▤⚲⚲▤', `▤▒▒▒${c}▒▒▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', `▤▒▒${a}◫◫◫▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', '▤▒▒ɯ▒▒▒▒▒▤', '▤▤▤▤E▤▤▤▤▤'];
 const SG = (title, fa, where, ...lines) => [`${title} ${PF(fa)}<br>${where}`, ...lines];
 Object.assign(MAP_SRC, {
   us: {
