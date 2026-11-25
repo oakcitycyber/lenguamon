@@ -307,8 +307,7 @@ async function trainerTalk(n) {
 }
 async function trainerBattleFor(n, rematch) {
   const t = n.tr, st = trState(t.id);
-  await say(T(t.name, rematch ? "This time I won't hold back!" : t.hello));
-  const won = await trainerBattle({ name: t.name, short: t.name.split(' ').slice(-1)[0] }, trainerTeam(n, rematch), t.gym ? 'boss' : 'battle');
+  const won = await trainerBattle({ name: t.name, short: t.name.split(' ').slice(-1)[0], look: n.look, line: rematch ? "This time I won't hold back!" : t.hello }, trainerTeam(n, rematch), t.gym ? 'boss' : 'battle');
   if (!won) return;
   if (rematch) st.rem = S.rest || 0; else { st.won = true; st.rem = S.rest || 0; S.daftar += 1; }
   await say([T(t.name, t.lose), T(t.name, t.tip()), ...(rematch ? [] : [`${esc(t.name)} gave you a ${DAF()}. You have ${S.daftar}.`])]);
@@ -316,8 +315,7 @@ async function trainerBattleFor(n, rematch) {
 }
 async function rivalBattle(n) {
   const k = n.rival.stage, name = rivalName(), [hello, lose] = RIVAL_LINES[k];
-  await say(T(name, hello.replace('{N}', esc(S.name))));
-  const won = await trainerBattle({ name: `${name}, YOUR RIVAL`, short: name, prize: 30 + k * 10 }, rivalTeam(k), 'boss');
+  const won = await trainerBattle({ name: `${name}, YOUR RIVAL`, short: name, prize: 30 + k * 10, look: n.look, line: hello.replace('{N}', esc(S.name)) }, rivalTeam(k), 'boss');
   if (!won) { await say(T(name, "Ha! I knew I'd win. Go study, then come find me again!")); return; }
   S.rival = k + 1; S.daftar += 3;
   await say([T(name, lose), `${esc(name)} gave you 3 ${DAF()}S. You have ${S.daftar}.`]);
@@ -325,16 +323,33 @@ async function rivalBattle(n) {
 }
 
 // ---- the trainer battle: like a wild battle, but no catching or running, and a whole team ----
+const TR_NEXT_LINES = ["Not bad! But I'm not done yet.", "Okay, that one was easy. Try this!", "Hmm. Time for my next one!", "You got lucky. Here's another!"];
+const TR_LAST_LINES = ["This is my last one, and my best!", "One left. Don't get comfortable!", "Last chance. Let's go!"];
+// a big picture of a trainer for the battle screen
+const TRAINER_PIC = {};
+function trainerPicUrl(look) {
+  if (TRAINER_PIC[look]) return TRAINER_PIC[look];
+  const cv = document.createElement('canvas'); cv.width = 192; cv.height = 192; const c = cv.getContext('2d');
+  c.scale(10, 10); c.translate(1.6, 2.6); drawChar(c, 0, 0, LOOKS[look] || LOOKS.player, 'down', 0);
+  return (TRAINER_PIC[look] = cv.toDataURL());
+}
 async function trainerBattle(tr, team, music) {
   if (!S.team.some(m => m.hp > 0)) return false;
   BT.trainer = { ...tr, left: team.length, total: team.length }; BT.boss = null; BT.me = lead();
   const mk = o => ({ w: o.w, lvl: o.lvl, max: maxHp(o.lvl), hp: maxHp(o.lvl) });
   BT.foe = mk(team[0]);
+  // the trainer steps up first, says something, then calls out their Lenguamon
+  BT.trainer.intro = true;
   await battleIntro(music);
   await say(`${esc(tr.name)} wants to battle!`);
+  if (tr.line) await say(T(esc(tr.short), tr.line));
   for (let i = 0; i < team.length; i++) {
     const w = team[i].w; S.seen[w.key] = true;
-    if (i) { BT.foe = mk(team[i]); bDraw(); }
+    if (i) {
+      BT.trainer.intro = true; BT.foe = mk(team[i]); bDraw();
+      await say(T(esc(tr.short), i === team.length - 1 ? pick(TR_LAST_LINES) : pick(TR_NEXT_LINES)));
+    }
+    if (BT.trainer.intro) { const sp = $('#b-foe-spr'); sp.classList.add('tr-out'); await sleep(380); BT.trainer.intro = false; bDraw(); sp.classList.remove('tr-out'); await anim('#b-foe-spr', 'tr-in', 380); }
     await say(`${esc(tr.short)} sent out ${B(w.name)}!`);
     if (!i) await say(`Go! ${B(monW(BT.me).name)}!`);
     let first = true, menuIdx = 0;

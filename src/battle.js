@@ -76,6 +76,10 @@ function bDraw() {
     ? `<div class="nm">${esc(BT.boss.name)}</div><div class="lv">TALK ${BT.boss.left}/${BT.boss.total}</div><div class="hp">${hpBar({ hp: BT.boss.left }, BT.boss.total)}</div>`
     : `<div class="nm">${esc(fw.name)}</div><div class="lv">:L${f.lvl} <small>${TYPES[fw.type].label}</small> <span class="fs" dir="rtl">${esc(speciesOf(fw).fa)}</span></div><div class="hp">HP ${hpBar(f, f.max)}</div>${BT.trainer ? `<div class="tdots">${'●'.repeat(BT.trainer.left)}${'○'.repeat(BT.trainer.total - BT.trainer.left)}</div>` : ''}`;
   $('#b-foe-spr').innerHTML = BT.boss ? `<img class="mon trainer" src="${portraitUrl(BT.boss.look)}">` : monImg(fw, 'foe') + monTag(fw);
+  if (BT.trainer && BT.trainer.intro) {
+    $('#b-foe').innerHTML = `<div class="nm">${esc(BT.trainer.name)}</div><div class="lv">${'●'.repeat(BT.trainer.left)}${'○'.repeat(Math.max(0, BT.trainer.total - BT.trainer.left))}</div>`;
+    $('#b-foe-spr').innerHTML = `<img class="mon trainer tr-pic" src="${trainerPicUrl(BT.trainer.look)}">`;
+  }
   if (m) {
     $('#b-me').innerHTML = `<div class="nm">${esc(mw.name)}</div><div class="lv">:L${m.lvl}</div><div class="hp">HP ${hpBar(m, maxHp(m.lvl))}</div><div class="num">${m.hp}/ ${maxHp(m.lvl)}</div>`;
     $('#b-me-spr').innerHTML = monImg(mw, 'me') + monTag(mw);
