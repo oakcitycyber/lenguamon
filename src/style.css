@@ -290,3 +290,12 @@ button { font: inherit; cursor: pointer; }
 .shopi { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: calc(var(--u) * 3); width: 100%; line-height: 1.1; }
 .shopi small { color: #50586a; font-size: .78em; text-align: right; }
 .shop .mi { width: 100%; }
+
+/* typing on a phone: no buttons, the question fills the screen above the keyboard */
+body.typing #pad, body.typing #keys, body.typing .bz-top { display: none; }
+body.typing #shell { padding: 0; gap: 0; height: auto; }
+body.typing #bezel { padding: 0; border-radius: 0; box-shadow: none; background: none; }
+body.typing #screen { border-width: 3px; }
+body.typing .qz { top: calc(var(--u) * 2); overflow-y: auto; font-size: calc(var(--u) * 6.4); gap: calc(var(--u) * 2.4); }
+body.typing .qz-o { grid-template-columns: 1fr; }
+body.typing .qz-i input { font-size: 16px; }
