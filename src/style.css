@@ -306,3 +306,6 @@ body.typing .qz-i input { font-size: 16px; }
 .b-spr.tr-in { animation: trIn .38s ease-out; }
 @keyframes trOut { to { transform: translateX(60%); opacity: 0; } }
 @keyframes trIn { from { transform: scale(.2); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Firefox redraws a filtered, constantly changing canvas slowly: skip the color filter there */
+@supports (-moz-appearance: none) { #screen { filter: none; } }

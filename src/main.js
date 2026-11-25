@@ -39,5 +39,5 @@ document.addEventListener('focusout', () => {
   applyOpts(); layout(); buildMaps(); placeTrainers(); bindTouch();
   requestAnimationFrame(loop);
   try { const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (raw && raw.lang) useLanguage(raw.lang); } catch (e) { }
-  titleScreen();
+  titleScreen(); warmMaps();
 })();

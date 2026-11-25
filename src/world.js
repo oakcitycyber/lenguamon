@@ -281,7 +281,8 @@ function buildMaps() {
       else if (src.doors && src.doors[ch]) { m.doors[ch] = { x, y, ...src.doors[ch] }; }
     }
     decorateMap(m);
-    m.canvas = renderMap(m);
+    // the map picture is painted the first time it is needed, so the game starts fast (Firefox paints canvases slowly)
+    Object.defineProperty(m, 'canvas', { get() { return this._cv || (this._cv = renderMap(this)); }, configurable: true });
     MAPS[id] = m;
   }
 }
@@ -312,6 +313,12 @@ function solidAt(m, x, y) {
   const t = TILE[m.grid[y][x]]; if (!t || t.solid) return true;
   if (npcAt(m.id, x, y)) return true;
   return false;
+}
+// paint the outdoor maps of the current game in the background, one at a time, while the player reads the title screen
+function warmMaps() {
+  const ids = LANG === 'en' ? ['us', 'usnorth', 'useast'] : ['world', 'north', 'east'];
+  const next = () => { const id = ids.find(k => MAPS[k] && !MAPS[k]._cv); if (!id) return; void MAPS[id].canvas; (window.requestIdleCallback || setTimeout)(next, { timeout: 400 }); };
+  setTimeout(next, 300);
 }
 function placePlayer(map, x, y, dir) { if (map.startsWith('teahouse') || map.startsWith('diner')) S.lastTea = map; S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
 function musicForPlace() { markVisited(); const r = regionOf(S.map, S.y); SND.music(baseMap(S.map) === 'world' && S.y <= 12 ? 'end' : r === 0 ? 'town' : 'route'); }

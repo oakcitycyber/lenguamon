@@ -315,6 +315,9 @@ body.typing .qz-i input { font-size: 16px; }
 @keyframes trOut { to { transform: translateX(60%); opacity: 0; } }
 @keyframes trIn { from { transform: scale(.2); opacity: 0; } to { transform: none; opacity: 1; } }
 
+/* Firefox redraws a filtered, constantly changing canvas slowly: skip the color filter there */
+@supports (-moz-appearance: none) { #screen { filter: none; } }
+
 </style>
 </head>
 <body>
@@ -2518,13 +2521,20 @@ Object.assign(SPRITES, {
     c.strokeStyle = 'rgba(230,248,255,.9)'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(W / 2, H - 30); c.lineTo(W / 2, H - 46); c.stroke();
     for (const s of [-1, 1]) { c.beginPath(); c.moveTo(W / 2, H - 44); c.quadraticCurveTo(W / 2 + s * 8, H - 44, W / 2 + s * 10, H - 20); c.lineWidth = .8; c.stroke(); }
   },
-  rushmore(c, W, H) {
-    c.beginPath(); c.moveTo(0, H); c.lineTo(2, 12); c.quadraticCurveTo(14, 0, 32, 2); c.quadraticCurveTo(52, 0, 62, 10); c.lineTo(64, H); c.closePath(); c.fillStyle = '#bcb4a8'; c.fill(); c.strokeStyle = '#5a5248'; c.lineWidth = .7; c.stroke();
-    for (const [x, y, s] of [[12, 16, 1], [26, 14, 1.05], [40, 17, .95], [53, 19, .9]]) {
-      el(c, x, y, 5 * s, 7 * s, '#d4ccc0', '#7a7266', .5); c.strokeStyle = '#7a7266'; c.lineWidth = .5;
-      c.beginPath(); c.moveTo(x - 2.4 * s, y - 1); c.lineTo(x - .8 * s, y - 1); c.moveTo(x + .8 * s, y - 1); c.lineTo(x + 2.4 * s, y - 1); c.moveTo(x, y); c.lineTo(x - .5, y + 2.4); c.moveTo(x - 1.6, y + 4); c.lineTo(x + 1.6, y + 4); c.stroke();
+  devilstower(c, W, H) { // Devils Tower, Wyoming: a flat-topped tower of stone columns above pine forest
+    el(c, W / 2, H - 1, 30, 2.4, 'rgba(0,0,0,.2)');
+    // talus slope of broken columns
+    c.beginPath(); c.moveTo(4, H); c.quadraticCurveTo(18, H - 14, 24, H - 16); c.lineTo(42, H - 16); c.quadraticCurveTo(48, H - 14, 60, H); c.closePath(); c.fillStyle = '#b8a890'; c.fill(); c.strokeStyle = '#7a6a54'; c.lineWidth = .5; c.stroke();
+    // the tower: wider at the base, flat on top, grooved by tall columns
+    c.beginPath(); c.moveTo(21, H - 15); c.bezierCurveTo(24, H - 26, 24, 10, 25.5, 3); c.lineTo(38.5, 3); c.bezierCurveTo(40, 10, 40, H - 26, 43, H - 15); c.closePath();
+    const g = c.createLinearGradient(21, 0, 43, 0); g.addColorStop(0, '#c8a47a'); g.addColorStop(.45, '#a88460'); g.addColorStop(1, '#7a5c40'); c.fillStyle = g; c.fill(); c.strokeStyle = '#5a4430'; c.lineWidth = .6; c.stroke();
+    c.strokeStyle = 'rgba(70,50,32,.55)'; c.lineWidth = .45;
+    for (let i = 1; i < 8; i++) { const t = i / 8, xt = 25.5 + t * 13, xb = 21 + t * 22; c.beginPath(); c.moveTo(xt, 4); c.bezierCurveTo(xt, 14, xb, H - 26, xb, H - 15); c.stroke(); }
+    R(c, 25.5, 2.4, 13, 1.4, '#8a9a5a');
+    // pine forest around the base
+    for (const [x, y, s] of [[6, H - 3, 1], [12, H - 2, 1.2], [52, H - 2, 1.15], [58, H - 3, .95], [17, H - 4, .8], [47, H - 4, .85]]) {
+      c.beginPath(); c.moveTo(x, y - 12 * s); c.lineTo(x + 4 * s, y); c.lineTo(x - 4 * s, y); c.closePath(); c.fillStyle = '#2f5a34'; c.fill(); c.strokeStyle = '#1e3a22'; c.lineWidth = .4; c.stroke();
     }
-    c.fillStyle = 'rgba(120,110,96,.4)'; for (let i = 0; i < 18; i++) c.fillRect(i * 3.6, H - 10 + (i % 3), 2.6, 10);
   },
   oldfaithful(c, W, H) {
     el(c, W / 2, H - 6, 20, 6, '#d8ccb0', '#8a7a5a', .6); el(c, W / 2, H - 6, 12, 3.4, '#c8b48a'); el(c, W / 2, H - 6, 4, 1.6, '#5aa8c8');
@@ -4270,7 +4280,8 @@ function buildMaps() {
       else if (src.doors && src.doors[ch]) { m.doors[ch] = { x, y, ...src.doors[ch] }; }
     }
     decorateMap(m);
-    m.canvas = renderMap(m);
+    // the map picture is painted the first time it is needed, so the game starts fast (Firefox paints canvases slowly)
+    Object.defineProperty(m, 'canvas', { get() { return this._cv || (this._cv = renderMap(this)); }, configurable: true });
     MAPS[id] = m;
   }
 }
@@ -4301,6 +4312,12 @@ function solidAt(m, x, y) {
   const t = TILE[m.grid[y][x]]; if (!t || t.solid) return true;
   if (npcAt(m.id, x, y)) return true;
   return false;
+}
+// paint the outdoor maps of the current game in the background, one at a time, while the player reads the title screen
+function warmMaps() {
+  const ids = LANG === 'en' ? ['us', 'usnorth', 'useast'] : ['world', 'north', 'east'];
+  const next = () => { const id = ids.find(k => MAPS[k] && !MAPS[k]._cv); if (!id) return; void MAPS[id].canvas; (window.requestIdleCallback || setTimeout)(next, { timeout: 400 }); };
+  setTimeout(next, 300);
 }
 function placePlayer(map, x, y, dir) { if (map.startsWith('teahouse') || map.startsWith('diner')) S.lastTea = map; S.map = map; S.x = x; S.y = y; S.dir = dir || S.dir; curMap = MAPS[map]; PL.x = x; PL.y = y; PL.dir = S.dir; PL.moving = false; musicForPlace(); }
 function musicForPlace() { markVisited(); const r = regionOf(S.map, S.y); SND.music(baseMap(S.map) === 'world' && S.y <= 12 ? 'end' : r === 0 ? 'town' : 'route'); }
@@ -4563,23 +4580,23 @@ Object.assign(MAP_SRC, {
       'Ŧ¦¦¦¦¦¦¦¦Θ¦¦¦¦¦¦¦¦¦Ŧ',
       'Ϙ▫███▫▫▫▫ǁǁ▫▫▫▫███▫Ϙ',
       'Ϙ▫███▫▫Б▫ǁǁ▫▫▫▫███▫Ϙ',
-      'Ϙ▫▫▫▫S▫▫▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
-      'Ϙ::::▫▫▫▫ǁǁ▫▫████▫▫Ϙ',
-      'Ϙ::::▫▫▫▫ǁǁ▫S████▫▫Ϙ',
-      'Ϙ::::▫▫▫▫ǁǁ▫▫████▫▫Ϙ',
-      'Ϙ▫▫▫▫▫▫S▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
+      'Ϙ▫▫▫▫S▫▫▫ǁǁ▫▫:::::▫Ϙ',
+      'Ϙ::::::▫▫ǁǁ▫▫████::Ϙ',
+      'Ϙ::::::▫▫ǁǁ▫S████::Ϙ',
+      'Ϙ::::::▫▫ǁǁ▫▫████::Ϙ',
+      'Ϙ▫▫▫▫▫▫S▫ǁǁ▫▫:::::▫Ϙ',
       'Ϙ≋≋≋≋≋≋≋≋ƃƃ≋≋≋≋≋≋≋≋Ϙ',
       'Ϙ≋≋≋≋≋≋≋≋ƃƃ≋≋≋≋≋≋≋≋Ϙ',
       'Ϙ≋≋≋≋≋≋≋≋ƃƃ≋≋≋≋≋≋≋≋Ϙ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁS▫▫▫▫▫▫▫Ϙ',
-      'Ϙ::::▫▫R▫ǁǁ▫R▫▫::::Ϙ',
-      'Ϙ::::▫▫▫▫ǁǁ▫▫Д▫::::Ϙ',
+      'Ϙ::::::▫▫ǁǁS▫▫::::▫Ϙ',
+      'Ϙ::::::R▫ǁǁ▫R::::::Ϙ',
+      'Ϙ:::::::▫ǁǁ▫▫Д▫::::Ϙ',
       'Ϙ▫███▫▫▫▫ǁǁ▫▫▫▫███▫Ϙ',
       'Ϙ▫███▫▫▫▫ǁǁ▫▫▫▫███▫Ϙ',
       'Ϙ▫█████▫▫ǁǁ▫▫█████▫Ϙ',
       'Ϙ▫█████▫▫ǁǁ▫▫█████▫Ϙ',
       'ϘS██ⓔ██▫▫ǁǁ▫▫██ⓕ██SϘ',
-      'Ϙ:::▫▫▫▫▫ǁǁ▫▫Ж▫▫:::Ϙ',
+      'Ϙ:::▫▫:::ǁǁ▫▫Ж▫▫:::Ϙ',
       'Ϙ::::▫▫Ϙ▫ǁǁ▫▫▫Ϙ::::Ϙ',
       'ϘϘ▫▫▫▫▫▫▫ǁǁ▫▫▫▫▫▫▫ϘϘ',
       'Ϙ¦¦¦¦¦¦¦¦Δ¦¦¦¦¦¦¦¦¦Ϙ',
@@ -4755,7 +4772,7 @@ Object.assign(MAP_SRC, {
       { id: 'cart', x: 2, y: 17, w: 3, h: 2 }, { id: 'cart', x: 15, y: 17, w: 3, h: 2 }, { id: 'diner', x: 2, y: 20, w: 5, h: 3, door: 2 }, { id: 'arch', x: 8, y: 21, w: 4, h: 4 },
       { id: 'barn', x: 2, y: 36, w: 4, h: 3 },
       { id: 'chiskyline', x: 3, y: 48, w: 4, h: 3 }, { id: 'gym', x: 13, y: 48, w: 5, h: 3, door: 2 }, { id: 'bean', x: 1, y: 52, w: 5, h: 2 }, { id: 'diner', x: 2, y: 55, w: 5, h: 3, door: 2 }, { id: 'fountain', x: 14, y: 58, w: 3, h: 3 },
-      { id: 'rushmore', x: 2, y: 72, w: 4, h: 3 }, { id: 'oldfaithful', x: 13, y: 79, w: 3, h: 3 },
+      { id: 'devilstower', x: 2, y: 72, w: 4, h: 3 }, { id: 'oldfaithful', x: 13, y: 79, w: 3, h: 3 },
     ],
     signs: {
       '4,3': SG('STATUE OF LIBERTY', 'مجسمه آزادی', 'Liberty Island, New York Harbor.', 'A gift from France, opened in 1886. For millions of immigrants arriving by ship, she was the first thing they saw of America.', 'A poem on her base says: "Give me your tired, your poor, your huddled masses yearning to breathe free."'),
@@ -4777,7 +4794,7 @@ Object.assign(MAP_SRC, {
       '11,59': SG('BUCKINGHAM FOUNTAIN', 'فواره باکینگهام', 'Grant Park, Chicago.', 'Opened in 1927, one of the largest fountains in the world, by the shore of Lake Michigan.'),
       '7,63': SG('CHICAGO', 'شیکاگو', 'Illinois, on Lake Michigan.', 'The third-biggest city in America, nicknamed the Windy City. Famous for architecture, blues and jazz music, and deep-dish pizza.'),
       '8,68': SG('ROCKY MOUNTAINS', 'کوه‌های راکی', 'From Canada to New Mexico.', 'A 4,800 km chain of snowy peaks, pine forests and wild rivers, home to bears, elk and bighorn sheep.', 'Wild ROAD TRIP and OUTDOORS words hide in the mountain meadows.'),
-      '7,74': SG('MOUNT RUSHMORE', 'کوه راشمور', 'Black Hills, South Dakota.', 'Carved from 1927 to 1941, it shows the faces of four presidents: Washington, Jefferson, Theodore Roosevelt and Lincoln. Each face is 18 m (60 ft) tall.'),
+      '7,74': SG('DEVILS TOWER', 'برج شیطان (دویلز تاور)', 'North-east Wyoming.', 'A giant tower of rock 265 m (867 ft) tall, made of six-sided stone columns that formed when hot magma cooled underground.', 'In 1906 it became the first national monument in the United States. The Lakota and other tribes call it Bear Lodge and hold it sacred.'),
       '16,81': SG('OLD FAITHFUL', 'آب‌فشان اولد فیتفول', 'Yellowstone National Park, Wyoming.', 'This geyser shoots boiling water into the air about every 90 minutes.', 'Yellowstone, opened in 1872, was the first national park in the world.'),
     },
     doors: { 'ⓞ': { to: 'us', tx: 2, ty: 1, dir: 'down' }, '⊏': { to: 'useast', tx: 9, ty: 45, dir: 'up', need: 'b5', needMsg: 'The road south to Washington, DC is closed. Beat THE CYBORG at the Empire State Building first!' }, 'ⓚ': { to: 'diner4', tx: 4, ty: 6 }, 'ⓛ': { to: 'usgym4', tx: 4, ty: 6 }, 'ⓜ': { to: 'diner5', tx: 4, ty: 6 }, 'ⓝ': { to: 'usgym5', tx: 4, ty: 6 } },
@@ -6284,7 +6301,7 @@ function setupCyrus() {
 // ---- the map of the United States (English mode) ----
 const GEO_EN = {
   'SANTA FE': [-105.94, 35.69], 'SAN FRANCISCO': [-122.42, 37.77], SEATTLE: [-122.33, 47.61], YELLOWSTONE: [-110.59, 44.43],
-  'MOUNT RUSHMORE': [-103.46, 43.88], CHICAGO: [-87.63, 41.88], PENNSYLVANIA: [-76.31, 40.04], 'NEW YORK CITY': [-74.0, 40.71],
+  'DEVILS TOWER': [-104.71, 44.59], CHICAGO: [-87.63, 41.88], PENNSYLVANIA: [-76.31, 40.04], 'NEW YORK CITY': [-74.0, 40.71],
   PHILADELPHIA: [-75.17, 39.95], BALTIMORE: [-76.61, 39.29], 'WASHINGTON, DC': [-77.04, 38.9],
 };
 const USA = [[-124.7, 48.4], [-123.0, 49.0], [-95.2, 49.0], [-89.6, 48.0], [-84.8, 46.6], [-82.5, 45.3], [-82.5, 43.0], [-79.0, 42.8], [-76.5, 44.0], [-75.0, 45.0], [-71.5, 45.0], [-69.2, 47.4], [-67.8, 47.1], [-67.0, 44.8], [-70.0, 43.7], [-70.7, 42.6], [-70.0, 41.7], [-71.9, 41.3], [-73.9, 40.6], [-74.0, 39.6], [-75.5, 38.5], [-75.9, 37.0], [-75.5, 35.2], [-77.9, 33.9], [-79.9, 32.7], [-81.4, 30.7], [-80.0, 26.9], [-80.4, 25.2], [-81.8, 26.1], [-82.7, 27.9], [-84.0, 30.0], [-85.4, 29.7], [-88.0, 30.4], [-89.6, 30.2], [-89.4, 29.0], [-91.5, 29.5], [-93.8, 29.7], [-95.0, 29.2], [-97.2, 27.6], [-97.4, 25.9], [-99.5, 27.5], [-101.4, 29.8], [-103.0, 29.0], [-104.5, 29.6], [-106.5, 31.8], [-108.2, 31.3], [-111.1, 31.3], [-114.8, 32.5], [-117.1, 32.5], [-118.5, 34.0], [-120.6, 34.6], [-121.9, 36.6], [-122.5, 37.8], [-123.8, 39.8], [-124.2, 41.0], [-124.5, 42.8], [-124.0, 46.3]];
@@ -6304,7 +6321,7 @@ function whereNowEN(map, y) {
     if (y >= 13) return { name: 'PACIFIC COAST HIGHWAY', geo: lerpGeo(G['SAN FRANCISCO'], G.SEATTLE, t(25, 13)) };
     return { name: 'SEATTLE', geo: G.SEATTLE };
   }
-  if (y >= 66) return { name: y >= 79 ? 'YELLOWSTONE, ROCKY MOUNTAINS' : y >= 70 ? 'MOUNT RUSHMORE, ROCKY MOUNTAINS' : 'ROCKY MOUNTAINS', geo: y >= 79 ? G.YELLOWSTONE : y >= 70 ? G['MOUNT RUSHMORE'] : lerpGeo(G['MOUNT RUSHMORE'], G.CHICAGO, t(69, 66) * .3) };
+  if (y >= 66) return { name: y >= 79 ? 'YELLOWSTONE, ROCKY MOUNTAINS' : y >= 70 ? 'DEVILS TOWER, ROCKY MOUNTAINS' : 'ROCKY MOUNTAINS', geo: y >= 79 ? G.YELLOWSTONE : y >= 70 ? G['DEVILS TOWER'] : lerpGeo(G['DEVILS TOWER'], G.CHICAGO, t(69, 66) * .3) };
   if (y >= 46) return { name: 'CHICAGO', geo: G.CHICAGO };
   if (y >= 29) return { name: 'PENNSYLVANIA', geo: lerpGeo(G.CHICAGO, G['NEW YORK CITY'], .55 + t(45, 29) * .4) };
   return { name: 'NEW YORK CITY', geo: G['NEW YORK CITY'] };
@@ -6316,7 +6333,7 @@ function mapSvgEN() {
   const rockies = [[-114, 48], [-112.5, 46], [-110.8, 44.6], [-109, 43], [-107, 41], [-106, 39], [-105.6, 37]], sierra = [[-121.5, 47.2], [-121.8, 45], [-121.6, 42.5], [-120.4, 39.5], [-119, 37.2]], appal = [[-84, 35.4], [-82, 36.6], [-80, 37.8], [-78.4, 39.4], [-76.6, 41.2]];
   const lake = (lon, lat, rx, ry) => { const [x, y] = PXU([lon, lat]); return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#8cc0d4" stroke="#4a7a90" stroke-width=".4"/>`; };
   const dots = (lon, lat, rx, ry, n) => { const [cx, cy] = PXU([lon, lat]).map(Number), r = rng(n); let s = ''; for (let i = 0; i < n; i++) { const a = r() * 6.28, d = Math.sqrt(r()); s += `<circle cx="${(cx + Math.cos(a) * rx * d).toFixed(1)}" cy="${(cy + Math.sin(a) * ry * d).toFixed(1)}" r=".55" fill="#c8a468"/>`; } return s; };
-  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'MOUNT RUSHMORE', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY', 'PHILADELPHIA', 'BALTIMORE', 'WASHINGTON, DC'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
+  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'DEVILS TOWER', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY', 'PHILADELPHIA', 'BALTIMORE', 'WASHINGTON, DC'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
   const city = (k, label, dx, dy, big) => { const [x, y] = PXU(GEO_EN[k]); const seen = all || v[k]; return `<circle cx="${x}" cy="${y}" r="${big ? 2.6 : 1.9}" fill="${seen ? '#c82838' : '#8a8478'}" stroke="#2b1d16" stroke-width=".6"/><text x="${+x + dx}" y="${+y + dy}" font-size="${big ? 5 : 4.2}" font-weight="700" fill="${seen ? '#2b1d16' : '#8a8478'}" font-family="ui-monospace,monospace">${label}</text>`; };
   const lab = (t, lon, lat, col = '#2e5a70', sz = 4) => { const [x, y] = PXU([lon, lat]); return `<text x="${x}" y="${y}" font-size="${sz}" fill="${col}" font-family="ui-monospace,monospace" font-style="italic">${t}</text>`; };
   const [hx, hy] = PXU(here.geo);
@@ -6329,7 +6346,7 @@ function mapSvgEN() {
     ${lab('ROCKY MTNS', -113.5, 41.5, '#6a5640', 3.6)}${lab('GREAT PLAINS', -102, 39.5, '#a07c40', 3.6)}${lab('MOJAVE', -117.5, 34.4, '#a07c40', 3.4)}
     ${lab('PACIFIC', -131.5, 40)}${lab('OCEAN', -131, 37.6)}${lab('ATLANTIC', -73.5, 34)}${lab('OCEAN', -72.5, 32)}${lab('GULF OF MEXICO', -94.5, 26.2)}
     <polyline points="${route}" fill="none" stroke="#8a3a2a" stroke-width="1" stroke-dasharray="2 1.4"/>
-    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('WASHINGTON, DC', 'D.C.', 3, 6, true)}${city('PHILADELPHIA', '', 0, 0)}${city('BALTIMORE', '', 0, 0)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('MOUNT RUSHMORE', 'RUSHMORE', 3, 1.4)}
+    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('WASHINGTON, DC', 'D.C.', 3, 6, true)}${city('PHILADELPHIA', '', 0, 0)}${city('BALTIMORE', '', 0, 0)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('DEVILS TOWER', 'DEVILS TOWER', 3, 1.4)}
     ${city('YELLOWSTONE', 'YELLOWSTONE', -10, -3.4)}${city('SEATTLE', 'SEATTLE', 3, 1.4)}${city('SAN FRANCISCO', 'SAN FRANCISCO', 3, 1.4)}${city('SANTA FE', 'SANTA FE', 3, 1.4)}
     <circle cx="${hx}" cy="${hy}" r="4.2" fill="none" stroke="#e8203a" stroke-width="1.2"><animate attributeName="r" values="2.6;5.4;2.6" dur="1.2s" repeatCount="indefinite"/></circle>
     <circle cx="${hx}" cy="${hy}" r="1.6" fill="#e8203a"/>
@@ -6337,7 +6354,7 @@ function mapSvgEN() {
 }
 const DESTS_EN = [
   ['SANTA FE', 'us', 9, 71], ['SAN FRANCISCO', 'us', 9, 32], ['SEATTLE', 'us', 9, 8],
-  ['MOUNT RUSHMORE', 'usnorth', 9, 73], ['CHICAGO', 'usnorth', 9, 58], ['NEW YORK CITY', 'usnorth', 9, 20],
+  ['DEVILS TOWER', 'usnorth', 9, 73], ['CHICAGO', 'usnorth', 9, 58], ['NEW YORK CITY', 'usnorth', 9, 20],
   ['PHILADELPHIA', 'useast', 9, 28], ['WASHINGTON, DC', 'useast', 9, 10],
 ];
 
@@ -6877,7 +6894,7 @@ document.addEventListener('focusout', () => {
   applyOpts(); layout(); buildMaps(); placeTrainers(); bindTouch();
   requestAnimationFrame(loop);
   try { const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (raw && raw.lang) useLanguage(raw.lang); } catch (e) { }
-  titleScreen();
+  titleScreen(); warmMaps();
 })();
 
 </script>

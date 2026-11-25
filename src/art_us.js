@@ -195,13 +195,20 @@ Object.assign(SPRITES, {
     c.strokeStyle = 'rgba(230,248,255,.9)'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(W / 2, H - 30); c.lineTo(W / 2, H - 46); c.stroke();
     for (const s of [-1, 1]) { c.beginPath(); c.moveTo(W / 2, H - 44); c.quadraticCurveTo(W / 2 + s * 8, H - 44, W / 2 + s * 10, H - 20); c.lineWidth = .8; c.stroke(); }
   },
-  rushmore(c, W, H) {
-    c.beginPath(); c.moveTo(0, H); c.lineTo(2, 12); c.quadraticCurveTo(14, 0, 32, 2); c.quadraticCurveTo(52, 0, 62, 10); c.lineTo(64, H); c.closePath(); c.fillStyle = '#bcb4a8'; c.fill(); c.strokeStyle = '#5a5248'; c.lineWidth = .7; c.stroke();
-    for (const [x, y, s] of [[12, 16, 1], [26, 14, 1.05], [40, 17, .95], [53, 19, .9]]) {
-      el(c, x, y, 5 * s, 7 * s, '#d4ccc0', '#7a7266', .5); c.strokeStyle = '#7a7266'; c.lineWidth = .5;
-      c.beginPath(); c.moveTo(x - 2.4 * s, y - 1); c.lineTo(x - .8 * s, y - 1); c.moveTo(x + .8 * s, y - 1); c.lineTo(x + 2.4 * s, y - 1); c.moveTo(x, y); c.lineTo(x - .5, y + 2.4); c.moveTo(x - 1.6, y + 4); c.lineTo(x + 1.6, y + 4); c.stroke();
+  devilstower(c, W, H) { // Devils Tower, Wyoming: a flat-topped tower of stone columns above pine forest
+    el(c, W / 2, H - 1, 30, 2.4, 'rgba(0,0,0,.2)');
+    // talus slope of broken columns
+    c.beginPath(); c.moveTo(4, H); c.quadraticCurveTo(18, H - 14, 24, H - 16); c.lineTo(42, H - 16); c.quadraticCurveTo(48, H - 14, 60, H); c.closePath(); c.fillStyle = '#b8a890'; c.fill(); c.strokeStyle = '#7a6a54'; c.lineWidth = .5; c.stroke();
+    // the tower: wider at the base, flat on top, grooved by tall columns
+    c.beginPath(); c.moveTo(21, H - 15); c.bezierCurveTo(24, H - 26, 24, 10, 25.5, 3); c.lineTo(38.5, 3); c.bezierCurveTo(40, 10, 40, H - 26, 43, H - 15); c.closePath();
+    const g = c.createLinearGradient(21, 0, 43, 0); g.addColorStop(0, '#c8a47a'); g.addColorStop(.45, '#a88460'); g.addColorStop(1, '#7a5c40'); c.fillStyle = g; c.fill(); c.strokeStyle = '#5a4430'; c.lineWidth = .6; c.stroke();
+    c.strokeStyle = 'rgba(70,50,32,.55)'; c.lineWidth = .45;
+    for (let i = 1; i < 8; i++) { const t = i / 8, xt = 25.5 + t * 13, xb = 21 + t * 22; c.beginPath(); c.moveTo(xt, 4); c.bezierCurveTo(xt, 14, xb, H - 26, xb, H - 15); c.stroke(); }
+    R(c, 25.5, 2.4, 13, 1.4, '#8a9a5a');
+    // pine forest around the base
+    for (const [x, y, s] of [[6, H - 3, 1], [12, H - 2, 1.2], [52, H - 2, 1.15], [58, H - 3, .95], [17, H - 4, .8], [47, H - 4, .85]]) {
+      c.beginPath(); c.moveTo(x, y - 12 * s); c.lineTo(x + 4 * s, y); c.lineTo(x - 4 * s, y); c.closePath(); c.fillStyle = '#2f5a34'; c.fill(); c.strokeStyle = '#1e3a22'; c.lineWidth = .4; c.stroke();
     }
-    c.fillStyle = 'rgba(120,110,96,.4)'; for (let i = 0; i < 18; i++) c.fillRect(i * 3.6, H - 10 + (i % 3), 2.6, 10);
   },
   oldfaithful(c, W, H) {
     el(c, W / 2, H - 6, 20, 6, '#d8ccb0', '#8a7a5a', .6); el(c, W / 2, H - 6, 12, 3.4, '#c8b48a'); el(c, W / 2, H - 6, 4, 1.6, '#5aa8c8');

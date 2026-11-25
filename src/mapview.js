@@ -116,7 +116,7 @@ function setupCyrus() {
 // ---- the map of the United States (English mode) ----
 const GEO_EN = {
   'SANTA FE': [-105.94, 35.69], 'SAN FRANCISCO': [-122.42, 37.77], SEATTLE: [-122.33, 47.61], YELLOWSTONE: [-110.59, 44.43],
-  'MOUNT RUSHMORE': [-103.46, 43.88], CHICAGO: [-87.63, 41.88], PENNSYLVANIA: [-76.31, 40.04], 'NEW YORK CITY': [-74.0, 40.71],
+  'DEVILS TOWER': [-104.71, 44.59], CHICAGO: [-87.63, 41.88], PENNSYLVANIA: [-76.31, 40.04], 'NEW YORK CITY': [-74.0, 40.71],
   PHILADELPHIA: [-75.17, 39.95], BALTIMORE: [-76.61, 39.29], 'WASHINGTON, DC': [-77.04, 38.9],
 };
 const USA = [[-124.7, 48.4], [-123.0, 49.0], [-95.2, 49.0], [-89.6, 48.0], [-84.8, 46.6], [-82.5, 45.3], [-82.5, 43.0], [-79.0, 42.8], [-76.5, 44.0], [-75.0, 45.0], [-71.5, 45.0], [-69.2, 47.4], [-67.8, 47.1], [-67.0, 44.8], [-70.0, 43.7], [-70.7, 42.6], [-70.0, 41.7], [-71.9, 41.3], [-73.9, 40.6], [-74.0, 39.6], [-75.5, 38.5], [-75.9, 37.0], [-75.5, 35.2], [-77.9, 33.9], [-79.9, 32.7], [-81.4, 30.7], [-80.0, 26.9], [-80.4, 25.2], [-81.8, 26.1], [-82.7, 27.9], [-84.0, 30.0], [-85.4, 29.7], [-88.0, 30.4], [-89.6, 30.2], [-89.4, 29.0], [-91.5, 29.5], [-93.8, 29.7], [-95.0, 29.2], [-97.2, 27.6], [-97.4, 25.9], [-99.5, 27.5], [-101.4, 29.8], [-103.0, 29.0], [-104.5, 29.6], [-106.5, 31.8], [-108.2, 31.3], [-111.1, 31.3], [-114.8, 32.5], [-117.1, 32.5], [-118.5, 34.0], [-120.6, 34.6], [-121.9, 36.6], [-122.5, 37.8], [-123.8, 39.8], [-124.2, 41.0], [-124.5, 42.8], [-124.0, 46.3]];
@@ -136,7 +136,7 @@ function whereNowEN(map, y) {
     if (y >= 13) return { name: 'PACIFIC COAST HIGHWAY', geo: lerpGeo(G['SAN FRANCISCO'], G.SEATTLE, t(25, 13)) };
     return { name: 'SEATTLE', geo: G.SEATTLE };
   }
-  if (y >= 66) return { name: y >= 79 ? 'YELLOWSTONE, ROCKY MOUNTAINS' : y >= 70 ? 'MOUNT RUSHMORE, ROCKY MOUNTAINS' : 'ROCKY MOUNTAINS', geo: y >= 79 ? G.YELLOWSTONE : y >= 70 ? G['MOUNT RUSHMORE'] : lerpGeo(G['MOUNT RUSHMORE'], G.CHICAGO, t(69, 66) * .3) };
+  if (y >= 66) return { name: y >= 79 ? 'YELLOWSTONE, ROCKY MOUNTAINS' : y >= 70 ? 'DEVILS TOWER, ROCKY MOUNTAINS' : 'ROCKY MOUNTAINS', geo: y >= 79 ? G.YELLOWSTONE : y >= 70 ? G['DEVILS TOWER'] : lerpGeo(G['DEVILS TOWER'], G.CHICAGO, t(69, 66) * .3) };
   if (y >= 46) return { name: 'CHICAGO', geo: G.CHICAGO };
   if (y >= 29) return { name: 'PENNSYLVANIA', geo: lerpGeo(G.CHICAGO, G['NEW YORK CITY'], .55 + t(45, 29) * .4) };
   return { name: 'NEW YORK CITY', geo: G['NEW YORK CITY'] };
@@ -148,7 +148,7 @@ function mapSvgEN() {
   const rockies = [[-114, 48], [-112.5, 46], [-110.8, 44.6], [-109, 43], [-107, 41], [-106, 39], [-105.6, 37]], sierra = [[-121.5, 47.2], [-121.8, 45], [-121.6, 42.5], [-120.4, 39.5], [-119, 37.2]], appal = [[-84, 35.4], [-82, 36.6], [-80, 37.8], [-78.4, 39.4], [-76.6, 41.2]];
   const lake = (lon, lat, rx, ry) => { const [x, y] = PXU([lon, lat]); return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#8cc0d4" stroke="#4a7a90" stroke-width=".4"/>`; };
   const dots = (lon, lat, rx, ry, n) => { const [cx, cy] = PXU([lon, lat]).map(Number), r = rng(n); let s = ''; for (let i = 0; i < n; i++) { const a = r() * 6.28, d = Math.sqrt(r()); s += `<circle cx="${(cx + Math.cos(a) * rx * d).toFixed(1)}" cy="${(cy + Math.sin(a) * ry * d).toFixed(1)}" r=".55" fill="#c8a468"/>`; } return s; };
-  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'MOUNT RUSHMORE', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY', 'PHILADELPHIA', 'BALTIMORE', 'WASHINGTON, DC'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
+  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'DEVILS TOWER', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY', 'PHILADELPHIA', 'BALTIMORE', 'WASHINGTON, DC'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
   const city = (k, label, dx, dy, big) => { const [x, y] = PXU(GEO_EN[k]); const seen = all || v[k]; return `<circle cx="${x}" cy="${y}" r="${big ? 2.6 : 1.9}" fill="${seen ? '#c82838' : '#8a8478'}" stroke="#2b1d16" stroke-width=".6"/><text x="${+x + dx}" y="${+y + dy}" font-size="${big ? 5 : 4.2}" font-weight="700" fill="${seen ? '#2b1d16' : '#8a8478'}" font-family="ui-monospace,monospace">${label}</text>`; };
   const lab = (t, lon, lat, col = '#2e5a70', sz = 4) => { const [x, y] = PXU([lon, lat]); return `<text x="${x}" y="${y}" font-size="${sz}" fill="${col}" font-family="ui-monospace,monospace" font-style="italic">${t}</text>`; };
   const [hx, hy] = PXU(here.geo);
@@ -161,7 +161,7 @@ function mapSvgEN() {
     ${lab('ROCKY MTNS', -113.5, 41.5, '#6a5640', 3.6)}${lab('GREAT PLAINS', -102, 39.5, '#a07c40', 3.6)}${lab('MOJAVE', -117.5, 34.4, '#a07c40', 3.4)}
     ${lab('PACIFIC', -131.5, 40)}${lab('OCEAN', -131, 37.6)}${lab('ATLANTIC', -73.5, 34)}${lab('OCEAN', -72.5, 32)}${lab('GULF OF MEXICO', -94.5, 26.2)}
     <polyline points="${route}" fill="none" stroke="#8a3a2a" stroke-width="1" stroke-dasharray="2 1.4"/>
-    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('WASHINGTON, DC', 'D.C.', 3, 6, true)}${city('PHILADELPHIA', '', 0, 0)}${city('BALTIMORE', '', 0, 0)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('MOUNT RUSHMORE', 'RUSHMORE', 3, 1.4)}
+    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('WASHINGTON, DC', 'D.C.', 3, 6, true)}${city('PHILADELPHIA', '', 0, 0)}${city('BALTIMORE', '', 0, 0)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('DEVILS TOWER', 'DEVILS TOWER', 3, 1.4)}
     ${city('YELLOWSTONE', 'YELLOWSTONE', -10, -3.4)}${city('SEATTLE', 'SEATTLE', 3, 1.4)}${city('SAN FRANCISCO', 'SAN FRANCISCO', 3, 1.4)}${city('SANTA FE', 'SANTA FE', 3, 1.4)}
     <circle cx="${hx}" cy="${hy}" r="4.2" fill="none" stroke="#e8203a" stroke-width="1.2"><animate attributeName="r" values="2.6;5.4;2.6" dur="1.2s" repeatCount="indefinite"/></circle>
     <circle cx="${hx}" cy="${hy}" r="1.6" fill="#e8203a"/>
@@ -169,6 +169,6 @@ function mapSvgEN() {
 }
 const DESTS_EN = [
   ['SANTA FE', 'us', 9, 71], ['SAN FRANCISCO', 'us', 9, 32], ['SEATTLE', 'us', 9, 8],
-  ['MOUNT RUSHMORE', 'usnorth', 9, 73], ['CHICAGO', 'usnorth', 9, 58], ['NEW YORK CITY', 'usnorth', 9, 20],
+  ['DEVILS TOWER', 'usnorth', 9, 73], ['CHICAGO', 'usnorth', 9, 58], ['NEW YORK CITY', 'usnorth', 9, 20],
   ['PHILADELPHIA', 'useast', 9, 28], ['WASHINGTON, DC', 'useast', 9, 10],
 ];
