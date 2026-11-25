@@ -1,7 +1,7 @@
 // ===== the map of Iran in the START menu, and the Cyrus the Great sightseeing mode =====
 const GEO = {
   YAZD: [54.37, 31.9], ISFAHAN: [51.67, 32.65], SHIRAZ: [52.53, 29.6], PERSEPOLIS: [52.89, 29.93], PASARGADAE: [53.17, 30.2],
-  KASHAN: [51.44, 33.98], TEHRAN: [51.39, 35.69], DAMAVAND: [52.11, 35.95],
+  KASHAN: [51.44, 33.98], TEHRAN: [51.39, 35.69], DAMAVAND: [52.11, 35.95], NEYSHABUR: [58.8, 36.21], MASHHAD: [59.6, 36.3],
 };
 const IRAN = [[44.8, 39.7], [46.5, 38.9], [47.9, 39.6], [48.4, 39.4], [48.0, 38.8], [48.9, 38.4], [49.0, 37.6], [50.2, 37.4], [51.5, 36.8], [53.9, 36.9], [54.0, 37.4], [55.5, 38.0], [57.3, 38.0], [59.2, 37.5], [60.4, 36.6], [61.2, 36.6], [61.1, 35.6], [60.7, 34.3], [60.9, 33.5], [60.6, 32.9], [60.8, 31.5], [61.7, 31.4], [61.8, 30.8], [60.9, 29.8], [61.6, 28.8], [62.7, 28.3], [62.8, 27.3], [63.3, 26.7], [61.6, 25.2], [59.6, 25.4], [58.0, 25.6], [57.3, 25.9], [57.0, 27.0], [56.3, 27.2], [55.5, 26.7], [54.7, 26.5], [53.5, 26.8], [52.5, 27.4], [51.4, 27.9], [50.8, 28.8], [50.1, 29.9], [49.5, 30.0], [48.9, 30.4], [48.0, 30.5], [47.7, 31.0], [47.7, 31.9], [47.0, 32.4], [46.1, 33.0], [45.4, 33.9], [45.6, 34.6], [45.9, 35.1], [46.2, 35.8], [45.4, 36.0], [44.8, 37.2], [44.2, 37.9], [44.4, 38.4], [44.0, 39.4]];
 const CASPIAN = [[48.9, 38.4], [48.8, 39.2], [49.4, 40.0], [50.3, 40.4], [50.0, 41.0], [49.5, 41.6], [52.8, 41.6], [52.9, 40.6], [53.0, 40.0], [53.6, 39.4], [53.9, 38.6], [54.0, 37.4], [53.9, 36.9], [51.5, 36.8], [50.2, 37.4], [49.0, 37.6]];
@@ -12,7 +12,12 @@ function whereNow() {
   let map = S.map, y = S.y;
   const src = MAP_SRC[map];
   if (src && src.exit) { const d = MAPS[src.exit.to].doors[src.exit.door]; map = src.exit.to; y = d.y; }
-  if (map === 'us' || map === 'usnorth') return whereNowEN(map, y);
+  if (map === 'us' || map === 'usnorth' || map === 'useast') return whereNowEN(map, y);
+  if (map === 'east') {
+    if (y <= 16) return { name: 'MASHHAD', geo: GEO.MASHHAD };
+    if (y >= 24 && y <= 32) return { name: 'NEYSHABUR, KHORASAN', geo: GEO.NEYSHABUR };
+    return { name: 'KHORASAN', geo: y > 32 ? lerpGeo(GEO.TEHRAN, GEO.NEYSHABUR, clamp((46 - y) / 14, 0, 1)) : lerpGeo(GEO.NEYSHABUR, GEO.MASHHAD, clamp((24 - y) / 8, 0, 1)) };
+  }
   const t = (hi, lo) => clamp((hi - y) / (hi - lo), 0, 1);
   if (map === 'world') {
     if (y >= 63) return { name: 'YAZD', geo: GEO.YAZD };
@@ -28,7 +33,7 @@ function whereNow() {
 }
 function markVisited() {
   if (!S || !S.map) return; const v = S.visited || (S.visited = {});
-  const n = whereNow().name.split(',')[0]; if ((LANG === 'en' ? GEO_EN : GEO)[n] && !v[n]) v[n] = 1;
+  const G0 = LANG === 'en' ? GEO_EN : GEO, full = whereNow().name, n = G0[full] ? full : full.split(',')[0]; if (G0[n] && !v[n]) v[n] = 1;
 }
 function mapSvg() {
   if (LANG === 'en') return mapSvgEN();
@@ -39,7 +44,7 @@ function mapSvg() {
   const alborz = [[49.5, 36.6], [50.5, 36.3], [51.5, 36.1], [52.6, 36.0], [53.8, 36.4], [55.0, 36.9], [56.2, 37.2]];
   const dots = (cx, cy, rx, ry, n) => { const r = rng(n); let s = ''; for (let i = 0; i < n; i++) { const a = r() * 6.28, d = Math.sqrt(r()); s += `<circle cx="${(cx + Math.cos(a) * rx * d).toFixed(1)}" cy="${(cy + Math.sin(a) * ry * d).toFixed(1)}" r=".55" fill="#c8a468"/>`; } return s; };
   const [kx, ky] = PX([54.2, 34.4]).map(Number), [lx, ly] = PX([58.4, 30.6]).map(Number);
-  const route = ['YAZD', 'ISFAHAN', 'SHIRAZ', 'PERSEPOLIS', 'PASARGADAE', 'KASHAN', 'TEHRAN'].map(k => PX(GEO[k]).join(',')).join(' ');
+  const route = ['YAZD', 'ISFAHAN', 'SHIRAZ', 'PERSEPOLIS', 'PASARGADAE', 'KASHAN', 'TEHRAN', 'NEYSHABUR', 'MASHHAD'].map(k => PX(GEO[k]).join(',')).join(' ');
   const city = (k, label, dx = 3, dy = 1.4, big) => { const [x, y] = PX(GEO[k]); const seen = all || v[k]; return `<circle cx="${x}" cy="${y}" r="${big ? 2.6 : 1.9}" fill="${seen ? '#c82838' : '#8a8478'}" stroke="#2b1d16" stroke-width=".6"/><text x="${+x + dx}" y="${+y + dy}" font-size="${big ? 5.4 : 4.4}" font-weight="700" fill="${seen ? '#2b1d16' : '#8a8478'}" font-family="ui-monospace,monospace">${label}</text>`; };
   const [hx, hy] = PX(here.geo);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" class="mapsvg">
@@ -59,7 +64,7 @@ function mapSvg() {
     <polyline points="${route}" fill="none" stroke="#8a3a2a" stroke-width="1" stroke-dasharray="2 1.4"/>
     ${(() => { const [x, y] = PX(GEO.DAMAVAND); return `<path d="M${x - 3.2},${+y + 2} L${x},${y - 3} L${+x + 3.2},${+y + 2} Z" fill="#f4f2ec" stroke="#6a5640" stroke-width=".5"/>`; })()}
     ${city('TEHRAN', 'TEHRAN', -22, 1.8, true)}${city('KASHAN', 'KASHAN', -17.5, 1.4)}${city('ISFAHAN', 'ISFAHAN', -20.5, 1.4)}${city('YAZD', 'YAZD', 3, 1.4)}
-    ${city('SHIRAZ', 'SHIRAZ', -16, 3.4)}${city('PERSEPOLIS', 'PERSEPOLIS', 3, 2.6)}${city('PASARGADAE', 'PASARGADAE', 3, -1.4)}
+    ${city('MASHHAD', 'MASHHAD', -12, -3.2, true)}${city('NEYSHABUR', 'NEYSHABUR', -14, 6)}${city('SHIRAZ', 'SHIRAZ', -16, 3.4)}${city('PERSEPOLIS', 'PERSEPOLIS', 3, 2.6)}${city('PASARGADAE', 'PASARGADAE', 3, -1.4)}
     <circle cx="${hx}" cy="${hy}" r="4.2" fill="none" stroke="#e8203a" stroke-width="1.2"><animate attributeName="r" values="2.6;5.4;2.6" dur="1.2s" repeatCount="indefinite"/></circle>
     <circle cx="${hx}" cy="${hy}" r="1.6" fill="#e8203a"/>
   </svg>`;
@@ -67,6 +72,7 @@ function mapSvg() {
 const DESTS = [
   ['YAZD', 'world', 9, 71], ['ISFAHAN', 'world', 9, 32], ['SHIRAZ', 'world', 9, 8],
   ['PERSEPOLIS', 'north', 9, 73], ['KASHAN', 'north', 9, 58], ['TEHRAN', 'north', 9, 20],
+  ['NEYSHABUR', 'east', 9, 28], ['MASHHAD', 'east', 9, 10],
 ];
 async function mapScreen() {
   const el = document.createElement('div'); el.className = 'layer mapv show'; $('#screen').appendChild(el);
@@ -91,12 +97,12 @@ const isCyrusName = n => norm(n).replace(/\s/g, '') === 'cyrusthegreat';
 const isGeorgeName = n => LANG === 'en' && norm(n).replace(/\s/g, '') === 'georgewashington';
 function evolvedMon(w, lvl) {
   const m = { key: w.key, lvl, xp: 0, hp: maxHp(lvl) };
-  for (let i = 0; i < 2 && EVO[m.key]; i++) { m.base = m.base || m.key; m.key = EVO[m.key]; m.stage = (m.stage || 0) + 1; }
+  for (let i = 0; i < 3 && EVO[m.key]; i++) { m.base = m.base || m.key; m.key = EVO[m.key]; m.stage = (m.stage || 0) + 1; }
   return m;
 }
 function setupCyrus() {
   S.cyrus = true; S.daftar = 99; S.money = 999;
-  Object.assign(S.flags, { starter: true, b1: true, b2: true, b3: true, b4: true, b5: true, ending: true, noEnc: true });
+  Object.assign(S.flags, { starter: true, b1: true, b2: true, b3: true, b4: true, b5: true, b6: true, ending: true, noEnc: true });
   for (const w of WORDS) { S.caught[w.key] = true; S.seen[w.key] = true; }
   const team = [evolvedMon(WORDS.find(w => w.tr0 === (LANG === 'en' ? "how's it going?" : 'salam')), 60)];
   const used = new Set([SPECIES_BY_ID.mouse.id]);
@@ -111,11 +117,18 @@ function setupCyrus() {
 const GEO_EN = {
   'SANTA FE': [-105.94, 35.69], 'SAN FRANCISCO': [-122.42, 37.77], SEATTLE: [-122.33, 47.61], YELLOWSTONE: [-110.59, 44.43],
   'MOUNT RUSHMORE': [-103.46, 43.88], CHICAGO: [-87.63, 41.88], PENNSYLVANIA: [-76.31, 40.04], 'NEW YORK CITY': [-74.0, 40.71],
+  PHILADELPHIA: [-75.17, 39.95], BALTIMORE: [-76.61, 39.29], 'WASHINGTON, DC': [-77.04, 38.9],
 };
 const USA = [[-124.7, 48.4], [-123.0, 49.0], [-95.2, 49.0], [-89.6, 48.0], [-84.8, 46.6], [-82.5, 45.3], [-82.5, 43.0], [-79.0, 42.8], [-76.5, 44.0], [-75.0, 45.0], [-71.5, 45.0], [-69.2, 47.4], [-67.8, 47.1], [-67.0, 44.8], [-70.0, 43.7], [-70.7, 42.6], [-70.0, 41.7], [-71.9, 41.3], [-73.9, 40.6], [-74.0, 39.6], [-75.5, 38.5], [-75.9, 37.0], [-75.5, 35.2], [-77.9, 33.9], [-79.9, 32.7], [-81.4, 30.7], [-80.0, 26.9], [-80.4, 25.2], [-81.8, 26.1], [-82.7, 27.9], [-84.0, 30.0], [-85.4, 29.7], [-88.0, 30.4], [-89.6, 30.2], [-89.4, 29.0], [-91.5, 29.5], [-93.8, 29.7], [-95.0, 29.2], [-97.2, 27.6], [-97.4, 25.9], [-99.5, 27.5], [-101.4, 29.8], [-103.0, 29.0], [-104.5, 29.6], [-106.5, 31.8], [-108.2, 31.3], [-111.1, 31.3], [-114.8, 32.5], [-117.1, 32.5], [-118.5, 34.0], [-120.6, 34.6], [-121.9, 36.6], [-122.5, 37.8], [-123.8, 39.8], [-124.2, 41.0], [-124.5, 42.8], [-124.0, 46.3]];
 const PXU = ([lon, lat]) => [((lon + 126.5) * 3.25).toFixed(1), ((51 - lat) * 4.1 + 12).toFixed(1)];
 function whereNowEN(map, y) {
   const t = (hi, lo) => clamp((hi - y) / (hi - lo), 0, 1), G = GEO_EN;
+  if (map === 'useast') {
+    if (y <= 16) return { name: 'WASHINGTON, DC', geo: G['WASHINGTON, DC'] };
+    if (y >= 23 && y <= 29) return { name: 'PHILADELPHIA', geo: G.PHILADELPHIA };
+    if (y >= 30 && y <= 36) return { name: 'BALTIMORE', geo: G.BALTIMORE };
+    return { name: 'ROAD TO D.C.', geo: y > 36 ? lerpGeo(G['NEW YORK CITY'], G.PHILADELPHIA, t(46, 37)) : lerpGeo(G.BALTIMORE, G['WASHINGTON, DC'], t(22, 17)) };
+  }
   if (map === 'us') {
     if (y >= 63) return { name: 'SANTA FE', geo: G['SANTA FE'] };
     if (y >= 48) return { name: 'ROUTE 66', geo: lerpGeo(G['SANTA FE'], G['SAN FRANCISCO'], t(62, 48)) };
@@ -135,7 +148,7 @@ function mapSvgEN() {
   const rockies = [[-114, 48], [-112.5, 46], [-110.8, 44.6], [-109, 43], [-107, 41], [-106, 39], [-105.6, 37]], sierra = [[-121.5, 47.2], [-121.8, 45], [-121.6, 42.5], [-120.4, 39.5], [-119, 37.2]], appal = [[-84, 35.4], [-82, 36.6], [-80, 37.8], [-78.4, 39.4], [-76.6, 41.2]];
   const lake = (lon, lat, rx, ry) => { const [x, y] = PXU([lon, lat]); return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#8cc0d4" stroke="#4a7a90" stroke-width=".4"/>`; };
   const dots = (lon, lat, rx, ry, n) => { const [cx, cy] = PXU([lon, lat]).map(Number), r = rng(n); let s = ''; for (let i = 0; i < n; i++) { const a = r() * 6.28, d = Math.sqrt(r()); s += `<circle cx="${(cx + Math.cos(a) * rx * d).toFixed(1)}" cy="${(cy + Math.sin(a) * ry * d).toFixed(1)}" r=".55" fill="#c8a468"/>`; } return s; };
-  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'MOUNT RUSHMORE', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
+  const route = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'YELLOWSTONE', 'MOUNT RUSHMORE', 'CHICAGO', 'PENNSYLVANIA', 'NEW YORK CITY', 'PHILADELPHIA', 'BALTIMORE', 'WASHINGTON, DC'].map(k => PXU(GEO_EN[k]).join(',')).join(' ');
   const city = (k, label, dx, dy, big) => { const [x, y] = PXU(GEO_EN[k]); const seen = all || v[k]; return `<circle cx="${x}" cy="${y}" r="${big ? 2.6 : 1.9}" fill="${seen ? '#c82838' : '#8a8478'}" stroke="#2b1d16" stroke-width=".6"/><text x="${+x + dx}" y="${+y + dy}" font-size="${big ? 5 : 4.2}" font-weight="700" fill="${seen ? '#2b1d16' : '#8a8478'}" font-family="ui-monospace,monospace">${label}</text>`; };
   const lab = (t, lon, lat, col = '#2e5a70', sz = 4) => { const [x, y] = PXU([lon, lat]); return `<text x="${x}" y="${y}" font-size="${sz}" fill="${col}" font-family="ui-monospace,monospace" font-style="italic">${t}</text>`; };
   const [hx, hy] = PXU(here.geo);
@@ -148,7 +161,7 @@ function mapSvgEN() {
     ${lab('ROCKY MTNS', -113.5, 41.5, '#6a5640', 3.6)}${lab('GREAT PLAINS', -102, 39.5, '#a07c40', 3.6)}${lab('MOJAVE', -117.5, 34.4, '#a07c40', 3.4)}
     ${lab('PACIFIC', -131.5, 40)}${lab('OCEAN', -131, 37.6)}${lab('ATLANTIC', -73.5, 34)}${lab('OCEAN', -72.5, 32)}${lab('GULF OF MEXICO', -94.5, 26.2)}
     <polyline points="${route}" fill="none" stroke="#8a3a2a" stroke-width="1" stroke-dasharray="2 1.4"/>
-    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('MOUNT RUSHMORE', 'RUSHMORE', 3, 1.4)}
+    ${city('NEW YORK CITY', 'NEW YORK', -8, -3.6, true)}${city('WASHINGTON, DC', 'D.C.', 3, 6, true)}${city('PHILADELPHIA', '', 0, 0)}${city('BALTIMORE', '', 0, 0)}${city('CHICAGO', 'CHICAGO', -9, 6)}${city('PENNSYLVANIA', 'PENN.', -6, 6)}${city('MOUNT RUSHMORE', 'RUSHMORE', 3, 1.4)}
     ${city('YELLOWSTONE', 'YELLOWSTONE', -10, -3.4)}${city('SEATTLE', 'SEATTLE', 3, 1.4)}${city('SAN FRANCISCO', 'SAN FRANCISCO', 3, 1.4)}${city('SANTA FE', 'SANTA FE', 3, 1.4)}
     <circle cx="${hx}" cy="${hy}" r="4.2" fill="none" stroke="#e8203a" stroke-width="1.2"><animate attributeName="r" values="2.6;5.4;2.6" dur="1.2s" repeatCount="indefinite"/></circle>
     <circle cx="${hx}" cy="${hy}" r="1.6" fill="#e8203a"/>
@@ -157,4 +170,5 @@ function mapSvgEN() {
 const DESTS_EN = [
   ['SANTA FE', 'us', 9, 71], ['SAN FRANCISCO', 'us', 9, 32], ['SEATTLE', 'us', 9, 8],
   ['MOUNT RUSHMORE', 'usnorth', 9, 73], ['CHICAGO', 'usnorth', 9, 58], ['NEW YORK CITY', 'usnorth', 9, 20],
+  ['PHILADELPHIA', 'useast', 9, 28], ['WASHINGTON, DC', 'useast', 9, 10],
 ];

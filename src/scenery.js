@@ -35,7 +35,7 @@ const DECOR = {
   dryshrub(c, x, y, r) { c.strokeStyle = '#9a7a48'; c.lineWidth = .45; const bx = 4 + r() * 8, by = 10 + r() * 4; for (let i = 0; i < 7; i++) { const a = -Math.PI * (.1 + .8 * i / 6); c.beginPath(); c.moveTo(bx, by); c.lineTo(bx + Math.cos(a) * 2.6, by + Math.sin(a) * 2.6); c.stroke(); } },
 };
 // the routes and parks that get extra scenery: [map, first row, last row]
-const SCENERY_ZONES = { world: [[48, 61], [13, 24], [26, 46]], north: [[66, 88], [29, 45], [4, 27]], us: [[48, 61], [13, 24], [26, 46]], usnorth: [[66, 88], [29, 45], [4, 27]] };
+const SCENERY_ZONES = { world: [[48, 61], [13, 24], [26, 46]], north: [[66, 88], [29, 45], [4, 27]], us: [[48, 61], [13, 24], [26, 46]], usnorth: [[66, 88], [29, 45], [4, 27]], east: [[17, 45]], useast: [[17, 45]] };
 // people who move aside after a boss: never wall them in
 const MOVED_NPC_SPOTS = [[11, 48], [11, 26], [8, 63], [11, 27]];
 
@@ -86,7 +86,8 @@ function drawDecor(c, m) {
 }
 
 // ---- the living landscape: drawn every frame over the map ----
-const OUTDOOR = new Set(['world', 'north', 'us', 'usnorth']);
+const OUTDOOR = new Set(['world', 'north', 'us', 'usnorth', 'east', 'useast']);
+const LEAFY = new Set(['T', 'P', 'Ϙ', 'ᛉ', 'ɷ']);
 function drawAmbient(c, cx, cy, layer) {
   const m = curMap; if (!m) return;
   const t = performance.now() / 1000;
@@ -108,10 +109,25 @@ function drawAmbient(c, cx, cy, layer) {
           c.strokeStyle = col; c.lineWidth = .8; c.lineCap = 'round';
           c.beginPath(); c.moveTo(X + bx, Y + by); c.quadraticCurveTo(X + bx + lean * .3, Y + by - 2.4, X + bx + lean, Y + by - 4.6); c.stroke();
         }
+      } else if (OUTDOOR.has(m.id) && LEAFY.has(ch)) { // trees and bushes rustle: leaves catch the light as the wind moves them
+        for (let k = 0; k < 3; k++) {
+          const a = t * 1.3 + x * 1.9 + y * 1.1 + k * 2.1, lx = X + 4 + k * 4 + Math.sin(a) * 1.1, ly = Y + (ch === 'ɷ' ? 8 : 4) + (k % 2) * 3 + Math.cos(a * .8) * .6;
+          c.fillStyle = `rgba(255,255,220,${.1 + .12 * (.5 + .5 * Math.sin(a * 1.7))})`; c.beginPath(); c.ellipse(lx, ly, 1.3, .7, Math.sin(a) * .6, 0, 7); c.fill();
+        }
       } else if (ch === 'm' && !OUTDOOR.has(m.id)) { // steam from the samovar
         puffs(c, X + 8, Y + 2, t, x);
       } else if (ch === '▬' && x % 3 === 0) { // steam from the espresso machine
         puffs(c, X + 8, Y - 3, t, x);
+      }
+    }
+    // wildflowers nod in the breeze
+    for (const d of m.decor || []) {
+      if (d.k !== 'flowers' || d.x < x0 || d.x > x1 || d.y < y0 || d.y > y1) continue;
+      const X = d.x * TS - cx, Y = d.y * TS - cy, r = rng(d.s + 7);
+      for (let i = 0; i < 2; i++) {
+        const fx = 3 + r() * 10, fy = 7 + r() * 7, lean = Math.sin(t * 2 + d.x * .9 + d.y * .6 + i) * 1.2;
+        c.strokeStyle = '#3e7a30'; c.lineWidth = .45; c.beginPath(); c.moveTo(X + fx, Y + fy); c.quadraticCurveTo(X + fx + lean * .4, Y + fy - 2, X + fx + lean, Y + fy - 3.6); c.stroke();
+        el(c, X + fx + lean, Y + fy - 3.8, .9, .9, ['#f0c040', '#e86a8a', '#b88ae8', '#f4f0e8'][(d.x + d.y + i) % 4], 'rgba(80,40,40,.4)', .2);
       }
     }
     return;

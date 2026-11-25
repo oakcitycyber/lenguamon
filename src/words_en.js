@@ -1,5 +1,5 @@
 // LENGUAMON word bank (English for Persian speakers, intermediate to advanced)
-// Format: english (what you type; alternatives with " / ") | Persian meaning | route (1-6) | type
+// Format: english (what you type; alternatives with " / ") | Persian meaning | route (1-7) | type
 // Starts above beginner level: small talk, phrasal verbs, work, feelings and opinions, road trips,
 // errands and health, New York life and everyday idioms.
 const RAW_WORDS_EN = `
@@ -410,4 +410,51 @@ I'll grab a bagel on the way|سر راه یه بیگل می‌گیرم|6|NYC
 stand clear of the closing doors|از درهای در حال بسته شدن فاصله بگیرید|6|NYC
 the subway is packed|مترو خیلی شلوغه|6|NYC
 I'd love to, but I have a prior commitment|خیلی دوست دارم، ولی از قبل قرار دیگه‌ای دارم|6|NYC
+the Constitution|قانون اساسی|7|CIVICS
+the Declaration of Independence|اعلامیه استقلال|7|CIVICS
+the Founding Fathers|بنیان‌گذاران آمریکا|7|CIVICS
+democracy|دموکراسی|7|CIVICS
+the right to vote|حق رأی|7|CIVICS
+freedom of speech|آزادی بیان|7|CIVICS
+the Supreme Court|دیوان عالی|7|CIVICS
+Congress|کنگره|7|CIVICS
+a senator|سناتور|7|CIVICS
+the White House|کاخ سفید|7|CIVICS
+the president|رئیس‌جمهور|7|CIVICS
+an election|انتخابات|7|CIVICS
+a citizen|شهروند|7|CIVICS
+citizenship|تابعیت، شهروندی|7|CIVICS
+a monument|بنای یادبود|7|CIVICS
+a museum|موزه|7|CIVICS
+the Bill of Rights|منشور حقوق|7|CIVICS
+independence|استقلال|7|CIVICS
+a revolution|انقلاب|7|CIVICS
+a historic site|مکان تاریخی|7|CIVICS
+a tour guide|راهنمای تور|7|CIVICS
+the national anthem|سرود ملی|7|CIVICS
+the flag|پرچم|7|CIVICS
+a long weekend|تعطیلات آخر هفته‌ی طولانی|7|CIVICS
+the Fourth of July|چهارم ژوئیه، روز استقلال|7|CIVICS
+Thanksgiving|روز شکرگزاری|7|CIVICS
+it's an honor to meet you|افتخار آشنایی با شما رو دارم|7|FORMAL
+I'd be glad to|با کمال میل|7|FORMAL
+I appreciate your help|از کمکتون ممنونم|7|FORMAL
+would you mind if I sat here?|اشکالی نداره اینجا بشینم؟|7|FORMAL
+I beg your pardon?|ببخشید، چی فرمودید؟|7|FORMAL
+with all due respect|با کمال احترام|7|FORMAL
+to be fair|انصافاً|7|FORMAL
+nevertheless|با این حال|7|FORMAL
+in a nutshell|خلاصه بگم|7|FORMAL
+as a matter of fact|در واقع|7|FORMAL
+it was worth it|ارزشش رو داشت|7|FORMAL
+I'll never forget it|هیچ‌وقت فراموشش نمی‌کنم|7|FORMAL
+it means the world to me|برام دنیا ارزش داره|7|FORMAL
+I'm flattered|لطف داری، خجالتم می‌دی|7|FORMAL
+safe travels|سفر بخیر|7|FORMAL
+farewell|بدرود|7|FORMAL
+rest in peace|روحش شاد|7|FORMAL
+time flies|زمان زود می‌گذره|7|FORMAL
+it takes my breath away|نفسم رو بند میاره|7|FORMAL
+through thick and thin|در سختی و آسونی|7|FORMAL
+an uphill battle|یه نبرد سخت|7|FORMAL
 `;

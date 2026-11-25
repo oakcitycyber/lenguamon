@@ -46,6 +46,17 @@ const SAYINGS = [
   ['از تو حرکت، از خدا برکت', 'az to harekat, az khoda barekat', 'From you, the effort; from God, the blessing.', 'Do your part, and good things will follow.'],
   ['هر چه کنی به خود کنی', 'har che koni be khod koni', 'Whatever you do, you do to yourself.', 'What goes around comes around.'],
   ['مهمان حبیب خداست', 'mehman habib-e khodast', "The guest is God's beloved friend.", 'Guests are treasured in Iran.'],
+  // Mashhad and Khorasan: Ferdowsi, Khayyam and the long road home
+  ['بسی رنج بردم در این سال سی، عجم زنده کردم بدین پارسی', 'basi ranj bordam dar in sal-e si, ajam zendeh kardam bedin parsi', 'I suffered much these thirty years; I brought Persia back to life with this Persian.', "Ferdowsi's famous line: hard work can keep a whole language alive."],
+  ['چو ایران نباشد تن من مباد', 'cho iran nabashad tan-e man mabad', 'If Iran should not exist, let my body not exist.', "A line from the Shahnameh about deep love for one's homeland."],
+  ['این نیز بگذرد', 'in niz bogzarad', 'This too shall pass.', 'Hard times, and good times, never last forever.'],
+  ['خوش باش که عالم گذران خواهد بود', 'khosh bash ke alam gozaran khahad bud', 'Be happy, for the world is passing.', "Khayyam's advice: enjoy today, life is short."],
+  ['مشک آن است که خود ببوید، نه آنکه عطار بگوید', 'moshk an ast ke khod bebuyad, na anke attar beguyad', 'Musk is what smells by itself, not what the perfume seller says.', 'Actions speak louder than words.'],
+  ['تا تنور گرم است باید نان را چسباند', 'ta tanur garm ast bayad nan ra chasband', 'Stick the bread on while the oven is hot.', 'Strike while the iron is hot.'],
+  ['یک دست صدا ندارد', 'yek dast seda nadarad', 'One hand makes no sound.', 'We need each other: teamwork gets things done.'],
+  ['درخت هر چه بارش بیشتر شود، سرش پایین‌تر می‌آید', 'derakht har che baresh bishtar shavad, sarash payin-tar miayad', 'The more fruit a tree carries, the lower it bows its head.', 'The wiser you are, the more humble you become.'],
+  ['راستی رستی', 'rasti rasti', 'Truth is salvation.', 'Honesty will save you.'],
+  ['هر که بامش بیش، برفش بیشتر', 'har ke bamash bish, barfash bishtar', 'Whoever has a bigger roof has more snow on it.', 'More success brings more responsibility.'],
 ];
 // ===== American sayings (English mode): [saying, plain-English meaning, Persian meaning or the matching Persian proverb] =====
 const SAYINGS_EN = [
@@ -94,15 +105,29 @@ const SAYINGS_EN = [
   ['What goes around comes around.', 'Your actions come back to you.', 'هر چه کنی به خود کنی'],
   ["There's no place like home.", 'Home is the best place of all.', 'هیچ جا خانه خود آدم نمی‌شود'],
   ['Knowledge is power.', 'Learning makes you strong.', 'توانا بود هر که دانا بود'],
+  // Washington, DC: the founders' wisdom
+  ['United we stand, divided we fall.', 'We are strong together and weak apart.', 'یک دست صدا ندارد'],
+  ['An ounce of prevention is worth a pound of cure.', 'Stopping a problem early is easier than fixing it later.', 'علاج واقعه را قبل از وقوع باید کرد'],
+  ['Early to bed and early to rise makes a man healthy, wealthy and wise.', 'Good daily habits lead to a good life.', 'سحرخیز باش تا کامروا باشی'],
+  ['Well done is better than well said.', 'What you do matters more than what you say.', 'مشک آن است که خود ببوید، نه آنکه عطار بگوید'],
+  ['Lost time is never found again.', "Don't waste your time.", 'وقت طلاست'],
+  ['The pen is mightier than the sword.', 'Words and ideas are stronger than violence.', 'قلم از شمشیر قوی‌تر است'],
+  ['All good things must come to an end.', 'Even the best times finish someday.', 'هر آغازی پایانی دارد'],
+  ['This too shall pass.', 'Hard times never last forever.', 'این نیز بگذرد'],
+  ['Strike while the iron is hot.', 'Act when the moment is right.', 'تا تنور گرم است باید نان را چسباند'],
+  ["It's not the years in your life that count, it's the life in your years.", 'How well you live matters more than how long.', 'خوش باش که عالم گذران خواهد بود'],
 ];
-const SAY_CITY_EN = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'CHICAGO', 'NEW YORK'];
+const SAY_CITY_EN = ['SANTA FE', 'SAN FRANCISCO', 'SEATTLE', 'CHICAGO', 'NEW YORK', 'WASHINGTON, DC'];
 const sayList = () => (LANG === 'en' ? SAYINGS_EN : SAYINGS);
-const SAY_CITY = ['YAZD', 'ISFAHAN', 'SHIRAZ', 'KASHAN', 'TEHRAN'];
+const SAY_CITY = ['YAZD', 'ISFAHAN', 'SHIRAZ', 'KASHAN', 'TEHRAN', 'MASHHAD'];
+// each elder teaches 8 sayings; the elder at the end of the road teaches the last 10
+const sayIds = g => (g < 5 ? [0, 1, 2, 3, 4, 5, 6, 7].map(i => g * 8 + i) : [40, 41, 42, 43, 44, 45, 46, 47, 48, 49]);
+const sayCity = idx => Math.min(5, Math.floor(idx / 8));
 const sayLearned = () => (S.sayings || (S.sayings = {}));
 const sayCount = () => Object.keys(sayLearned()).length;
 
 async function elderTalk(group, name, hello) {
-  const L = sayLearned(), ids = [0, 1, 2, 3, 4, 5, 6, 7].map(i => group * 8 + i);
+  const L = sayLearned(), ids = sayIds(group);
   const next = ids.find(i => !L[i]);
   if (next !== undefined) {
     if (LANG === 'en') { const [sy, mean, fa] = SAYINGS_EN[next];
@@ -132,7 +157,7 @@ async function sayingsScreen() {
     let list = '';
     for (let i = start; i < start + per; i++) list += `<div class="dx-r${i === idx ? ' sel' : ''}"><span class="cur">▶</span>${String(i + 1).padStart(2, '0')} ${L[i] ? esc((en ? LS[i][0] : LS[i][1].split(',')[0]).slice(0, 26)) : '- - - - -'}</div>`;
     const detail = known ? (en ? `<div class="sy-d"><b>${esc(s[0])}</b><div class="sm">${esc(s[1])}</div><div>${PF(s[2])}</div></div>` : `<div class="sy-d">${F(s[0], s[1])}<div class="sm">"${esc(s[2])}"</div><div><b>${esc(s[3])}</b></div></div>`)
-      : `<div class="sy-d"><b>???</b><div class="sm">Learn this saying from the elder in ${(en ? SAY_CITY_EN : SAY_CITY)[Math.floor(idx / 8)]}.</div></div>`;
+      : `<div class="sy-d"><b>???</b><div class="sm">Learn this saying from the elder in ${(en ? SAY_CITY_EN : SAY_CITY)[sayCity(idx)]}.</div></div>`;
     el.innerHTML = `<div class="box dx sy"><div class="dx-h">${en ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS <span>${sayCount()} / ${n}</span></div>${detail}<div class="dx-l">${list}</div><div class="dx-f">↑↓ move · B: back</div></div>`;
   };
   draw();
@@ -147,7 +172,7 @@ async function sayingsScreen() {
   });
 }
 // the five elders
-npc('ω', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(1, G('AGHA HOSSEIN', 'KHANOM TOURAN'), `${F('سلام', 'salam')}! I have sold carpets in this bazaar for sixty years. I have heard every saying there is.`) });
+npc('ω', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(1, G('AGHA HOSSEIN', 'KHANOM TOURAN'), `${F('سلام', 'salam')}! I sold carpets in the bazaar for sixty years. Now I drink tea here. I have heard every saying there is.`) });
 npc('ϕ', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(2, G('AGHA SAADI', 'KHANOM SIMIN'), G(`I am Agha Saadi. No relation to the great poet, but I know his verses by heart!`, `I am Khanom Simin. I have read Saadi and Hafez every evening of my life.`)) });
-npc('δ', { look: 'elder', lookG: 'elderF', talk: () => elderTalk(3, G('AGHA JALAL', 'KHANOM PARI'), `Come, sit. In Kashan we say a wise word is sweeter than rosewater.`) });
-npc('β', { look: 'elder', lookG: 'elderF', dir: 'right', talk: () => elderTalk(4, G('AGHA BAHMAN', 'KHANOM SHAHIN'), `Tehran moves fast, but old words still matter. Listen to this one.`) });
+npc('δ', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(3, G('AGHA JALAL', 'KHANOM PARI'), `Come, sit. In Kashan we say a wise word is sweeter than rosewater.`) });
+npc('β', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(4, G('AGHA BAHMAN', 'KHANOM SHAHIN'), `Tehran moves fast, but old words still matter. Listen to this one.`) });

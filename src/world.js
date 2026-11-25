@@ -6,8 +6,8 @@ const MAP_SRC = {
     rows: [
       // SHIRAZ: Eram-style garden and the tomb of Hafez
       'TT0TTTTTTTTTTTTTTTTT', 'TT.S.T.T.NN.T.T.T.TT', 'T*.*.*.*.GG.*.*.*.*T', 'T......S.3=l.......T', 'T.~~~~.T.==.T.~~~~.T',
-      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S.ϕ.*T', 'TP.**..T.==.T..**.PT', 'T.^^^^^.S==..QQQQQ.T', 'T.#h#h#..==..#h#h#.T',
-      'TS##7##..==..##8##ST', 'T.S......==........T', 'TTTTTTTT.==.TTTTTTTT',
+      'T.~~~~.T.==.T.~~~~.T', 'T*.....T.==.T.S...*T', 'TP.**..T.==.T..**.PT', 'T.^^^^^.S==..QQQQQ.T', 'T.#h#h#..==..#h#h#.T',
+      'TS##7##..==..##8##ST', 'T.......S==........T', 'TTTTTTTT.==.TTTTTTTT',
       // ROUTE 3: Shiraz road
       '▲::::*...==...*::::▲', '▲::::....==....::::▲', '▲..LL....==a...LL..▲', '▲.......:==:.......▲', '▲*::::..:==:..::::*▲',
       '▲*::::...==...::::*▲', '▲...▲....==....▲...▲', '▲.::::...==...::::.▲', '▲P::::...==...::::P▲', '▲.::::*..==..*::::.▲',
@@ -16,7 +16,7 @@ const MAP_SRC = {
       // ISFAHAN: bazaar, Shah Mosque, Si-o-se-pol over the Zayandeh river
       'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,q,==,,,,KKK,T', 'T,,,,S,,,==,,,,,,,,T', 'T::::,,,,==,,IOOI,,T', 'T::::,,,,==,SIVVI,,T',
       'T::::,,,,==,,IVVI,,T', 'T,,,,,,S,==,,,,,,,,T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T', 'T~~~~~~~UBBU~~~~~~~T',
-      'T,,,,,,,,==S,,ω,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
+      'T,,,,,,,,==S,,,,,,,T', 'T::::,,R,==,R,,::::T', 'T::::,,,,==,,e,::::T', 'T,AAA,,,,==,,,,AAA,T', 'T,KKK,,,,==,,,,KKK,T',
       'T,^^^^^,,==,,QQQQQ,T', 'T,#h#h#,,==,,#h#h#,T', 'TS##5##,,==,,##6##ST', 'T:::,,,,,==,,i,,:::T', 'T::::,,L,==,,,L::::T',
       'TT,,,,,,,==,,,,,,,TT',
       'TFFFFFFFF1FFFFFFFFFT',
@@ -36,8 +36,8 @@ const MAP_SRC = {
     signs: {
       '7,3': [`TOMB OF HAFEZ ${F('آرامگاه حافظ', 'aramgah-e hafez')}<br>Hafezieh, Shiraz.`, 'Hafez, a 14th-century poet, is the most loved poet in Iran. His book of poems, the Divan, is in almost every Persian home.', 'Families open it at random to read their fortune (fal-e hafez), especially on Yalda, the longest night of the year.'],
       '14,6': [`ERAM GARDEN ${F('باغ ارم', 'bagh-e eram')}<br>Shiraz.`, 'A classic Persian garden: long pools, rows of cypress and roses, laid out as a picture of paradise.', "Persian gardens are a UNESCO World Heritage site, and the English word 'paradise' comes from an old Persian word for a walled garden."],
-      '8,8': [`SHIRAZ ${F('شیراز', 'shiraz')}<br>Fars province, south-west Iran.`, 'The city of poets, roses and gardens, home of Hafez and Saadi, the two great poets of Persian.', 'THE CENSOR has seized the tomb of Hafez up ahead!'],
-      '2,11': [`CYPRESS ${F('سرو', 'sarv')}`, 'In Persian art and poetry the cypress stands for life, freedom and standing tall, and it appears in carpets and paisley (boteh) designs.', 'The Cypress of Abarkuh in Yazd province is believed to be more than 4,000 years old.'],
+      '8,8': [`SHIRAZ ${F('شیراز', 'shiraz')}<br>Fars province, south-west Iran.`, 'The city of poets, roses and gardens, home of Hafez and Saadi, the two great poets of Persian.', 'THE ZEALOT has seized the tomb of Hafez up ahead!'],
+      '8,11': [`CYPRESS ${F('سرو', 'sarv')}`, 'In Persian art and poetry the cypress stands for life, freedom and standing tall, and it appears in carpets and paisley (boteh) designs.', 'The Cypress of Abarkuh in Yazd province is believed to be more than 4,000 years old.'],
       '3,24': [`${ROUTE_NAMES[3]}<br>Wild FOOD, FEELING, COLOR, BODY and WEATHER words live here.`],
       '5,28': [`GRAND BAZAAR ${F('بازار بزرگ', 'bazar-e bozorg')}<br>Isfahan.`, 'One of the oldest and longest covered bazaars in the Middle East, running for kilometres up to Naqsh-e Jahan Square.', 'Bazaars are the heart of Iranian city life: spices, carpets, copperwork, tea, and plenty of bargaining.'],
       '12,30': [`SHAH MOSQUE ${F('مسجد شاه', 'masjed-e shah')}<br>Naqsh-e Jahan Square, Isfahan.`, 'Built from 1611 to 1630 under Shah Abbas I, and also called the Imam Mosque.', 'Its blue tilework and dome are masterpieces of Persian architecture. The square around it is a UNESCO World Heritage site.'],
@@ -57,14 +57,14 @@ const MAP_SRC = {
       '18,43': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Isfahan.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', 'Talk to the morshed inside to train on the words of ISFAHAN.'],
       '2,74': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Yazd.`, 'The zurkhaneh, or "house of strength", is the traditional Iranian gym. Athletes swing wooden clubs (meel) in a sunken pit while the morshed drums and chants verses from the Shahnameh.', 'Its rituals are on the UNESCO list of Intangible Cultural Heritage.', `Talk to the morshed inside to train on the words of the ${ROUTE_NAMES[1]}.`],
     },
-    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 }, 0: { to: 'north', tx: 9, ty: 88, need: 'b3', needMsg: 'The road north to Persepolis, Kashan and Tehran is blocked. THE CENSOR\'s men are everywhere. Free the tomb of Hafez first!' },
+    doors: { H: { to: 'house', tx: 4, ty: 6 }, M: { to: 'school', tx: 4, ty: 6 }, C: { to: 'teahouse', tx: 4, ty: 6 }, 0: { to: 'north', tx: 9, ty: 88, need: 'b3', needMsg: 'The road north to Persepolis, Kashan and Tehran is blocked. THE ZEALOT\'s men are everywhere. Free the tomb of Hafez first!' },
       4: { to: 'gym1', tx: 4, ty: 6 }, 5: { to: 'teahouse2', tx: 4, ty: 6 }, 6: { to: 'gym2', tx: 4, ty: 6 }, 7: { to: 'teahouse3', tx: 4, ty: 6 }, 8: { to: 'gym3', tx: 4, ty: 6 } },
   },
   house: { rows: ['wwwwwwwwww', 'wbbfffffmw', 'wfcccccffw', 'wfcktkcfxw', 'wfcccccffw', 'wffffffffw', 'wpffffffpw', 'wwwwEwwwww'], bases: { x: 'f' }, exit: { to: 'world', door: 'H' } },
   school: { rows: ['wwwwwwwwww', 'wZZZZbbbpw', 'wfffyffffw', 'wffffffffw', 'wdfdfdfdfw', 'wffffffzfw', 'wdfdfdffpw', 'wwwwEwwwww'], bases: { y: 'f', z: 'f' }, exit: { to: 'world', door: 'M' } },
   teahouse: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffrfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcjw', 'wccccccccw', 'wwwwEwwwww'], bases: { r: 'f', j: 'c' }, exit: { to: 'world', door: 'C' } },
-  teahouse2: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff!fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '!': 'f' }, exit: { to: 'world', door: '5' } },
-  teahouse3: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff$fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { '$': 'f' }, exit: { to: 'world', door: '7' } },
+  teahouse2: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff!fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcωw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'ω': 'c', '!': 'f' }, exit: { to: 'world', door: '5' } },
+  teahouse3: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffff$fffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcϕw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'ϕ': 'c', '$': 'f' }, exit: { to: 'world', door: '7' } },
   gym1: { rows: GYM_ROWS('<', '|'), bases: { '<': 'f', '|': '@' }, exit: { to: 'world', door: '4' } },
   gym2: { rows: GYM_ROWS('>', '_'), bases: { '>': 'f', '_': '@' }, exit: { to: 'world', door: '6' } },
   gym3: { rows: GYM_ROWS('?', ';'), bases: { '?': 'f', ';': '@' }, exit: { to: 'world', door: '8' } },
@@ -80,7 +80,7 @@ const MAP_SRC = {
       'T..██....==..QQQQQ.T',
       'T..██....==..#h#h#.T',
       'T..██..S.==..##6##ST',
-      'T..██....==........T',
+      'T..██....==........⊐',
       'T..██....==.:::::..T',
       'T...Ω....==.:::::..T',
       'T........==.:::::..T',
@@ -89,7 +89,7 @@ const MAP_SRC = {
       'T:::::...==..█████.T',
       'T.....S..==...S....T',
       'T,AAA,,,,==,,,,AAA,T',
-      'T,KKK,,β,==,,,,KKK,T',
+      'T,KKK,,,,==,,,,KKK,T',
       'T,,,,,S,,==,,,,,,,,T',
       'T,^^^^^,,==,,:::::,T',
       'T,#h#h#,█==█,:::::,T',
@@ -123,7 +123,7 @@ const MAP_SRC = {
       'T,SIVVI,,==,,#h#h#,T',
       'T,,IVVI,,==,,##4##ST',
       'T,,,,,,,,==,,,,,,,,T',
-      'T❀❀❀❀❀,,S==,,,δ,,,,T',
+      'T❀❀❀❀❀,,S==,,,,,,,,T',
       'T❀❀❀❀❀,,,==,,,,,,,,T',
       'T,,,,,,,,==,,,,,,,,T',
       'T,^^^^^,,==,TTTTTTTT',
@@ -171,7 +171,7 @@ const MAP_SRC = {
     signs: {
       '4,3': [`MOUNT DAMAVAND ${F('دماوند', 'damavand')}<br>Alborz mountains, north-east of Tehran.`, 'At about 5,610 m it is the highest mountain in Iran and in all of the Middle East: a sleeping volcano with snow on top all year.', 'In the Shahnameh the hero Fereydun chains the evil king Zahhak inside Damavand. It appears on Iranian money and in countless poems.'],
       '8,4': [`DARBAND ${F('دربند', 'darband')}<br>North Tehran, at the foot of the Alborz.`, 'A hiking trail along a mountain stream, lined with little cafes and teahouses.', 'On weekends Tehranis climb here to escape the city, then sit by the water with chai, ash and grilled corn.'],
-      '7,8': [`MILAD TOWER ${F('برج میلاد', 'borj-e milad')}<br>Tehran.`, 'At 435 m it is the tallest tower in Iran and one of the tallest towers in the world, finished in 2007.', 'From the top you can see the whole city and the Alborz mountains. But THE CENSOR has taken it over to jam every word in Iran!'],
+      '7,8': [`MILAD TOWER ${F('برج میلاد', 'borj-e milad')}<br>Tehran.`, 'At 435 m it is the tallest tower in Iran and one of the tallest towers in the world, finished in 2007.', 'From the top you can see the whole city and the Alborz mountains. But THE ZEALOT has taken it over to jam every word in Iran!'],
       '18,8': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Tehran.`, 'Talk to the morshed inside to train on the words of TEHRAN.'],
       '6,16': [`PARK-E MELLAT ${F('پارک ملت', 'park-e mellat')}<br>Tehran.`, `On summer nights Tehran's parks fill with families having picnics on the grass, playing games and drinking tea until midnight.`, 'Wild Lenguamon hide in the park lawns. TEHRAN words live here.'],
       '14,16': [`GOLESTAN PALACE ${F('کاخ گلستان', 'kakh-e golestan')}<br>Old Tehran.`, `The royal palace of the Qajar kings, whose name means 'palace of flowers'. Its halls glitter with mirror work and painted tiles.`, 'It is the oldest monument in Tehran and a UNESCO World Heritage site.'],
@@ -191,12 +191,81 @@ const MAP_SRC = {
       '7,74': [`PERSEPOLIS ${F('تخت جمشید', 'takht-e jamshid')}<br>Near Shiraz.`, 'The ceremonial capital of the Achaemenid Persian Empire, begun by Darius the Great around 518 BC. Stone carvings show people from all over the empire bringing gifts, perhaps for Nowruz.', 'The Gate of All Nations is guarded by giant winged bulls. Alexander the Great burned the palaces in 330 BC. It is a UNESCO World Heritage site.'],
       '16,81': [`TOMB OF CYRUS THE GREAT ${F('آرامگاه کوروش بزرگ', 'aramgah-e kourosh-e bozorg')}<br>Pasargadae.`, 'Cyrus founded the Persian Empire around 550 BC. He is remembered for tolerance: the Cyrus Cylinder is often called an early charter of human rights.', 'Many Iranians visit his simple stone tomb, especially on October 29, Cyrus Day.'],
     },
-    doors: { 0: { to: 'world', tx: 2, ty: 1, dir: 'down' }, 4: { to: 'gym4', tx: 4, ty: 6 }, 5: { to: 'teahouse4', tx: 4, ty: 6 }, 6: { to: 'gym5', tx: 4, ty: 6 }, 7: { to: 'teahouse5', tx: 4, ty: 6 } },
+    doors: { 0: { to: 'world', tx: 2, ty: 1, dir: 'down' }, '⊐': { to: 'east', tx: 9, ty: 45, dir: 'up', need: 'b5', needMsg: 'The east gate of Tehran is shut. Beat THE ZEALOT at Milad Tower first!' }, 4: { to: 'gym4', tx: 4, ty: 6 }, 5: { to: 'teahouse4', tx: 4, ty: 6 }, 6: { to: 'gym5', tx: 4, ty: 6 }, 7: { to: 'teahouse5', tx: 4, ty: 6 } },
   },
-  teahouse4: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffκfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'κ': 'f' }, exit: { to: 'north', door: '5' } },
-  teahouse5: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffτfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctccw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'τ': 'f' }, exit: { to: 'north', door: '7' } },
+  teahouse4: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffκfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcδw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'δ': 'c', 'κ': 'f' }, exit: { to: 'north', door: '5' } },
+  teahouse5: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffτfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcβw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'β': 'c', 'τ': 'f' }, exit: { to: 'north', door: '7' } },
   gym4: { rows: GYM_ROWS('μ', 'ν'), bases: { 'μ': 'f', 'ν': '@' }, exit: { to: 'north', door: '4' } },
   gym5: { rows: GYM_ROWS('π', 'ρ'), bases: { 'π': 'f', 'ρ': '@' }, exit: { to: 'north', door: '6' } },
+  // ---- the far east: the Khorasan road to Mashhad and the grand finale ----
+  east: {
+    rows: [
+      '▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲',
+      '▲▲△△▲▲████████▲△△▲▲▲',
+      'T::..S████████.....T',
+      'T::...████████..::.T',
+      'T.....████████..::.T',
+      'T......S.χ=........T',
+      'T........==..QQQQQ.T',
+      'T..^^^^^.==..#h#h#.T',
+      'T..#h#h#.==..##4##ST',
+      'TS.##5##.==........T',
+      'T........==........T',
+      'T.::::...==...::::.T',
+      'T.::::...==...::::.T',
+      'T........==........T',
+      'T.......S==..S.....T',
+      'TT.......==.......TT',
+      'TFFFFFFFF==FFFFFFFFT',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲,::::,,,==,,,::::,▲',
+      '▲,::::,,S==,,,::::,▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲▲,,R,,,,==,,,,R,,▲▲',
+      '▲,,,,::::==::::,,,,▲',
+      '▲,,,,::::==::::,,,,▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲,████,,,==,,,,,,,,▲',
+      '▲,████,,,==,,::::,,▲',
+      '▲,████,S,==,,::::,,▲',
+      '▲,,,,,,,,==,,::::,,▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲::::,,,,==,,,,R,,,▲',
+      '▲::::,,,S==,,,,,,,,▲',
+      '▲::::,,,,==,,::::,,▲',
+      '▲,,,,,,,,==,,::::,,▲',
+      '▲,,R,,,,,==,,::::,,▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲,,::::,,==,,,,::::▲',
+      '▲,,::::,,==,,,,::::▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲▲,,,,,,,==,,,,,,,▲▲',
+      '▲,::::,,,==,,::::,,▲',
+      '▲,::::,,,==,,::::,,▲',
+      '▲,,,,,,,,==,,,,,,,,▲',
+      '▲,,,R,,,,==,,,,,R,,▲',
+      '▲▲,,,,,,S==,,,,,,▲▲▲',
+      '▲▲▲,,,,,,==,,,,,,▲▲▲',
+      '▲▲▲▲▲▲▲▲▲0▲▲▲▲▲▲▲▲▲▲',
+    ],
+    bases: { 'χ': '=' },
+    sprites: [{ id: 'ferdowsi', x: 6, y: 1, w: 8, h: 4 }, { id: 'khayyam', x: 2, y: 25, w: 4, h: 3 }],
+    signs: {
+      '5,2': [`TUS ${F('توس', 'toos')}<br>Near Mashhad, Khorasan.`, 'An ancient city at the foot of the Binalood mountains, and the hometown of the poet Ferdowsi, who was born here around 940.'],
+      '7,5': [`TOMB OF FERDOWSI ${F('آرامگاه فردوسی', 'aramgah-e ferdowsi')}<br>Tus, near Mashhad.`, 'Ferdowsi spent about 30 years writing the Shahnameh, the Book of Kings: some 50,000 couplets of Iran\'s myths and history.', 'He wrote it in Persian with very few Arabic words. Iranians say he saved the Persian language.', 'His most famous line: "I suffered for thirty years, I brought Persian back to life with this Persian."'],
+      '18,8': [`ZURKHANEH ${F('زورخانه', 'zoorkhaneh')}<br>Mashhad.`, 'Beat the three athletes inside, then talk to the morshed to train on the words of KHORASAN.'],
+      '1,9': [`TEAHOUSE ${F('چایخانه', 'chaykhaneh')}<br>Mashhad.`, 'Talk to the owner for a glass of chai. It will refresh your Lenguamon.'],
+      '8,14': [`MASHHAD ${F('مشهد', 'mashhad')}<br>Khorasan, north-east Iran.`, 'Iran\'s second biggest city, with about 3 million people. Millions of travellers visit every year.', 'It sits on the old Silk Road between Persia and Central Asia.'],
+      '13,14': [`SAFFRON FIELDS ${F('زعفران', "za'feran")}<br>Khorasan.`, 'Most of the world\'s saffron is grown in Khorasan. Every autumn, families pick the purple crocus flowers at dawn.', 'It takes about 150,000 flowers to make one kilogram of saffron!'],
+      '8,19': [`${ROUTE_NAMES[7]} ${F('خراسان', 'khorasan')}<br>North-east Iran.`, `Its name means 'where the sun rises'. Wild HERITAGE words and fine PHRASES hide in the steppe grass.`],
+      '7,27': [`TOMB OF OMAR KHAYYAM ${F('آرامگاه خیام', 'aramgah-e khayyam')}<br>Neyshabur.`, 'Khayyam (1048-1131) was a poet, a mathematician and an astronomer. He made a calendar more accurate than the one most of the world uses today.', 'His four-line poems, the Rubaiyat, are read all over the world. The tomb\'s criss-cross lattice is inspired by them.'],
+      '8,31': [`NEYSHABUR TURQUOISE ${F('فیروزه نیشابور', 'firuzeh-ye neyshabur')}<br>Khorasan.`, 'For thousands of years the mines near Neyshabur have produced the bluest turquoise in the world.', 'Look at the tiles of any Persian dome: that color is called firuzeh.'],
+      '8,44': [`${F('جاده خراسان', 'jadeh-ye khorasan')}<br>North: MASHHAD. South-west: TEHRAN.`],
+    },
+    doors: { 0: { to: 'north', tx: 18, ty: 9, dir: 'left' }, 4: { to: 'gym6', tx: 4, ty: 6 }, 5: { to: 'teahouse6', tx: 4, ty: 6 } },
+  },
+  teahouse6: { rows: ['wwwwwwwwww', 'wmbbbbmbbw', 'wffffξfffw', 'wuuuuuuffw', 'wccccccccw', 'wctccctcϗw', 'wccccccccw', 'wwwwEwwwww'], bases: { 'ξ': 'f', 'ϗ': 'c' }, exit: { to: 'east', door: '5' } },
+  gym6: { rows: GYM_ROWS('ζ', 'ς'), bases: { 'ζ': 'f', 'ς': '@' }, exit: { to: 'east', door: '4' } },
 };
 const MAPS = {};
 const NPC_POS = {}; // marker -> {map,x,y}
@@ -217,9 +286,10 @@ function buildMaps() {
   }
 }
 // the American maps share their shape with the Persian ones
-const baseMap = id => ({ us: 'world', usnorth: 'north' })[id] || id;
+const baseMap = id => ({ us: 'world', usnorth: 'north', useast: 'east' })[id] || id;
 function regionOf(map, y) {
   map = baseMap(map);
+  if (map === 'east') return 7;
   if (map === 'north') return y <= 28 ? 6 : y <= 45 ? 5 : y <= 65 ? 0 : 4;
   if (map !== 'world') return 0; if (y >= 63 || y <= 12) return 0; if (y >= 48) return 1; if (y >= 26) return 2; return 3; }
 
@@ -228,7 +298,7 @@ const NPCS = [];
 const isGirl = () => !!(S && S.gender === 'girl');
 const G = (boy, girl) => (isGirl() ? girl : boy);
 function npc(marker, def) { NPCS.push({ marker, dir: 'down', ...def }); }
-function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; if (n.tmp) return { map: p.map, x: n.tmp.x, y: n.tmp.y }; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
+function npcPos(n) { const p = NPC_POS[n.marker]; if (!p) return null; if (n.tmp) return { map: p.map, x: n.tmp.x, y: n.tmp.y }; if (n.wpos) return { map: p.map, x: n.wpos.x, y: n.wpos.y }; const o = n.where ? n.where() : null; return o ? { map: p.map, x: o[0], y: o[1] } : p; }
 function npcAt(map, x, y) { for (const n of NPCS) { if (n.hidden && n.hidden()) continue; const p = npcPos(n); if (p && p.map === map && p.x === x && p.y === y) return n; } return null; }
 
 // ---- player & world state ----
@@ -271,7 +341,7 @@ function drawWorld() {
 }
 let rafOn = false;
 function loop() {
-  if (worldActive()) tickWorld();
+  if (worldActive()) { tickWorld(); if (worldActive()) wanderTick(performance.now()); }
   if (!$('#battle').classList.contains('show') && !$('#title').classList.contains('show')) drawWorld();
   requestAnimationFrame(loop);
 }
@@ -342,6 +412,14 @@ function makeMon(w) { return { key: w.key, lvl: w.level, xp: 0, hp: maxHp(w.leve
 function healTeam() { for (const m of S.team) m.hp = maxHp(m.lvl); }
 const lead = () => S.team.find(m => m.hp > 0);
 const teamAlive = () => S.team.some(m => m.hp > 0);
+// ---- battles won in each area: 20 wins in an area unlock its boss ----
+const WINS_NEEDED = 20;
+function areaHere() { const r = regionOf(S.map, S.y); if (r) S.lastRoute = r; return r || S.lastRoute || 1; }
+function winsIn(r) {
+  if (!S.wins) { S.wins = {}; for (let k = 1; k <= 7; k++) S.wins[k] = caughtInRoute(k); } // older saves: every catch was a win
+  return S.wins[r] || 0;
+}
+function addWin() { winsIn(1); const a = areaHere(); S.wins[a] = (S.wins[a] || 0) + 1; }
 function caughtInRoute(r) { return wordsOfRoute(r).filter(w => S.caught[w.key]).length; }
 function caughtCount() { return Object.keys(S.caught).filter(k => WORD[k]).length; }
 function hpBar(m, max) { const pct = clamp(m.hp / max, 0, 1); const col = pct > 0.5 ? '#38c060' : pct > 0.2 ? '#f0c020' : '#e03030'; return `<span class="hpbar"><i style="width:${(pct * 100).toFixed(1)}%;background:${col}"></i></span>`; }
@@ -368,9 +446,9 @@ async function startMenu() {
     else if (r === 4) await sayingsScreen();
     else if (r === 5 && LANG === 'en') await say([`NOTEBOOK ${PF('دفتر')}<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your NOTEBOOK by typing its English word or phrase.']);
     else if (r === 5) await say([`DAFTAR ${F('دفتر', 'daftar')} = notebook.<br>You have ${B('x' + S.daftar)}.`, 'In battle, write a weakened wild Lenguamon into your DAFTAR by typing its Persian word. Weaker words are easier to catch!']);
-    else if (r === 6) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>MONEY: ${fmtMoney(money())}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
-      [1, 2, 3].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
-      [4, 5, 6].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length}`).join('<br>'),
+    else if (r === 6) await say([`${B(S.name)}${S.george ? ' 🎩' : S.cyrus ? ' 👑' : ''}<br>${LANG === 'en' ? 'STAR' : 'KASHI'} BADGES: ${['b1', 'b2', 'b3', 'b4', 'b5', 'b6'].map(b => S.flags[b] ? '◆' : '◇').join(' ')}<br>MONEY: ${fmtMoney(money())}<br>LENGUADEX: ${caughtCount()} / ${WORDS.length}`,
+      [1, 2, 3, 4].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length} · ${winsIn(r)} wins`).join('<br>'),
+      [5, 6, 7].map(r => `${ROUTE_NAMES[r]}: ${caughtInRoute(r)}/${wordsOfRoute(r).length} · ${winsIn(r)} wins`).join('<br>'),
       `${LANG === 'en' ? 'AMERICAN' : 'OLD PERSIAN'} SAYINGS: ${sayCount()} / ${sayList().length}`]);
     else if (r === 7) { writeSave(); SND.fx('good'); await say([`${esc(S.name)} saved the game!`, 'Your progress is saved on this device.']); }
     else if (r === 8) await optionsScreen();
@@ -448,7 +526,7 @@ async function teamScreen(inBattle) {
       if (inBattle) return r;
       S.team.splice(r, 1); S.team.unshift(m); SND.fx('good'); await say(`${esc(w.name)} is now your lead Lenguamon.`); writeSave();
     } else if (sub === 1) {
-      await say([`${esc(w.name)} ${W(w)}<br>"${LANG === 'en' ? PF(w.en) : esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}${EVO[m.key] && (m.stage || 0) < 2 ? `<br>Grows into a phrase at Lv${WORD[EVO[m.key]].level}` : (m.stage || 0) >= 2 ? '<br>Fully evolved ★★' : ''}`]);
+      await say([`${esc(w.name)} ${W(w)}<br>"${LANG === 'en' ? PF(w.en) : esc(w.en)}" · ${TYPES[w.type].label}`, `Lv${m.lvl} · XP ${m.xp}/${m.lvl * 8}<br>HP ${m.hp}/${maxHp(m.lvl)}${EVO[m.key] && (m.stage || 0) < 3 ? `<br>Grows into a phrase at Lv${WORD[EVO[m.key]].level}` : (m.stage || 0) >= 3 ? '<br>Fully evolved ★★★' : ''}`]);
     }
   }
 }

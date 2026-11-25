@@ -27,7 +27,7 @@ const EN_N = (boy, girl) => G(boy, girl || boy);
 
 // ---- the five English bosses: [they say, -, Persian hint, you reply, (typed reply), Persian meaning of your reply] ----
 const BOSSES_EN = {
-  b1: { name: 'HIGHWAY PATROL', look: 'trooper', lvl: 14, route: 1, need: 12, showEn: true, optEn: true,
+  b1: { name: 'CHP OFFICER', look: 'chp', lvl: 14, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
     intro: [`Pull over! License and registration, please. ${PF('بزنید کنار! گواهینامه و کارت ماشین، لطفاً.')}`, "Nobody drives into San Francisco until I'm sure they can talk like a local."],
     lines: [
       ['Good afternoon. Do you know why I pulled you over?', '', 'عصر بخیر. می‌دونید چرا نگهتون داشتم؟', 'No, officer. Was I speeding?', '', 'نه، جناب سروان. سرعتم زیاد بود؟'],
@@ -42,7 +42,7 @@ const BOSSES_EN = {
     ],
     beaten: "You talk like a local, all right. Go on, San Francisco is straight ahead. And watch that speed limit!",
   },
-  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: 12, showEn: true, optEn: false,
+  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
     intro: ["Hey! I'm the CEO of the hottest startup in San Francisco. Let's circle back on your journey.", 'Nobody leaves this city without nailing my job interview. Ready to disrupt?'],
     lines: [
       ['So, tell me about yourself.', '', 'خب، از خودت بگو.', 'I work hard and I learn quickly.', '', 'سخت کار می‌کنم و سریع یاد می‌گیرم.'],
@@ -57,8 +57,8 @@ const BOSSES_EN = {
     ],
     beaten: "Wow. You're hired! Actually, never mind, you're too good for us. The coast road north to Seattle is all yours.",
   },
-  b3: { name: 'THE AUTOCORRECT', look: 'autocorrect', lvl: 30, route: 3, need: 12, showEn: false, optEn: false, lair: true,
-    intro: ['Ducking hello! I am THE AUTOCORRECT.', "I've taken over the Space Needle and I'm changing everyone's words. 'Love' becomes 'glove'! 'Friend' becomes 'fiend'!", 'Prove you can still say what you mean. No Persian hints this time!'],
+  b3: { name: 'THE CYBORG', look: 'cyborg', lvl: 30, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    intro: ['Ducking hello! I am THE CYBORG: half human, half autocorrect.', "I've taken over the Space Needle and I'm changing everyone's words. 'Love' becomes 'glove'! 'Friend' becomes 'fiend'!", 'Prove you can still say what you mean. No Persian hints this time!'],
     lines: [
       ['Hello. How are you feeling today?', '', 'سلام. امروز چه حسی داری؟', "I'm in a good mood, thanks for asking.", '', 'سرحالم، ممنون که پرسیدی.'],
       ['Your English is terrible!', '', 'انگلیسیت افتضاحه!', "I don't think so. I'm learning fast.", '', 'فکر نمی‌کنم. دارم سریع یاد می‌گیرم.'],
@@ -69,11 +69,11 @@ const BOSSES_EN = {
       ['Why are you here?', '', 'چرا اینجایی؟', "I'm here to set the words free.", '', 'اومدم کلمه‌ها رو آزاد کنم.'],
       ["You're frustrated, aren't you?", '', 'کلافه شدی، نه؟', "No, I'm relieved. I'm almost done.", '', 'نه، خیالم راحته. تقریباً تموم شد.'],
       ['Words are mine!', '', 'کلمه‌ها مال منن!', 'Words belong to everyone.', '', 'کلمه‌ها مال همه هستن.'],
-      ['Nooo! Error! Error!', '', 'نه! خطا! خطا!', 'Goodbye, Autocorrect!', '', 'خداحافظ، تصحیح خودکار!'],
+      ['Nooo! Error! Error!', '', 'نه! خطا! خطا!', 'Goodbye, Cyborg!', '', 'خداحافظ، سایبورگ!'],
     ],
-    beaten: "Syntax error... SYSTEM OVERLOAD! This isn't over! In NEW YORK I'll autocorrect the whole city! (THE AUTOCORRECT flew east. Seattle's words are free again!)",
+    beaten: "Syntax error... SYSTEM OVERLOAD! This isn't over! In NEW YORK I'll autocorrect the whole city! (THE CYBORG flew east. Seattle's words are free again!)",
   },
-  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: 12, showEn: true, optEn: false,
+  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
     intro: ["Hey, I'm drivin' here! You need a ride into the city or what?", "Nobody gets into New York unless they can keep up with a New York cabbie. Let's go, let's go!"],
     lines: [
       ['Where to, pal?', '', 'کجا می‌ری، رفیق؟', 'Times Square, please.', '', 'تایمز اسکوئر، لطفاً.'],
@@ -88,7 +88,7 @@ const BOSSES_EN = {
     ],
     beaten: "Ha! You talk like a real New Yorker! The bridge is open, pal. Go on in!",
   },
-  b5: { name: 'THE AUTOCORRECT', look: 'autocorrect', lvl: 44, route: 6, need: 12, showEn: false, optEn: false, lair: true,
+  b5: { name: 'THE CYBORG', look: 'cyborg', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
     intro: ["You AGAIN?! I've plugged into the antenna on top of the Empire State Building!", "Every phone, every sign, every subway map in New York is mine. 'Pizza' is now 'piazza'!", 'One last conversation. Idioms, no hints. Fail, and the city that never sleeps will never speak again!'],
     lines: [
       ['Long time no see. Did you miss me?', '', 'خیلی وقته ندیدمت. دلت برام تنگ شده بود؟', 'Not really, but here I am.', '', 'نه واقعاً، ولی اینجام.'],
@@ -100,20 +100,37 @@ const BOSSES_EN = {
       ['Are we on the same page?', '', 'هم‌نظریم؟', "We're definitely not on the same page.", '', 'قطعاً هم‌نظر نیستیم.'],
       ["Fine! Let's call it a day.", '', 'باشه! برای امروز بسه.', "Not yet. I'm not giving up.", '', 'هنوز نه. تسلیم نمی‌شم.'],
       ['Why do you even care about English?', '', 'اصلاً چرا انگلیسی برات مهمه؟', 'Because knowledge is power.', '', 'چون دانایی، توانایی است.'],
-      ['Error... error... shutting down...', '', 'خطا... خطا... در حال خاموش شدن...', 'Goodbye, Autocorrect. Keep me posted!', '', 'خداحافظ، تصحیح خودکار. منو در جریان بذار!'],
+      ['Error... error... shutting down...', '', 'خطا... خطا... در حال خاموش شدن...', 'Goodbye, Cyborg. Keep me posted!', '', 'خداحافظ، سایبورگ. منو در جریان بذار!'],
     ],
-    beaten: "System... shutting... dowwwn... (THE AUTOCORRECT's circuits fizzled out. Every word in America is free again!)",
+    beaten: "System... shutting... dowwwn... (THE CYBORG's circuits fizzled out. Every word in America is free again!)",
+  },  b6: { name: 'GHOST OF WASHINGTON', look: 'ghostgw', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    intro: ['Good morrow, traveler. I am the ghost of George Washington, first President of these United States.', 'For more than two hundred years I have watched people from every corner of the earth come here and learn this language.', 'Let us converse, in English and only in English, and you shall show me what you have learned.'],
+    lines: [
+      ['Who goes there? State your name!', '', 'کی اونجاست؟ اسمت رو بگو!', "My name is {NAME}. It's an honor to meet you, sir.", '', 'اسم من {NAME} است. افتخار آشنایی با شما رو دارم، قربان.'],
+      ["I haven't had a visitor in over two hundred years!", '', 'بیش از دویست ساله که مهمون نداشتم!', 'Time flies. You must have a lot of stories.', '', 'زمان زود می‌گذره. حتماً کلی داستان دارید.'],
+      ['Where did you learn to speak English so well?', '', 'کجا انگلیسی رو این‌قدر خوب یاد گرفتی؟', 'I learned it on a road trip across America.', '', 'تو یه سفر جاده‌ای در سراسر آمریکا یادش گرفتم.'],
+      ['They say I could not tell a lie. Do you believe that?', '', 'می‌گن من نمی‌تونستم دروغ بگم. باور می‌کنی؟', "Honestly, I think it's just a legend.", '', 'راستش، فکر می‌کنم فقط یه افسانه‌ست.'],
+      ['What do you think of my city?', '', 'نظرت درباره شهر من چیه؟', 'It takes my breath away.', '', 'نفسم رو بند میاره.'],
+      ['Would you have crossed the icy Delaware River with me?', '', 'با من از رودخونه یخ‌زده دلاور رد می‌شدی؟', "Absolutely. I'd follow you through thick and thin.", '', 'حتماً. تو سختی و آسونی دنبالتون میام.'],
+      ['What matters most in a free country?', '', 'تو یه کشور آزاد چی از همه مهم‌تره؟', 'Freedom of speech, without a doubt.', '', 'بدون شک، آزادی بیان.'],
+      ['Was it hard to learn a new language?', '', 'یاد گرفتن یه زبان جدید سخت بود؟', 'It was an uphill battle, but it was worth it.', '', 'یه نبرد سخت بود، ولی ارزشش رو داشت.'],
+      ['You have earned the respect of a nation.', '', 'تو احترام یه ملت رو به دست آوردی.', "I'm flattered. That means the world to me.", '', 'خیلی لطف دارید. برام دنیا ارزش داره.'],
+      ['Farewell, my friend. Go in peace.', '', 'خداحافظ دوست من. به سلامت برو.', 'Farewell, Mr. President. Rest in peace.', '', 'خداحافظ آقای رئیس‌جمهور. روحتون شاد.'],
+    ],
+    beaten: "Splendid. Splendid! You speak like a true citizen of the world. Go forth, my friend. (The ghost of George Washington tipped his hat, and faded into the morning mist over the Capitol.)",
   },
+
 };
 // Boss portraits are drawn from the map sprite looks
 function nextGoalEN() {
-  const B5 = BOSSES_EN, c = r => caughtInRoute(r);
+  const w = r => `${winsIn(r)} / ${WINS_NEEDED}`;
   if (!S.flags.starter) return "Visit Professor Haydeh at the English school.";
-  if (!S.flags.b1) return `Catch at least ${B5.b1.need} words on ${ROUTE_NAMES[1]} (you have ${c(1)}), then get past the HIGHWAY PATROL on the way to San Francisco.`;
-  if (!S.flags.b2) return `Catch at least ${B5.b2.need} words in ${ROUTE_NAMES[2]} (you have ${c(2)}), then ace the STARTUP CEO's job interview.`;
-  if (!S.flags.b3) return `Catch at least ${B5.b3.need} words on the ${ROUTE_NAMES[3]} (you have ${c(3)}), then defeat THE AUTOCORRECT at the Space Needle in Seattle.`;
-  if (!S.flags.b4) return `Follow THE AUTOCORRECT east through the Rockies and Chicago. Catch at least ${B5.b4.need} words in ${ROUTE_NAMES[5]} (you have ${c(5)}), then keep up with the NEW YORK CABBIE.`;
-  if (!S.flags.b5) return `Catch at least ${B5.b5.need} words in ${ROUTE_NAMES[6]} (you have ${c(6)}), then face THE AUTOCORRECT at the Empire State Building.`;
+  if (!S.flags.b1) return `Win ${WINS_NEEDED} battles on ${ROUTE_NAMES[1]} (${w(1)}), then get past the CALIFORNIA HIGHWAY PATROL (CHiPs) on the way to San Francisco.`;
+  if (!S.flags.b2) return `Win ${WINS_NEEDED} battles in ${ROUTE_NAMES[2]} (${w(2)}), then ace the STARTUP CEO's job interview.`;
+  if (!S.flags.b3) return `Win ${WINS_NEEDED} battles on the ${ROUTE_NAMES[3]} (${w(3)}), then defeat THE CYBORG at the Space Needle in Seattle.`;
+  if (!S.flags.b4) return `Follow THE CYBORG east through the Rockies and Chicago. Win ${WINS_NEEDED} battles in ${ROUTE_NAMES[5]} (${w(5)}), then keep up with the NEW YORK CABBIE.`;
+  if (!S.flags.b5) return `Win ${WINS_NEEDED} battles in ${ROUTE_NAMES[6]} (${w(6)}), then face THE CYBORG at the Empire State Building.`;
+  if (!S.flags.b6) return `Take the road south from the east side of New York. Win ${WINS_NEEDED} battles on ${ROUTE_NAMES[7]} (${w(7)}), then meet the GHOST OF GEORGE WASHINGTON at the Capitol in Washington, DC.`;
   return `You beat the game! Keep filling your Lenguadex: ${caughtCount()} / ${WORDS.length}.`;
 }
 
@@ -125,7 +142,7 @@ npc('Ю', { look: 'maman', dir: 'left', talk: async () => {
 } });
 npc('Я', { look: 'haydeh', talk: async () => {
   if (!S.flags.starter) { await starterSceneEN(); return; }
-  if (S.flags.b5 && !S.flags.ending) { await endingSceneEN(); return; }
+  if (S.flags.b6 && !S.flags.ending) { await endingSceneEN(); return; }
   await say([T('HAYDEH', `Hi, ${nm()}! ${E("How's it going?", 'اوضاع چطوره؟')}`), `You have caught ${B(caughtCount())} words.`, `NEXT: ${nextGoalEN()}`]);
   if (S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('HAYDEH: Take some fresh NOTEBOOKS. You now have 5.'); }
 } });
@@ -158,7 +175,7 @@ npc('Д', { look: 'tech', dir: 'left', talk: async () => {
 npc('Ж', { look: 'kid', dir: 'left', talk: async () => {
   await say([T(EN_N('LEO', 'MIA'), `Did you see the Golden Gate Bridge? It's ${E('awesome', 'فوق‌العاده')}!`), `Kids here say ${E("that's awesome!", 'خیلی باحاله!')} about everything. My mom says ${E('use your inside voice', 'آروم‌تر حرف بزن')}.`]);
 } });
-npc('Π', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(1, EN_N('GRANDPA AL', 'GRANDMA LORRAINE'), EN_N("I ran a bakery on this wharf for forty years. A businessman learns a lot of sayings!", "I sold sourdough bread here for forty years. Let me tell you something.")) });
+npc('Π', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(1, EN_N('GRANDPA AL', 'GRANDMA LORRAINE'), EN_N("I ran a bakery down on the wharf for forty years. A businessman learns a lot of sayings!", "I sold sourdough bread here for forty years. Let me tell you something.")) });
 npc('Э', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('MIKE', 'PEARL'), null, ["Hi there! You look like you could use a break.", `Baristas often ask ${E("for here or to go?", "اینجا میل می‌کنید یا می‌برید؟")}`, "For here, then. Sit down, it's on me."]) });
 // ---- Pacific Coast Highway ----
 npc('Φ', { look: 'surfer', dir: 'left', talk: async () => {
@@ -168,26 +185,26 @@ npc('Ψ', { look: 'gma', dir: 'left', talk: async () => {
   await say([T('MARGARET', "I keep the lighthouse on these cliffs. On foggy nights I feel a little lonely."), `When you miss your country, in English you are ${E('homesick', 'دلتنگ وطن')}. It's okay to feel that way.`]);
 } });
 // ---- Seattle ----
-npc('Λ', { look: 'robot', hidden: () => !!S.flags.b3, talk: async () => { await gateBoss('b3'); } });
+npc('Λ', { look: 'cyborg', hidden: () => !!S.flags.b3, talk: async () => { await gateBoss('b3'); } });
 npc('Ξ', { look: 'shirin', dir: 'left', talk: async () => {
-  if (S.flags.b5) { await say([T('JUNE', `You did it! You beat THE AUTOCORRECT for good. ${E("I'm so proud of you!", 'خیلی بهت افتخار می‌کنم!')}`)]); return; }
-  if (S.flags.b3) { await say([T('JUNE', 'Thank you! The Space Needle is free again.'), 'But THE AUTOCORRECT flew east, to New York! Take the highway at the north-west corner of Seattle.']); return; }
-  await say([T('JUNE', "Hi. I'm June. I give tours of the Space Needle."), "THE AUTOCORRECT has taken it over! It's changing every word in Seattle. My tour script is full of nonsense!", 'Only someone who can really hold a conversation in English can beat it. Please, try!']);
+  if (S.flags.b5) { await say([T('JUNE', `You did it! You beat THE CYBORG for good. ${E("I'm so proud of you!", 'خیلی بهت افتخار می‌کنم!')}`)]); return; }
+  if (S.flags.b3) { await say([T('JUNE', 'Thank you! The Space Needle is free again.'), 'But THE CYBORG flew east, to New York! Take the highway at the north-west corner of Seattle.']); return; }
+  await say([T('JUNE', "Hi. I'm June. I give tours of the Space Needle."), "THE CYBORG has taken it over! It's changing every word in Seattle. My tour script is full of nonsense!", 'Only someone who can really hold a conversation in English can beat it. Please, try!']);
 } });
 npc('Σ', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(2, EN_N('GRANDPA WALT', 'GRANDMA BETTY'), EN_N("It rains a lot in Seattle, so we spend a lot of time indoors telling stories.", "Pull up a chair, dear. Rainy days are for wise words.")) });
 npc('Ъ', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('DAVE', 'LINDA'), null, ["Welcome! Come in out of the rain.", `Seattle runs on coffee. If you want it with no milk or sugar, say ${E("black, please", "تلخ، لطفاً")}.`, "Today's cup is on the house!"]) });
 // ---- the far side of the Rockies ----
 npc('Щ', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(3, EN_N('GRANDPA EARL', 'GRANDMA DOLORES'), EN_N("I worked on the trains in Chicago my whole life. Listen to an old railroad man.", "I raised six kids in this city. Believe me, I've learned a few things.")) });
 npc('Ь', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('FRANK', 'MARGE'), null, ["Welcome to Chicago! Cold out there, huh? It's the Windy City.", `If you like it really hot, ask ${E("can I get that extra hot?", "میشه خیلی داغ باشه؟")}`, "Here you go. Warm up!"]) });
-npc('Ч', { look: 'grandpa', lookG: 'gma', dir: 'right', talk: () => elderTalk(4, EN_N('GRANDPA SOL', 'GRANDMA ESTHER'), EN_N("I came to New York by boat in 1960 with one suitcase and no English. Now I'm the one teaching!", "I came to this city as a girl, through Ellis Island's old neighborhood. Let me share what I learned.")) });
+npc('Ч', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(4, EN_N('GRANDPA SOL', 'GRANDMA ESTHER'), EN_N("I came to New York by boat in 1960 with one suitcase and no English. Now I'm the one teaching!", "I came to this city as a girl, through Ellis Island's old neighborhood. Let me share what I learned.")) });
 npc('Й', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('TONY', 'ROSIE'), null, ["What can I get ya? This is New York, we talk fast!", `If you don't catch something, it's fine to say ${E("sorry, could you say that again?", "ببخشید، میشه دوباره بگید؟")}`, "Here's your coffee. No charge today!"]) });
 npc('Ш', { look: 'cabbie', where: () => S.flags.b4 ? [11, 27] : null, talk: async () => {
   if (S.flags.b4) { await say(T('NEW YORK CABBIE', "Go on, pal, the city's waiting! And don't forget to tip!")); return; }
   await gateBoss('b4');
 } });
-npc('Ц', { look: 'robot', hidden: () => !!S.flags.b5, talk: async () => { if (!S.flags.b4) return; await gateBoss('b5'); } });
-npc('Δ', { look: 'trooper', where: () => S.flags.b1 ? [11, 48] : null, talk: async () => {
-  if (S.flags.b1) { await say(T('HIGHWAY PATROL', `Drive safe! ${E('Buckle up!', 'کمربندت رو ببند!')}`)); return; }
+npc('Ц', { look: 'cyborg', hidden: () => !!S.flags.b5, talk: async () => { if (!S.flags.b4) return; await gateBoss('b5'); } });
+npc('Δ', { look: 'chp', where: () => S.flags.b1 ? [11, 48] : null, talk: async () => {
+  if (S.flags.b1) { await say(T('CHP OFFICER', `Drive safe! ${E('Buckle up!', 'کمربندت رو ببند!')}`)); return; }
   await gateBoss('b1');
 } });
 npc('Θ', { look: 'ceo', where: () => S.flags.b2 ? [11, 26] : null, talk: async () => {
@@ -233,7 +250,7 @@ async function starterSceneEN() {
     BI('Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!', 'اگر درست جواب بدهی، حمله‌ات به هدف می‌خورد. اگر اشتباه کنی، لنگوامون وحشی با همان جوابی که لازم داشتی به تو حمله می‌کند!'),
     BI(`Weaken a word, then use a ${B('NOTEBOOK')} to write it down and catch it. Here are 5 NOTEBOOKS.`, 'کلمه را ضعیف کن، بعد با دفتر آن را بنویس و شکارش کن. این پنج دفتر مال تو.'),
     BI('Long phrases are higher level and tougher. Short ones are a good place to start.', 'عبارت‌های بلند سطح بالاتر و سخت‌ترند. عبارت‌های کوتاه برای شروع خوب‌اند.'),
-    BI('On the road you will meet the Highway Patrol, a startup CEO, and THE AUTOCORRECT, a robot scrambling the words of Seattle.', 'در راه با پلیس بزرگراه، مدیرعامل یک استارتاپ و «تصحیح خودکار» روبه‌رو می‌شوی؛ رباتی که کلمه‌های سیاتل را به هم ریخته.'),
+    BI('On the road you will meet the California Highway Patrol (CHiPs), a startup CEO, and THE CYBORG, half human and half autocorrect, who is scrambling the words of Seattle.', 'در راه با پلیس بزرگراه کالیفرنیا، مدیرعامل یک استارتاپ و «سایبورگ» روبه‌رو می‌شوی؛ نیمه‌انسان و نیمه‌ماشینی که کلمه‌های سیاتل را به هم ریخته.'),
     BI('Beyond that lie the Rocky Mountains, Chicago, and finally NEW YORK CITY.', 'بعد از آن کوه‌های راکی، شیکاگو و در آخر شهر نیویورک است.'),
     BI('Every boss tests you with a real conversation. Win them all, and you can handle real life in English!', 'هر غول آخر با یک گفت‌وگوی واقعی امتحانت می‌کند. همه را ببری، از پس زندگی واقعی به انگلیسی برمی‌آیی!'),
     BI('One more thing: practice a little every day. Your progress is saved on this device.', 'یک چیز دیگر: هر روز کمی تمرین کن. پیشرفتت روی همین دستگاه ذخیره می‌شود.'),
@@ -244,8 +261,8 @@ async function starterSceneEN() {
 async function endingSceneEN() {
   S.flags.ending = true; writeSave(); SND.music('end');
   await say([
-    T('HAYDEH', `${nm()}! Five STAR BADGES! ${E("I'm so proud of you!", 'خیلی بهت افتخار می‌کنم!')}`),
-    'You talked your way past the Highway Patrol, a startup CEO and a New York cabbie, and you beat THE AUTOCORRECT twice, from the Space Needle to the Empire State Building.',
+    T('HAYDEH', `${nm()}! Six STAR BADGES! ${E("I'm so proud of you!", 'خیلی بهت افتخار می‌کنم!')}`),
+    'You talked your way past the California Highway Patrol (CHiPs), a startup CEO and a New York cabbie, you beat THE CYBORG twice, from the Space Needle to the Empire State Building, and you held your own with the ghost of George Washington himself.',
     'You can now handle real life in English: small talk, work, feelings and opinions, road trips, errands, the doctor, the big city, and plenty of idioms.',
     `As we say in Persian: ${PF('خواستن توانستن است')}. Where there's a will, there's a way!`,
   ]);
@@ -254,6 +271,15 @@ async function endingSceneEN() {
   await say(T('HAYDEH', `There are still ${WORDS.length - caughtCount()} words out there. ${E('Keep going!', 'ادامه بده!')}`));
 }
 async function afterBossEN(id) {
-  if (id === 'b3') await say([T('JUNE', `You did it! ${E("You're amazing!", 'فوق‌العاده‌ای!')}`), 'But THE AUTOCORRECT flew east toward New York. The highway at the north-west corner of Seattle is open now. Follow it!']);
-  if (id === 'b5') { await say(['Footsteps hurry up the stairs of the Empire State Building...', T('HAYDEH', `${nm()}! I took the red-eye flight all the way from Santa Fe! I saw everything on the news!`)]); await endingSceneEN(); }
+  if (id === 'b3') await say([T('JUNE', `You did it! ${E("You're amazing!", 'فوق‌العاده‌ای!')}`), 'But THE CYBORG flew east toward New York. The highway at the north-west corner of Seattle is open now. Follow it!']);
+  if (id === 'b5') await say(['The lights of New York flicker back on. Every sign in the city makes sense again!', 'But a strange, cold wind blows from the south...', `A voice on the wind: ${E('Come to the Capitol, traveler...', 'به کاپیتول بیا، مسافر...')}`, 'The road south to WASHINGTON, DC is open now. Its gate is on the east side of New York, next to the boxing gym.']);
+  if (id === 'b6') { await say(['Footsteps hurry up the Capitol steps...', T('HAYDEH', `${nm()}! I took the red-eye flight all the way from Santa Fe! I saw everything on the news!`)]); await endingSceneEN(); }
 }
+
+// ---- Washington, DC: the grand finale ----
+npc('Ѣ', { look: 'ghostgw', hidden: () => !!S.flags.b6, talk: async () => { if (!S.flags.b5) return; await gateBoss('b6'); } });
+npc('Ѫ', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('MARCUS', 'DOLORES'), null, ["Welcome to DC! Half my customers work in Congress, so everyone here talks about politics.", `A useful phrase when you disagree politely: ${E('with all due respect...', 'با کمال احترام...')}`, 'Here, a coffee on the house. You look like you came a long way.']) });
+npc('Ѭ', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(5, EN_N('GRANDPA FRANKLIN', 'GRANDMA ELEANOR'), EN_N("I was a tour guide on the National Mall for fifty years. The founders left us plenty of good advice.", "I taught American history for fifty years. The founders left us plenty of good advice, sweetheart.")) });
+GYMS_EN['Ծ'] = { route: 7, city: 'WASHINGTON, DC', boy: 'COACH JEFFERSON', girl: 'COACH ROSA', gym: 'BOXING GYM' };
+npc('Ծ', { look: 'coach', lookG: 'coachF', talk: () => gymTalk(GYMS_EN['Ծ']) });
+npc('Կ', { look: 'boxer', lookG: 'boxerF', dir: 'left', talk: async () => { await say([T(EN_N('ANDRE', 'NIA'), `Lots of English idioms come from boxing. Like ${E("in your corner", 'پشتت بودن، طرفدارت بودن')}.`), "It means someone supports you. Your coach is always in your corner!"]); } });

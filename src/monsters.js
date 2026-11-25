@@ -529,14 +529,28 @@ function monsterSvg(w, flip = false) {
   const shadow = sh('ellipse', { cx: 32, cy: 61, rx: 18, ry: 2.6, fill: 'rgba(0,0,0,.16)' });
   const longBill = ['spear', 'spoon', 'curlew', 'hoopoe', 'pouch', 'thin'].includes(m);
   const order = isFish ? back + head + body + front + face + collar : longBill ? back + body + head + face + front + collar : back + body + collar + head + face + front;
-  // evolved forms: a golden aura and sparkles, and a crown (taj) at the final stage
+  // evolved forms wear a hat: a baseball cap, then a graduation cap, then a crown (taj)
   let pre = '', post = '';
   if (w.stage) {
-    pre = `<defs><radialGradient id="aura" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9a0" stop-opacity=".85"/><stop offset=".6" stop-color="#ffd060" stop-opacity=".35"/><stop offset="1" stop-color="#ffd060" stop-opacity="0"/></radialGradient></defs><ellipse cx="32" cy="34" rx="${w.stage > 1 ? 34 : 30}" ry="${w.stage > 1 ? 34 : 29}" fill="url(#aura)"/>`;
-    const star = (x, y, s) => `<path d="M${x},${y - s} L${x + s * .3},${y - s * .3} L${x + s},${y} L${x + s * .3},${y + s * .3} L${x},${y + s} L${x - s * .3},${y + s * .3} L${x - s},${y} L${x - s * .3},${y - s * .3} Z" fill="#fff6c0" stroke="#d8a020" stroke-width=".5"/>`;
-    post += star(6, 10, 3.4) + star(58, 20, 2.8) + star(54, 52, 2.4) + (w.stage > 1 ? star(9, 46, 2.6) + star(46, -2, 2.2) : '');
-    if (w.stage > 1) { const cx = hc.cx || 32, cy = hc.cy - hc.ry - 1.5;
-      post += `<path d="M${cx - 8},${cy} L${cx - 9},${cy - 8} L${cx - 4},${cy - 4} L${cx},${cy - 10} L${cx + 4},${cy - 4} L${cx + 9},${cy - 8} L${cx + 8},${cy} Z" fill="#f4c840" stroke="${OL}" stroke-width="1.2" stroke-linejoin="round"/><circle cx="${cx}" cy="${cy - 3.6}" r="1.6" fill="#2ab0a8" stroke="${OL}" stroke-width=".6"/><circle cx="${cx - 5}" cy="${cy - 2.4}" r="1" fill="#d83040"/><circle cx="${cx + 5}" cy="${cy - 2.4}" r="1" fill="#d83040"/>`; }
+    const cx = hc.cx || 32, top = hc.cy - hc.ry;
+    const star = (x, y, sz) => `<path d="M${x},${y - sz} L${x + sz * .3},${y - sz * .3} L${x + sz},${y} L${x + sz * .3},${y + sz * .3} L${x},${y + sz} L${x - sz * .3},${y + sz * .3} L${x - sz},${y} L${x - sz * .3},${y - sz * .3} Z" fill="#fff6c0" stroke="#d8a020" stroke-width=".5"/>`;
+    if (w.stage === 1) { // baseball cap, brim forward
+      const t = top + 3.5;
+      post += `<path d="M${cx - 10},${t + 2} C${cx - 10},${t - 8} ${cx + 10},${t - 8} ${cx + 10},${t + 2} Z" fill="#c8323a" stroke="${OL}" stroke-width="1.2" stroke-linejoin="round"/>`
+        + `<path d="M${cx + 4},${t + 1.4} C${cx + 10},${t} ${cx + 17},${t + 1} ${cx + 18},${t + 3.4} C${cx + 13},${t + 4.4} ${cx + 8},${t + 3.6} ${cx + 4},${t + 3} Z" fill="#a8222a" stroke="${OL}" stroke-width="1.1" stroke-linejoin="round"/>`
+        + `<path d="M${cx},${t - 5.6} L${cx},${t + 1.6}" stroke="#7a161c" stroke-width=".8"/><circle cx="${cx}" cy="${t - 5.8}" r="1.1" fill="#f4f0e8" stroke="${OL}" stroke-width=".5"/>`
+        + `<text x="${cx - 5}" y="${t}" font-family="Verdana,Arial" font-weight="700" font-size="4.4" fill="#f4f0e8">L</text>`;
+    } else if (w.stage === 2) { // graduation cap with a gold tassel
+      const t = top + 2;
+      post += `<path d="M${cx - 7.5},${t - 2} L${cx + 7.5},${t - 2} L${cx + 7},${t + 3.4} C${cx + 3},${t + 4.6} ${cx - 3},${t + 4.6} ${cx - 7},${t + 3.4} Z" fill="#22222a" stroke="${OL}" stroke-width="1.1" stroke-linejoin="round"/>`
+        + `<path d="M${cx - 14},${t - 3} L${cx},${t - 8.6} L${cx + 14},${t - 3} L${cx},${t + 2.4} Z" fill="#2a2a34" stroke="${OL}" stroke-width="1.2" stroke-linejoin="round"/>`
+        + `<path d="M${cx - 13},${t - 3.4} L${cx},${t - 8.2} L${cx + 13},${t - 3.4}" fill="none" stroke="#4a4a58" stroke-width=".6"/>`
+        + `<path d="M${cx},${t - 3} L${cx + 10},${t - 2} L${cx + 10.6},${t + 6}" fill="none" stroke="#e8b830" stroke-width="1.1" stroke-linecap="round"/><path d="M${cx + 9.4},${t + 5.4} L${cx + 11.8},${t + 5.4} L${cx + 11.4},${t + 9} L${cx + 9.8},${t + 9} Z" fill="#e8b830" stroke="#8a6a10" stroke-width=".4"/><circle cx="${cx}" cy="${t - 3}" r="1.2" fill="#e8b830"/>`;
+    } else { // the crown, with sparkles
+      const t = top - 1.5;
+      post += star(6, 10, 3.4) + star(58, 20, 2.8) + star(54, 52, 2.4) + star(9, 46, 2.6)
+        + `<path d="M${cx - 8},${t} L${cx - 9},${t - 8} L${cx - 4},${t - 4} L${cx},${t - 10} L${cx + 4},${t - 4} L${cx + 9},${t - 8} L${cx + 8},${t} Z" fill="#f4c840" stroke="${OL}" stroke-width="1.2" stroke-linejoin="round"/><circle cx="${cx}" cy="${t - 3.6}" r="1.6" fill="#2ab0a8" stroke="${OL}" stroke-width=".6"/><circle cx="${cx - 5}" cy="${t - 2.4}" r="1" fill="#d83040"/><circle cx="${cx + 5}" cy="${t - 2.4}" r="1" fill="#d83040"/>`;
+    }
   }
   const inner = pre + shadow + order + post;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -8 68 74">${flip ? `<g transform="translate(64 0) scale(-1 1)">${inner}</g>` : inner}</svg>`;

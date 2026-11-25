@@ -82,14 +82,17 @@ const TYPES = {
   NYC: { label: 'BIG CITY', pal: ['#fff4a0', '#d8b020', '#6a5000'] },
   IDIOM: { label: 'IDIOM', pal: ['#ffe0e8', '#e8607a', '#7a1830'] },
   SLANG: { label: 'SLANG', pal: ['#f0d8ff', '#9a58d8', '#40206a'] },
+  HERITAGE: { label: 'HERITAGE', pal: ['#c8f4f0', '#30a8a0', '#105a56'] },
+  CIVICS: { label: 'CIVICS', pal: ['#d8e0ff', '#4868c8', '#1a2a6a'] },
+  FORMAL: { label: 'FORMAL', pal: ['#f4e8d8', '#a88458', '#4a3418'] },
 };
 const WORDS = [];
 const WORD = {};
 // Which language the player is learning: 'fa' = Persian (for English speakers), 'en' = English (for Persian speakers)
 let LANG = 'fa';
 const ROUTE_NAMES_BY = {
-  fa: { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD', 4: 'ZAGROS MOUNTAINS', 5: 'DASHT-E KAVIR', 6: 'TEHRAN' },
-  en: { 1: 'ROUTE 66', 2: 'SAN FRANCISCO', 3: 'PACIFIC COAST HIGHWAY', 4: 'ROCKY MOUNTAINS', 5: 'PENNSYLVANIA FARMLAND', 6: 'NEW YORK CITY' },
+  fa: { 1: 'YAZD DESERT ROAD', 2: 'ISFAHAN', 3: 'SHIRAZ ROAD', 4: 'ZAGROS MOUNTAINS', 5: 'DASHT-E KAVIR', 6: 'TEHRAN', 7: 'KHORASAN' },
+  en: { 1: 'ROUTE 66', 2: 'SAN FRANCISCO', 3: 'PACIFIC COAST HIGHWAY', 4: 'ROCKY MOUNTAINS', 5: 'PENNSYLVANIA FARMLAND', 6: 'NEW YORK CITY', 7: 'ROAD TO D.C.' },
 };
 const ROUTE_NAMES = { ...ROUTE_NAMES_BY.fa };
 function parseWords() {

@@ -38,7 +38,8 @@ function domeTile(c, nb, col) {
 function drawChar(ctx, px, py, L, dir, step) {
   // slim chibi: smaller head, narrow body, longer legs
   const c = ctx; c.save(); c.translate(px, py);
-  el(c, 8, 15.4, 3.4, .9, 'rgba(0,0,0,.2)');
+  if (L.ghost) { const t = performance.now(); c.globalAlpha = .62 + .18 * Math.sin(t / 380); el(c, 8, 9, 8, 9, 'rgba(200,232,255,.35)'); c.translate(0, Math.sin(t / 520) * 1.2 - 1.5); }
+  else el(c, 8, 15.4, 3.4, .9, 'rgba(0,0,0,.2)');
   if (dir === 'right') { c.translate(16, 0); c.scale(-1, 1); dir = 'left'; }
   if (L.small) { c.translate(8, 15.5); c.scale(.85, .85); c.translate(-8, -15.5); }
   c.lineJoin = 'round'; c.lineCap = 'round';

@@ -218,3 +218,91 @@ Object.assign(SPRITES, {
 function drawSprites(c, m) {
   for (const s of m.sprites || []) { c.save(); c.translate(s.x * TS, s.y * TS); SPRITES[s.id](c, s.w * TS, s.h * TS, s); c.restore(); }
 }
+
+// ---- the grand-finale cities: Mashhad (Persian game) and Washington, DC (English game) ----
+for (const ch of 'ⓟⓠ') TILE[ch] = { g: gWalk, door: true };
+// side gates out of Tehran and New York: an arch turned to face the road
+TILE['⊐'] = { g: gPath, door: true, d(c) { c.save(); c.translate(16, 0); c.rotate(Math.PI / 2); TILE['0'].d(c); c.restore(); } };
+TILE['⊏'] = { g: gAsphalt, door: true, d(c) {
+  R(c, 3, 9, 1, 7, '#6a6e76'); R(c, 12, 9, 1, 7, '#6a6e76');
+  rrect(c, 1.5, 1.5, 13, 8.5, 1, '#1e7a46', '#f4f4f0', .5);
+  c.fillStyle = '#f4f4f0'; c.font = 'bold 3.4px Verdana'; c.textAlign = 'center'; c.fillText('I-95 S', 8, 5.2); c.fillText('D.C. →', 8, 8.8);
+} };
+Object.assign(SPRITES, {
+  ferdowsi(c, W, H) { // a white stone tomb on a stepped platform, with square columns, in the style of Pasargadae and Persepolis
+    el(c, W / 2, H - 1, 58, 3, 'rgba(0,0,0,.22)');
+    for (let i = 0; i < 4; i++) { const w = W - 10 - i * 10, y = H - 5 - i * 4; rrect(c, (W - w) / 2, y, w, 4.4, .3, i % 2 ? '#ece6d6' : '#ddd5c0', '#7d7260', .5); }
+    const top = H - 21, x0 = 34, w = W - 68;
+    rrect(c, x0, top - 26, w, 26, .4, '#f2ecdc', '#7d7260', .5);
+    for (let i = 0; i < 6; i++) { const cx = x0 + 6 + i * (w - 12) / 5; R(c, cx - 2, top - 24, 4, 22, '#e4dcc6'); c.strokeStyle = '#a89a80'; c.lineWidth = .4; c.strokeRect(cx - 2, top - 24, 4, 22); R(c, cx - 3, top - 26, 6, 2, '#d6ccb4'); }
+    rrect(c, x0 - 3, top - 32, w + 6, 6, .4, '#e8e0cc', '#7d7260', .5);
+    // the faravahar, the winged symbol of ancient Persia, over the entrance
+    c.fillStyle = '#c8a040'; c.beginPath(); c.ellipse(W / 2, top - 29, 12, 1.6, 0, 0, 7); c.fill(); el(c, W / 2, top - 29.5, 2, 2, '#c8a040');
+    rrect(c, W / 2 - 4, top - 14, 8, 12, .4, '#5a4a36');
+    c.fillStyle = 'rgba(120,100,70,.5)'; c.font = '3px serif'; c.textAlign = 'center'; c.fillText('فردوسی', W / 2, top - 17);
+    // a fountain pool in front
+    el(c, W / 2, H - 1.5, 16, 1.6, '#4aa8c8', '#2a6a8a', .4);
+  },
+  khayyam(c, W, H) { // the modern tomb of Omar Khayyam: a criss-cross lattice of diamond ribs over a small plinth
+    el(c, W / 2, H - 1, 28, 2.4, 'rgba(0,0,0,.22)');
+    rrect(c, 8, H - 9, W - 16, 7, .4, '#d8d0c0', '#7d7260', .5);
+    c.strokeStyle = '#e8e2d4'; c.lineWidth = 1.5;
+    for (let i = 0; i < 10; i++) {
+      const a = i / 10 * Math.PI, bx = W / 2 + Math.cos(a) * 26;
+      c.beginPath(); c.moveTo(bx, H - 9); c.quadraticCurveTo(W / 2 + Math.cos(a) * 10, 8, W / 2, 3); c.stroke();
+    }
+    c.strokeStyle = '#3a8aa8'; c.lineWidth = .7;
+    for (let k = 0; k < 4; k++) { const y = H - 14 - k * 7, rx = 22 - k * 5; c.beginPath(); c.ellipse(W / 2, y, rx, 2, 0, Math.PI, 0); c.stroke(); }
+    el(c, W / 2, 3, 1.6, 1.6, '#3a8aa8');
+    rrect(c, W / 2 - 5, H - 8, 10, 4, .3, '#f4f0e8', '#7d7260', .4);
+    // turquoise tile garden around it
+    for (const x of [3, W - 6]) rrect(c, x, H - 6, 3, 4, .3, '#40b0b0', '#206a6a', .4);
+  },
+  capitol(c, W, H) { // the US Capitol: a white dome on a long neoclassical building
+    el(c, W / 2, H - 1, 60, 3, 'rgba(0,0,0,.22)');
+    const wing = '#f2f0ea', ln = '#8a8a90';
+    rrect(c, 4, H - 26, W - 8, 24, .5, wing, ln, .5);
+    for (let x = 9; x < W - 8; x += 6) { R(c, x, H - 22, 2.4, 16, '#e0ded6'); }
+    c.strokeStyle = ln; c.lineWidth = .4; for (let x = 9; x < W - 8; x += 6) c.strokeRect(x, H - 22, 2.4, 16);
+    R(c, 4, H - 27, W - 8, 2, '#d8d6ce');
+    // the central portico and steps
+    c.beginPath(); c.moveTo(W / 2 - 20, H - 30); c.lineTo(W / 2, H - 38); c.lineTo(W / 2 + 20, H - 30); c.closePath(); c.fillStyle = wing; c.fill(); c.stroke();
+    rrect(c, W / 2 - 20, H - 30, 40, 4, .3, '#e8e6de', ln, .4);
+    for (let i = 0; i < 3; i++) R(c, W / 2 - 22 - i * 2, H - 4 + i, 44 + i * 4, 1.4, i % 2 ? '#d8d6ce' : '#e8e6de');
+    // drum and dome
+    rrect(c, W / 2 - 13, H - 46, 26, 9, .4, '#f2f0ea', ln, .5);
+    for (let x = W / 2 - 11; x < W / 2 + 12; x += 3) R(c, x, H - 45, 1.2, 7, '#dcdad2');
+    c.beginPath(); c.moveTo(W / 2 - 12, H - 46); c.bezierCurveTo(W / 2 - 12, H - 62, W / 2 + 12, H - 62, W / 2 + 12, H - 46); c.closePath();
+    const g = c.createLinearGradient(W / 2 - 12, 0, W / 2 + 12, 0); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#c8c8d0'); c.fillStyle = g; c.fill(); c.strokeStyle = ln; c.stroke();
+    c.strokeStyle = 'rgba(120,120,130,.5)'; for (const dx of [-6, 0, 6]) { c.beginPath(); c.moveTo(W / 2 + dx, H - 46); c.quadraticCurveTo(W / 2 + dx * .6, H - 56, W / 2, H - 58); c.stroke(); }
+    R(c, W / 2 - 1.5, H - 64, 3, 5, '#f2f0ea'); el(c, W / 2, H - 65, 1.4, 1.6, '#8a8e96');
+    // the flag
+    R(c, W / 2 + 18, H - 52, .6, 14, '#6a6a70'); R(c, W / 2 + 18.6, H - 52, 6, 4, '#c8323a'); R(c, W / 2 + 18.6, H - 52, 2.6, 2, '#2a3a8a');
+  },
+  washmonument(c, W, H) { // a tall white marble obelisk
+    el(c, W / 2, H - 1, 10, 2, 'rgba(0,0,0,.25)');
+    c.beginPath(); c.moveTo(W / 2 - 5, H - 2); c.lineTo(W / 2 - 3.4, 8); c.lineTo(W / 2, 1); c.lineTo(W / 2 + 3.4, 8); c.lineTo(W / 2 + 5, H - 2); c.closePath();
+    const g = c.createLinearGradient(W / 2 - 5, 0, W / 2 + 5, 0); g.addColorStop(0, '#f4f2ec'); g.addColorStop(1, '#b8b4aa'); c.fillStyle = g; c.fill(); c.strokeStyle = '#6a6860'; c.lineWidth = .5; c.stroke();
+    c.strokeStyle = 'rgba(160,140,110,.6)'; c.beginPath(); c.moveTo(W / 2 - 4.5, H * .65); c.lineTo(W / 2 + 4.5, H * .65); c.stroke(); // the color change from the 20-year pause
+    for (const dx of [-14, -9, 9, 14]) { R(c, W / 2 + dx, H - 12, .4, 10, '#6a6a70'); R(c, W / 2 + dx + .4, H - 12, 3, 2, ['#c8323a', '#f4f4f0'][Math.abs(dx) % 2]); }
+  },
+  libertybell(c, W, H) { // the Liberty Bell hanging in its wooden yoke
+    el(c, W / 2, H - 1, 20, 2.2, 'rgba(0,0,0,.2)');
+    R(c, 4, 4, 2.6, H - 6, '#6a4424'); R(c, W - 6.6, 4, 2.6, H - 6, '#6a4424'); rrect(c, 2, 2, W - 4, 4, .6, '#7a5030', '#3a2010', .5);
+    c.beginPath(); c.moveTo(W / 2 - 6, 8); c.quadraticCurveTo(W / 2 - 7, 20, W / 2 - 12, 34); c.lineTo(W / 2 + 12, 34); c.quadraticCurveTo(W / 2 + 7, 20, W / 2 + 6, 8); c.closePath();
+    const g = c.createLinearGradient(W / 2 - 12, 0, W / 2 + 12, 0); g.addColorStop(0, '#a88a50'); g.addColorStop(.4, '#c8a868'); g.addColorStop(1, '#6a5430'); c.fillStyle = g; c.fill(); c.strokeStyle = '#3a2a10'; c.lineWidth = .6; c.stroke();
+    R(c, W / 2 - 12, 33, 24, 2, '#7a6038');
+    c.strokeStyle = '#2a1a08'; c.lineWidth = .7; c.beginPath(); c.moveTo(W / 2 - 1, 34); c.lineTo(W / 2 + 1, 28); c.lineTo(W / 2 - .5, 23); c.lineTo(W / 2 + 1, 17); c.stroke(); // the famous crack
+    c.strokeStyle = 'rgba(60,40,10,.6)'; c.lineWidth = .4; c.beginPath(); c.moveTo(W / 2 - 8, 14); c.lineTo(W / 2 + 8, 14); c.stroke();
+  },
+  fortmchenry(c, W, H) { // the star-shaped brick fort with its huge flag
+    el(c, W / 2, H - 1, 30, 2.6, 'rgba(0,0,0,.2)');
+    const cx = W / 2, cy = H - 15;
+    c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 9 : 19; c.lineTo(cx + Math.cos(a) * r * 1.4, cy + Math.sin(a) * r * .55); } c.closePath();
+    c.fillStyle = '#b85a3a'; c.fill(); c.strokeStyle = '#5a2a1a'; c.lineWidth = .6; c.stroke();
+    c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 6 : 13; c.lineTo(cx + Math.cos(a) * r * 1.4, cy - 2 + Math.sin(a) * r * .5); } c.closePath(); c.fillStyle = '#6a9a48'; c.fill();
+    R(c, cx - .4, 2, .8, cy - 4, '#5a5a60');
+    for (let i = 0; i < 7; i++) R(c, cx + .4, 2 + i * 1.4, 14, 1.4, i % 2 ? '#f4f4f0' : '#c8323a');
+    R(c, cx + .4, 2, 6, 5.6, '#2a3a8a');
+  },
+});

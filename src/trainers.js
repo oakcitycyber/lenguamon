@@ -8,17 +8,16 @@ const TRAINERS_FA = {
       ['hamid', 'CAMEL DRIVER HAMID', 'babak', 'GREET', 'Travelers always stop to chat on this road. Chat with me in Persian!', 'Ha! Your greetings are better than mine!', () => `In the desert we say ${F('خدا قوت', 'khoda ghovvat')} to anyone working hard: "may God give you strength".`],
       ['amir', 'POSTMAN AMIR', 'navid', 'QUES', 'I deliver letters AND questions! Answer mine!', 'All my questions, answered!', () => `To ask where something is: ${F('... کجاست؟', '... kojast?')} "where is ...?"`],
       ['sara', 'TOUR GUIDE SARA', 'parisa', 'BASIC', 'I show tourists around Yazd. Let me test your basics!', "You'd make a great tour guide!", () => `When you agree, say ${F('باشه', 'bashe')}: "okay".`],
-    ] },
-    { route: 2, y: [37, 46], list: [
-      ['mehdi', 'CARPET SELLER MEHDI', 'dariush', 'SHOP', 'Every carpet has a price. Can you bargain in Persian?', 'Okay, okay, you get the friend price!', () => `To bargain, say ${F('تخفیف بدید', 'takhfif bedid')}: "give me a discount".`],
-      ['zahra', 'SCHOOLGIRL ZAHRA', 'maryam', 'FAM', 'I have seven cousins! Do you know your family words?', 'You know more family words than my uncle!', () => `Your mother's brother is ${F('دایی', 'dayi')}, and your father's brother is ${F('عمو', 'amu')}.`],
-      ['behrouz', 'WATCHMAKER BEHROUZ', 'farhad', 'TIME', 'Tick tock! Do you know your time words?', 'Right on time!', () => `To say "I'm late": ${F('دیرم شده', 'diram shodeh')}.`],
+      ['mehdi', 'CARPET SELLER MEHDI', 'dariush', 'QUES', 'I carry my carpets to every town on this road. First, a question or two!', 'Okay, okay, you get the friend price!', () => `To bargain, say ${F('تخفیف بدید', 'takhfif bedid')}: "give me a discount".`],
+      ['zahra', 'SCHOOLGIRL ZAHRA', 'maryam', 'CLASS', 'School is out! Do you know your classroom words?', 'You know more family words than my uncle!', () => `Your mother's brother is ${F('دایی', 'dayi')}, and your father's brother is ${F('عمو', 'amu')}.`],
     ] },
     { route: 3, y: [14, 24], list: [
       ['parviz', 'CHEF PARVIZ', 'omid', 'FOOD', "Taste my words! They're spicy!", 'Delicious! You know your food words.', () => `After a good meal, say ${F('دستت درد نکنه', 'dastet dard nakone')}: "thank you" (literally "may your hand not hurt").`],
       ['laleh', 'POETRY FAN LALEH', 'golnaz', 'FEEL', 'Hafez wrote about every feeling. Can you name them?', 'Your heart speaks Persian!', () => `${F('دلم برات تنگ شده', 'delam barat tang shode')} means "I miss you": literally, "my heart has become tight for you".`],
       ['sina', 'WEATHERMAN SINA', 'arash', 'WEATHER', "Today's forecast: a 100% chance of battle!", 'Clear skies for you!', () => `${F('هوا خیلی گرمه', 'hava kheyli garme')}: "it's very hot". You'll say it a lot in a Shiraz summer!`],
       ['roya', 'PAINTER ROYA', 'leila', 'COLOR', "I paint with Persian colors. What's your favorite?", 'A masterpiece!', () => `Turquoise, the color of Isfahan's domes, is ${F('فیروزه‌ای', 'firuzei')}.`],
+      ['behrouz', 'WATCHMAKER BEHROUZ', 'farhad', 'VERB', 'Tick tock! Do you know your action words? Hurry!', 'Right on time!', () => `To say "I'm late": ${F('دیرم شده', 'diram shodeh')}.`],
+      ['nima', 'GARDENER NIMA', 'arash', 'COLOR', 'The gardens of Shiraz have every color. Name them!', 'You have a green thumb!', () => `A garden is ${F('باغ', 'bagh')}. Shiraz is famous for its gardens, like Bagh-e Eram.`],
     ] },
   ],
   north: [
@@ -27,17 +26,26 @@ const TRAINERS_FA = {
       ['nasim', 'HIKER NASIM', 'parisa', 'NATURE', 'Race you to the top! But first, a battle!', 'You climbed right over me!', () => `When you're out of breath: ${F('خسته شدم', 'khasteh shodam')}: "I'm tired".`],
       ['mansour', 'BUS DRIVER MANSOUR', 'navid', 'TRAVEL', 'Next stop: a battle! Tickets, please!', 'You can ride for free!', () => `To get off the bus: ${F('نگه دارید لطفا', 'negah darid lotfan')}: "please stop".`],
       ['tara', 'PHOTOGRAPHER TARA', 'maryam', 'TRAVEL', 'Say cheese! I mean... say it in Persian!', 'Picture perfect!', () => `To ask for a photo: ${F('میشه یه عکس بگیرید؟', 'mishe ye aks begirid?')}`],
+      ['shiva', 'OFFICE WORKER SHIVA', 'leila', 'TRAVEL', 'I finally took a vacation from the office! Battle me before my phone rings!', "Now I'm late for my meeting!", () => `${F('ترافیک', 'terafik')} is the same word in Persian, and Tehran has plenty of it!`],
+      ['ferial', 'NOMAD FERIAL', 'parisa', 'NATURE', 'My tribe moves with the seasons. Can you keep up?', 'You would make a fine nomad!', () => `Spring is ${F('بهار', 'bahar')}: the season when the nomads move their flocks up the mountains.`],
     ] },
     { route: 5, y: [30, 44], list: [
       ['pejman', 'DEBATER PEJMAN', 'arash', 'TALK', "I'll argue with anyone. In Persian!", 'Fine. I agree with you!', () => `To disagree politely: ${F('من این‌طور فکر نمی‌کنم', 'man intor fekr nemikonam')}: "I don't think so".`],
       ['minoo', 'STARGAZER MINOO', 'nasrin', 'TALK', "The desert sky is full of stars, and I'm full of questions!", 'You shine brighter than the stars!', () => `"Star" is ${F('ستاره', 'setareh')}. It's also a popular girl's name.`],
       ['abbas', 'CARAVAN COOK ABBAS', 'omid', 'HOME', "Dinner's ready after we battle!", "You've earned your dinner!", () => `Say ${F('نوش جان', 'noosh-e jan')} to someone eating: "enjoy!"`],
       ['soheil', 'NIGHT GUARD SOHEIL', 'dariush', 'HOME', 'Nobody passes my post at night without a battle!', 'Okay, you can pass. Sleep well!', () => `Good night is ${F('شب بخیر', 'shab bekheir')}.`],
+      ['akbar', 'TAXI DRIVER AKBAR', 'babak', 'TALK', 'Get in! The meter is running... and so is this battle!', 'Keep the change!', () => `To tell a taxi where to go: ${F('برو به ...', 'boro be ...')} "go to ...".`],
+      ['majid', 'TAAROF MASTER AGHA MAJID', 'mahmoud', 'HOME', "Please, you go first. No, no, I insist! ...Fine, I'll go first!", 'You are too kind. No, YOU are too kind!', () => `Taarof: if a shopkeeper says ${F('قابل نداره', 'ghabel nadare')} ("it's nothing"), politely insist on paying anyway!`],
     ] },
-    { route: 6, y: [5, 27], list: [
-      ['akbar', 'TAXI DRIVER AKBAR', 'babak', 'CITY', 'Get in! The meter is running... and so is this battle!', 'Keep the change!', () => `To tell a taxi where to go: ${F('برو به ...', 'boro be ...')} "go to ...".`],
-      ['shiva', 'OFFICE WORKER SHIVA', 'leila', 'CITY', 'I have five minutes before my meeting. Battle!', "Now I'm late for my meeting!", () => `${F('ترافیک', 'terafik')} is the same word in Persian, and Tehran has plenty of it!`],
-      ['majid', 'TAAROF MASTER AGHA MAJID', 'mahmoud', 'TAAROF', "Please, you go first. No, no, I insist! ...Fine, I'll go first!", 'You are too kind. No, YOU are too kind!', () => `Taarof: if a shopkeeper says ${F('قابل نداره', 'ghabel nadare')} ("it's nothing"), politely insist on paying anyway!`],
+  ],
+  east: [
+    { route: 7, y: [18, 44], list: [
+      ['kamran', 'HISTORIAN KAMRAN', 'masoud', 'HERITAGE', 'Every stone on this road has a story. Do you know your history words?', 'You know more history than my students!', () => `History is ${F('تاریخ', 'tarikh')}. The same word also means "date"!`],
+      ['shabnam', 'SAFFRON FARMER SHABNAM', 'maryam', 'HERITAGE', 'I pick saffron flowers at dawn. Battle me before the sun gets hot!', 'Your words are worth their weight in saffron!', () => `Saffron is ${F('زعفران', "za'feran")}: Iran grows most of the saffron in the world.`],
+      ['ramin', 'TURQUOISE MINER RAMIN', 'dariush', 'PHRASE', 'I dig for turquoise all day. Let me dig into your Persian!', 'You are a real gem!', () => `${F('در واقع', 'dar vaghe')} means "in fact". Very useful in a debate!`],
+      ['elnaz', 'ASTRONOMER ELNAZ', 'golnaz', 'HERITAGE', 'Khayyam measured the year to the second. Can you measure up?', 'Your Persian is written in the stars!', () => `Khayyam was a poet AND an astronomer: a ${F('ستاره‌شناس', 'setareh-shenas')}.`],
+      ['gholam', 'TRAVELLER AGHA GHOLAM', 'mahmoud', 'PHRASE', 'I walk this road to Mashhad every year. A battle makes it shorter!', 'May your road be safe!', () => `Wish travellers well: ${F('سفر بخیر', 'safar bekheir')}!`],
+      ['donya', 'POETRY STUDENT DONYA', 'leila', 'PHRASE', "I'm memorizing the Shahnameh, all 50,000 couplets. Quiz me!", 'You speak like a poet!', () => `Say goodbye with ${F('به امید دیدار', 'be omid-e didar')}: "hope to see you again".`],
     ] },
   ],
 };
@@ -48,17 +56,16 @@ const TRAINERS_EN = {
       ['skyler', 'HITCHHIKER SKYLER', 'surfer', 'PHRASAL', 'Hey! Can you give me a ride? Beat me in a battle first!', 'Cool. You picked that up fast!', () => `${E('give someone a ride', 'کسی را با ماشین رساندن')}: "Can you give me a ride to town?"`],
       ['donna', 'MOTEL CLERK DONNA', 'waitress2', 'SMALLTALK', "Checking in? You'll have to battle me first, hon.", "Your room's on the house!", () => `At a hotel, ask ${E('what time is checkout?', 'ساعت تحویل اتاق کیه؟')}`],
       ['jordan', 'CYCLIST JORDAN', 'tech', 'PHRASAL', "I'm biking coast to coast! Let's take a break and battle!", 'You wore me out!', () => `${E("I'm worn out", 'خیلی خسته‌ام')} means you are very tired.`],
-    ] },
-    { route: 2, y: [37, 46], list: [
-      ['kai', 'STARTUP INTERN KAI', 'tech', 'WORK', "I'm crushing it at my internship! Let's circle back... to a battle!", "Okay, let's take this offline.", () => `${E("let's take this offline", 'بیا این موضوع رو جداگانه حرف بزنیم')}: office talk for "let's discuss it later, just us".`],
-      ['grace', 'BANK TELLER GRACE', 'golnaz', 'MONEY', 'Next in line! Deposit, withdrawal... or battle?', 'Your account is in great shape!', () => `At the bank: ${E("I'd like to withdraw some cash", 'می‌خوام کمی پول نقد برداشت کنم')}`],
-      ['marco', 'TOUR GUIDE MARCO', 'cabbie', 'WORK', "Welcome to San Francisco! Today's tour includes... a battle!", 'Best tourist ever!', () => `${E("it's worth a visit", 'ارزش دیدن داره')}: "Alcatraz is worth a visit."`],
+      ['kai', 'STARTUP INTERN KAI', 'tech', 'PHRASAL', "I'm crushing it at my internship! Let's circle back... to a battle!", "Okay, let's take this offline.", () => `${E("let's take this offline", 'بیا این موضوع رو جداگانه حرف بزنیم')}: office talk for "let's discuss it later, just us".`],
+      ['grace', 'BANK TELLER GRACE', 'golnaz', 'SMALLTALK', 'Next in line! Deposit, withdrawal... or battle?', 'Your account is in great shape!', () => `At the bank: ${E("I'd like to withdraw some cash", 'می‌خوام کمی پول نقد برداشت کنم')}`],
     ] },
     { route: 3, y: [14, 24], list: [
       ['chase', 'SURFER CHASE', 'surfer', 'FEELINGS', "Dude! The waves are gnarly today. Let's battle!", 'Totally stoked for you, dude!', () => `${E("I'm stoked", 'خیلی هیجان‌زده و خوشحالم')}: very excited and happy.`],
       ['jade', 'PODCASTER JADE', 'tech', 'OPINION', "Welcome to my podcast! Today's guest is you. Let's debate!", 'Great episode! Like and subscribe!', () => `${E("that's a hot take", 'نظر جنجالی‌ایه')}: a surprising or controversial opinion.`],
       ['olivia', 'DEBATE CAPTAIN OLIVIA', 'parisa', 'OPINION', "I've never lost an argument. Prove me wrong!", 'I stand corrected.', () => `${E('I stand corrected', 'حق با شماست، اشتباه کردم')}: a polite way to admit you were wrong.`],
       ['river', 'POET RIVER', 'surfer', 'FEELINGS', 'The ocean makes me feel... like battling!', 'You moved me.', () => `${E('it touched my heart', 'به دلم نشست')}`],
+      ['marco', 'TOUR GUIDE MARCO', 'cabbie', 'OPINION', "I run tours down the coast! Today's tour includes... a battle!", 'Best tourist ever!', () => `${E("it's worth a visit", 'ارزش دیدن داره')}: "Alcatraz is worth a visit."`],
+      ['wes', 'WHALE WATCHER WES', 'ranger', 'FEELINGS', 'Thar she blows! A whale... and a battle!', 'Whale, whale, whale. You won!', () => `${E("I'm over the moon", 'از خوشحالی روی ابرهام')}: you're extremely happy.`],
     ] },
   ],
   usnorth: [
@@ -67,28 +74,38 @@ const TRAINERS_EN = {
       ['gary', 'RV DAD GARY', 'trucker', 'ROADTRIP', "Kids, look! A trainer! Let's battle before lunch!", "Back in the RV, kids. We lost.", () => `Every kid in the back seat asks ${E('are we there yet?', 'هنوز نرسیدیم؟')}`],
       ['dev', 'ROCK CLIMBER DEV', 'tech', 'OUTDOORS', "I just climbed that cliff. You're next!", "You've got a solid grip on English!", () => `${E('get a grip', 'به خودت مسلط باش')}: "calm down and take control".`],
       ['moe', 'BIKER MOE', 'biker', 'ROADTRIP', 'Nice ride. Wanna race? No? Then battle!', 'Respect. Ride safe.', () => `${E('ride safe', 'با احتیاط برون')}: what bikers say instead of goodbye.`],
+      ['nikki', 'STAND-UP COMIC NIKKI', 'leila', 'ROADTRIP', "I'm on a comedy tour across the country. Two words walk into a bar... and into a battle!", 'You killed it out there!', () => `${E('you killed it', 'ترکوندی / عالی بود')}: you did a great job.`],
+      ['cody', 'COWBOY CODY', 'trucker', 'OUTDOORS', "Howdy! This trail ain't big enough for the two of us!", 'Well, shucks. You win, partner.', () => `${E('howdy', 'سلام (کابویی)')}: a friendly cowboy hello.`],
     ] },
     { route: 5, y: [30, 44], list: [
       ['brenda', 'NURSE BRENDA', 'nasrin', 'HEALTH', "Let me check your vocabulary. Say 'ah'!", 'A clean bill of health!', () => `${E('a clean bill of health', 'سلامت کامل از نظر پزشک')}: the doctor says you are healthy.`],
       ['hank', 'FARMER HANK', 'babak', 'ERRANDS', 'Chores can wait. Time for a battle!', "Well, I'll be darned!", () => `${E("I've got chores to do", 'کلی کار خونه دارم')}`],
       ['luis', 'MAIL CARRIER LUIS', 'navid', 'ERRANDS', 'Special delivery: one battle, signed and sealed!', 'Return to sender!', () => `${E('sign for a package', 'رسید بسته را امضا کردن')}`],
       ['amy', 'PHARMACIST AMY', 'maryam', 'HEALTH', 'Take two battles and call me in the morning!', "You're just what the doctor ordered!", () => `${E('take it with food', 'همراه غذا بخور')}: what the pharmacist says about medicine.`],
+      ['sal', 'HOT DOG VENDOR SAL', 'cabbie', 'ERRANDS', "I'm drivin' my hot dog cart all the way to New York! Ya wanna battle?", 'Fuhgeddaboudit! You win!', () => `New Yorkers shout ${E("I'm walking here!", 'دارم از اینجا رد می‌شم!')} at cars that block the crosswalk.`],
+      ['jay', 'BREAKDANCER JAY', 'boxer', 'HEALTH', "Yo! Dancing keeps me healthy. Let's battle, for real!", "No cap, you're legit!", () => `${E("you're legit", 'تو واقعاً کاربلدی')}: you're the real deal.`],
     ] },
-    { route: 6, y: [5, 27], list: [
-      ['sal', 'HOT DOG VENDOR SAL', 'cabbie', 'NYC', "Hey, I'm walkin' here! Ya wanna battle?", 'Fuhgeddaboudit! You win!', () => `New Yorkers shout ${E("I'm walking here!", 'دارم از اینجا رد می‌شم!')} at cars that block the crosswalk.`],
-      ['nikki', 'STAND-UP COMIC NIKKI', 'leila', 'IDIOM', 'Two words walk into a bar... and into a battle!', 'You killed it out there!', () => `${E('you killed it', 'ترکوندی / عالی بود')}: you did a great job.`],
-      ['jay', 'BREAKDANCER JAY', 'boxer', 'SLANG', "Yo! Let's battle, for real!", "No cap, you're legit!", () => `${E("you're legit", 'تو واقعاً کاربلدی')}: you're the real deal.`],
+  ],
+  useast: [
+    { route: 7, y: [18, 44], list: [
+      ['abigail', 'HISTORY TEACHER ABIGAIL', 'parisa', 'CIVICS', 'Pop quiz! Do you know your civics words?', 'A+! Gold star!', () => `Thomas Jefferson wrote ${E('the Declaration of Independence', 'اعلامیه استقلال')} in 1776.`],
+      ['ben', 'RE-ENACTOR BEN', 'grandpa', 'CIVICS', "Huzzah! I dress like it's 1776. Battle me, redcoat!", 'I surrender my musket!', () => `${E('the Founding Fathers', 'بنیان‌گذاران آمریکا')} wrote the Constitution in Philadelphia in 1787.`],
+      ['priya', 'LAW STUDENT PRIYA', 'tech', 'CIVICS', "I'm studying for the bar exam. Objection! Let's battle!", 'Objection sustained. You win!', () => `The highest court is ${E('the Supreme Court', 'دیوان عالی')}: nine judges decide the biggest cases.`],
+      ['harold', 'BUTLER HAROLD', 'barista', 'FORMAL', 'Good afternoon. Might I trouble you for a battle?', 'Splendid form, if I may say so.', () => `To disagree politely: ${E('with all due respect', 'با کمال احترام')}...`],
+      ['claire', 'DIPLOMAT CLAIRE', 'maryam', 'FORMAL', "It's an honor to meet you. Shall we have a civil battle?", 'I concede, with pleasure.', () => `${E("I'd be glad to", 'با کمال میل')}: a polite way to say yes.`],
+      ['joe', 'CRAB FISHERMAN JOE', 'biker', 'CIVICS', 'Fresh Maryland crabs! But first, a battle, hon!', "Well, I'll be! You got me, hon.", () => `In Baltimore, locals call everyone ${E('hon', 'عزیزم')}, short for "honey".`],
     ] },
   ],
 };
-// the rival: five meetings, one in each city before its boss
-const RIVAL_SPOTS = { fa: [['world', 60, 'starter'], ['world', 44, 'b1'], ['world', 11, 'b2'], ['north', 62, 'b3'], ['north', 26, 'b4']], en: [['us', 60, 'starter'], ['us', 44, 'b1'], ['us', 11, 'b2'], ['usnorth', 62, 'b3'], ['usnorth', 26, 'b4']] };
+// the rival: six meetings, one in each city before its boss
+const RIVAL_SPOTS = { fa: [['world', 60, 'starter'], ['world', 44, 'b1'], ['world', 11, 'b2'], ['north', 62, 'b3'], ['north', 26, 'b4'], ['east', 15, 'b5']], en: [['us', 60, 'starter'], ['us', 44, 'b1'], ['us', 11, 'b2'], ['usnorth', 62, 'b3'], ['usnorth', 26, 'b4'], ['useast', 15, 'b5']] };
 const RIVAL_LINES = [
   ['Hey, {N}! Professor Haydeh gave you a Lenguamon too? Mine is better. Let\'s see who studied harder!', "What?! Fine, you got lucky. I'll be ready next time!"],
   ['There you are! I practiced every night. My Lenguamon know all the words YOU keep missing!', 'Hmph. You actually learned them. Not bad...'],
   ['{N}! I made it here first. Ready to lose?', 'Okay, okay. You are good. But the next city is mine!'],
   ["I've been studying flashcards the whole way here. One more time!", 'You beat me again... Maybe we should study together sometime.'],
   ['This is it, {N}. One last battle before the big city. No holding back!', "...You won. Honestly? You're the best student Haydeh ever had. Go beat that villain!"],
+  ["{N}! You came all this way too? I heard the rumors about a ghost. One final battle, for real this time!", "That's it. You're the best, and I mean it. Go talk to that ghost... and tell him I said hi."],
 ];
 Object.assign(LOOKS, {
   rival: { skin: '#f0c49c', hair: '#3a2a1a', hairStyle: 'swoop', top: '#c83a3a', top2: '#8a1e1e', tee: '#2a2a2e', legs: '#3a4a6a', kicks: '#f4f4f0' },
@@ -96,6 +113,25 @@ Object.assign(LOOKS, {
 });
 const rivalName = () => LANG === 'en' ? G('TYLER', 'MADISON') : G('DARIUSH', 'DORSA');
 const trState = id => ((S.tr || (S.tr = {}))[id] || (S.tr[id] = {}));
+
+// ---- three athletes in every gym: beat them before the head trainer will train you ----
+// [map, words route, [boy-hero names], [girl-hero names]]
+const GYM_TRAINERS = {
+  fa: [['gym1', 1, ['PAHLEVAN ALI', 'PAHLEVAN SAEED', 'PAHLEVAN NADER'], ['PAHLEVAN MINA', 'PAHLEVAN SHIRIN', 'PAHLEVAN NEGAR']],
+    ['gym2', 2, ['PAHLEVAN HAMED', 'PAHLEVAN VAHID', 'PAHLEVAN JAVAD'], ['PAHLEVAN ELAHEH', 'PAHLEVAN ROYA', 'PAHLEVAN SAMIRA']],
+    ['gym3', 3, ['PAHLEVAN KIARASH', 'PAHLEVAN FARID', 'PAHLEVAN MASOUD'], ['PAHLEVAN SHADI', 'PAHLEVAN TARANEH', 'PAHLEVAN YASAMAN']],
+    ['gym4', 4, ['PAHLEVAN NAVID', 'PAHLEVAN EHSAN', 'PAHLEVAN OMID'], ['PAHLEVAN NILOUFAR', 'PAHLEVAN SETAREH', 'PAHLEVAN ARMITA']],
+    ['gym5', 6, ['PAHLEVAN SIAMAK', 'PAHLEVAN PAYAM', 'PAHLEVAN ARMAN'], ['PAHLEVAN SHIDEH', 'PAHLEVAN NAZILA', 'PAHLEVAN BITA']],
+    ['gym6', 7, ['PAHLEVAN SOHRAB', 'PAHLEVAN GIV', 'PAHLEVAN BIZHAN'], ['PAHLEVAN MANIZHEH', 'PAHLEVAN GORDAFARID', 'PAHLEVAN FARANAK']]],
+  en: [['usgym1', 1, ['BOXER RAY', 'BOXER LUIS', 'BOXER DANTE'], ['BOXER ROSA', 'BOXER JESSIE', 'BOXER LUPE']],
+    ['usgym2', 2, ['BOXER KENJI', 'BOXER SAM', 'BOXER LEO'], ['BOXER AMY', 'BOXER IRIS', 'BOXER JUNE']],
+    ['usgym3', 3, ['BOXER TREY', 'BOXER COLE', 'BOXER RUSS'], ['BOXER SKYE', 'BOXER BROOKE', 'BOXER QUINN']],
+    ['usgym4', 4, ['BOXER MIKE', 'BOXER PAT', 'BOXER STAN'], ['BOXER KATIE', 'BOXER MOLLY', 'BOXER SHEILA']],
+    ['usgym5', 6, ['BOXER VINNIE', 'BOXER RICO', 'BOXER JAMAL'], ['BOXER GINA', 'BOXER TONI', 'BOXER KEISHA']],
+    ['usgym6', 7, ['BOXER GRANT', 'BOXER LINCOLN', 'BOXER JACKSON'], ['BOXER BETSY', 'BOXER DOLLY', 'BOXER HARRIET']]],
+};
+const GYM_TR_SPOTS = [[6, 6, 'left'], [1, 3, 'down'], [8, 3, 'down']];
+function gymTrainersLeft(mapId) { return TRAINER_NPCS.filter(n => n.tr && n.tr.gym && NPC_POS[n.marker].map === mapId && !trState(n.tr.id).won).length; }
 
 // ---- create the trainer NPCs and stand them beside the road ----
 const TRAINER_NPCS = [];
@@ -119,6 +155,25 @@ function placeTrainers() {
         });
       }
     }
+  }
+  for (const lang of ['fa', 'en']) for (const [mapId, route, boys, girls] of GYM_TRAINERS[lang]) {
+    if (!MAPS[mapId]) continue;
+    GYM_TR_SPOTS.forEach(([x, y, dir], k) => {
+      const marker = `gtr:${lang}:${mapId}:${k}`, en = lang === 'en';
+      NPC_POS[marker] = { map: mapId, x, y };
+      const n = { marker, dir, wide: dir === 'down', noWander: true,
+        tr: { id: `${lang}:${mapId}:${k}`, gym: true, route, lang, short: '',
+          hello: en ? ["Coach says nobody gets to the ring without going through me!", "Gloves up! Let's see your footwork... I mean, your words!", "I'm the last one before the coach. Give it everything!"][k]
+            : ['The morshed says nobody trains with him until they beat us!', `${F('یا علی', 'ya ali')}! Show me your strength... in words!`, "I'm the last one before the morshed. Give it everything!"][k],
+          lose: en ? ['Good fight! You can go see the coach... after the other two.', 'You float like a butterfly!', "You earned it. The coach is waiting."][k]
+            : [`${F('خسته نباشی', 'khasteh nabashi')}! Strong words!`, `${F('آفرین', 'afarin')}! A true pahlevan!`, 'You have earned your place. The morshed is waiting.'][k],
+          tip: () => (en ? 'Train hard, and talk to the coach when you have beaten all three of us.' : 'Beat all three of us, then talk to the morshed to train.') } };
+      Object.defineProperty(n.tr, 'name', { get: () => (isGirl() ? girls : boys)[k] });
+      Object.defineProperty(n.tr, 'type', { get: () => { const ty = [...new Set(WORDS.filter(w => w.route === route).map(w => w.type))]; return ty[k % ty.length]; } });
+      Object.defineProperty(n, 'look', { get: () => (en ? (isGirl() ? 'boxerF' : 'boxer') : (isGirl() ? 'pahlevanF' : 'pahlevan')) });
+      n.talk = () => trainerTalk(n);
+      NPCS.push(n); TRAINER_NPCS.push(n);
+    });
   }
   for (const lang of ['fa', 'en']) RIVAL_SPOTS[lang].forEach(([mapId, y, need], k) => {
     const m = MAPS[mapId]; if (!m) return;
@@ -150,9 +205,9 @@ function findSpot(m, x, y, side) {
 // ---- line of sight: after every step, can a trainer see you? ----
 function sightHit(n) {
   if (n.hidden && n.hidden()) return false;
-  if (n.tr && (n.tr.lang !== LANG || ((S.tr || {})[n.tr.id] || {}).won)) return false;
+  if (n.tr) { if (n.tr.lang !== LANG) return false; const st = (S.tr || {})[n.tr.id] || {}; if (st.won && !wantsRematch(st)) return false; }
   const p = npcPos(n); if (!p || p.map !== curMap.id) return false;
-  const [dx, dy] = DIRS[n.dir], wide = !!n.rival;
+  const [dx, dy] = DIRS[n.dir], wide = !!n.rival || !!n.wide;
   for (let k = 1; k <= 4; k++) {
     for (const off of wide ? [0, -1, 1] : [0]) {
       const x = p.x + dx * k + (dx ? 0 : off), y = p.y + dy * k + (dy ? 0 : off);
@@ -181,7 +236,11 @@ async function trainerSpotted(n) {
     n.tmp = { x, y }; drawWorld(); await sleep(150);
   }
   PL.dir = { up: 'down', down: 'up', left: 'right', right: 'left' }[n.dir]; S.dir = PL.dir; drawWorld();
-  try { await (n.rival ? rivalBattle(n) : trainerBattleFor(n, false)); } finally { n.tmp = null; }
+  try {
+    if (n.rival) await rivalBattle(n);
+    else if (trState(n.tr.id).won) await offerRematch(n);
+    else await trainerBattleFor(n, false);
+  } finally { n.tmp = null; n.wpos = null; }
 }
 
 // ---- teams ----
@@ -199,10 +258,40 @@ function rivalTeam(stage) {
   const lead = Math.max(...S.team.map(m => m.lvl)), size = Math.min(2 + stage, 5);
   // the words you miss most, then words from the road ahead
   const missed = Object.entries(S.stats || {}).filter(([k, s]) => WORD[k] && s[1] > 0).sort((a, b) => (b[1][1] - b[1][0]) - (a[1][1] - a[1][0])).map(([k]) => WORD[k]);
-  const route = [1, 2, 3, 5, 6][stage];
+  const route = [1, 2, 3, 5, 6, 7][stage];
   const fill = shuffle(WORDS.filter(w => w.route === route));
   const words = [...new Set([...missed.slice(0, size), ...fill])].slice(0, size);
   return words.map((w, i) => ({ w, lvl: Math.max(w.level, lead - 1 + stage + (i === words.length - 1 ? 2 : 0)) }));
+}
+
+// ---- rematches: after you rest, beaten trainers come and ask once ----
+const wantsRematch = st => st.won && st.rem !== (S.rest || 0) && st.asked !== (S.rest || 0);
+async function offerRematch(n) {
+  const t = n.tr, st = trState(t.id);
+  st.asked = S.rest || 0;
+  if (await ask(`${t.name}: Hey, it's you! I've been practicing. Want a rematch?`)) { await trainerBattleFor(n, true); return; }
+  await say(T(t.name, "Okay, maybe next time. I'll be practicing!"));
+}
+
+// ---- trainers wander a little around their spot, and turn to look around ----
+let wanderT = 0;
+function wanderTick(now) {
+  if (now - wanderT < 900 || !curMap || !S) return; wanderT = now;
+  for (const n of TRAINER_NPCS) {
+    if (n.noWander || n.rival || n.tmp || (n.hidden && n.hidden()) || (n.tr && n.tr.lang !== LANG)) continue;
+    const home = NPC_POS[n.marker]; if (!home || home.map !== curMap.id) continue;
+    if (Math.abs(home.y - PL.y) > 7) continue; // only people near the screen move
+    if (rand() > 0.3) continue;
+    const p = npcPos(n);
+    if (rand() < 0.45) { n.dir = ['up', 'down', 'left', 'right'][Math.floor(rand() * 4)]; continue; }
+    const d = ['up', 'down', 'left', 'right'][Math.floor(rand() * 4)], [dx, dy] = DIRS[d], nx = p.x + dx, ny = p.y + dy;
+    if (Math.abs(nx - home.x) > 2 || Math.abs(ny - home.y) > 2) continue;
+    if ((nx === PL.x && ny === PL.y) || solidAt(curMap, nx, ny) || curMap.grid[ny][nx] === '=' || curMap.grid[ny][nx] === 'ǁ') continue;
+    if (Object.values(curMap.doors || {}).some(dd => dd.x === nx && dd.y === ny)) continue;
+    n.dir = d; n.wpos = { x: nx, y: ny };
+  }
+  // a trainer who wandered into view of you comes over
+  if (!PL.moving) checkTrainers();
 }
 
 // ---- talking to trainers ----
@@ -211,6 +300,7 @@ async function trainerTalk(n) {
   if (!st.won) { await trainerBattleFor(n, false); return; }
   const rest = S.rest || 0;
   if (st.rem !== rest && S.team.some(m => m.hp > 0)) {
+    st.asked = rest;
     if (await ask(`${t.name}: You again! I've been practicing. Want a rematch?`)) { await trainerBattleFor(n, true); return; }
   }
   await say([T(t.name, t.tip()), ...(st.rem === rest ? ['(Rest at a teahouse or café, and they will be ready for a rematch.)'.replace('teahouse or café', LANG === 'en' ? 'café' : 'teahouse')] : [])]);
@@ -218,7 +308,7 @@ async function trainerTalk(n) {
 async function trainerBattleFor(n, rematch) {
   const t = n.tr, st = trState(t.id);
   await say(T(t.name, rematch ? "This time I won't hold back!" : t.hello));
-  const won = await trainerBattle({ name: t.name, short: t.name.split(' ').slice(-1)[0] }, trainerTeam(n, rematch), 'battle');
+  const won = await trainerBattle({ name: t.name, short: t.name.split(' ').slice(-1)[0] }, trainerTeam(n, rematch), t.gym ? 'boss' : 'battle');
   if (!won) return;
   if (rematch) st.rem = S.rest || 0; else { st.won = true; st.rem = S.rest || 0; S.daftar += 1; }
   await say([T(t.name, t.lose), T(t.name, t.tip()), ...(rematch ? [] : [`${esc(t.name)} gave you a ${DAF()}. You have ${S.daftar}.`])]);
@@ -290,6 +380,7 @@ async function trainerBattle(tr, team, music) {
   }
   SND.fx('badge');
   await say(`You defeated ${esc(tr.name)}!`);
+  addWin();
   await earn(tr.prize || team.reduce((a, o) => a + 3 + Math.floor(o.lvl / 3), 0), `${esc(tr.short)} paid you`);
   BT.trainer = null; writeSave(); await battleOutro();
   return true;

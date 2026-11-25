@@ -1,5 +1,5 @@
 // LENGUAMON word bank (Persian v1)
-// Format: transliteration | english | persian script | route (1-6) | type
+// Format: transliteration | english | persian script | route (1-7) | type
 // Alternatives are separated by " / ". In the script column "+" is a zero-width non-joiner.
 // Sources: Kurt's "Farsi word bank.csv" (ICF course weeks 1-11, Quizlet, Instagram lists),
 // plus high-frequency conversational words checked against the wordfreq Persian top-1000 list
@@ -527,4 +527,49 @@ man ye kam farsi harf mizanam|I speak a little Persian|من یه کم فارسی
 mishe lotfan aheste-tar harf bezanid?|could you please speak more slowly?|میشه لطفا آهسته+تر حرف بزنید؟|6|TAAROF
 man daram farsi yad migiram|I'm learning Persian|من دارم فارسی یاد می+گیرم|6|TAAROF
 chon iran ro doost daram|because I love Iran|چون ایران رو دوست دارم|6|TAAROF
+tarikh|history|تاریخ|7|HERITAGE
+farhang|culture|فرهنگ|7|HERITAGE
+she'r|poem / poetry|شعر|7|HERITAGE
+sha'er|poet|شاعر|7|HERITAGE
+shahnameh|the Book of Kings (Ferdowsi's epic)|شاهنامه|7|HERITAGE
+padeshah|king|پادشاه|7|HERITAGE
+emperatoori|empire|امپراتوری|7|HERITAGE
+azadi|freedom|آزادی|7|HERITAGE
+edalat|justice|عدالت|7|HERITAGE
+ghahreman|hero|قهرمان|7|HERITAGE
+ostooreh|legend / myth|اسطوره|7|HERITAGE
+bastani|ancient|باستانی|7|HERITAGE
+miras|heritage|میراث|7|HERITAGE
+aramgah|tomb / mausoleum|آرامگاه|7|HERITAGE
+firuzeh|turquoise|فیروزه|7|HERITAGE
+setareh-shenasi|astronomy|ستاره+شناسی|7|HERITAGE
+riazi|mathematics / math|ریاضی|7|HERITAGE
+falsafeh|philosophy|فلسفه|7|HERITAGE
+hekmat|wisdom|حکمت|7|HERITAGE
+dana|wise|دانا|7|HERITAGE
+mehrabani|kindness|مهربانی|7|HERITAGE
+ehteram|respect|احترام|7|HERITAGE
+eftekhar|pride / honor|افتخار|7|HERITAGE
+yadegar|keepsake / souvenir|یادگار|7|HERITAGE
+nasl|generation|نسل|7|HERITAGE
+niyakan|ancestors|نیاکان|7|HERITAGE
+jang|war|جنگ|7|HERITAGE
+solh|peace|صلح|7|HERITAGE
+tamaddon|civilization|تمدن|7|HERITAGE
+ba in hal|nevertheless / even so|با این حال|7|PHRASE
+dar vaghe|in fact / actually|در واقع|7|PHRASE
+kholaseh|in short|خلاصه|7|PHRASE
+be har hal|anyway / in any case|به هر حال|7|PHRASE
+bedun-e shak|without a doubt|بدون شک|7|PHRASE
+ye ruzi|someday / one day|یه روزی|7|PHRASE
+hichvaght faramoosh nemikonam|I'll never forget|هیچ+وقت فراموش نمی+کنم|7|PHRASE
+delam baraye iran tang mishe|I'll miss Iran|دلم برای ایران تنگ می+شه|7|PHRASE
+safar bekheir|have a good trip|سفر بخیر|7|PHRASE
+dorood|greetings (formal)|درود|7|PHRASE
+bedrood|farewell (formal)|بدرود|7|PHRASE
+pendar-e nik, goftar-e nik, kerdar-e nik|good thoughts, good words, good deeds|پندار نیک، گفتار نیک، کردار نیک|7|PHRASE
+tavana bovad har ke dana bovad|knowledge is power (whoever is wise is powerful)|توانا بود هر که دانا بود|7|PHRASE
+khasteh shodam vali razi-am|I'm tired but satisfied|خسته شدم ولی راضی+ام|7|PHRASE
+movafagh shodam|I succeeded / I made it|موفق شدم|7|PHRASE
+be omid-e didar|hope to see you again|به امید دیدار|7|PHRASE
 `;

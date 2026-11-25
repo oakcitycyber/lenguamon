@@ -123,6 +123,87 @@ function portraitSvg(id) {
       <rect x="48" y="4" width="14" height="7" rx="2" fill="#f0c030" ${st}/><text x="55" y="9.4" font-family="Verdana" font-weight="700" font-size="4.2" fill="#2a2a2a" text-anchor="middle">TAXI</text>
     </svg>`;
   }
+  if (id === 'police') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
+      <path d="M11,64 C11,47 20,41 32,41 C44,41 53,47 53,64 Z" fill="#5e6e46" ${st}/><path d="M27,41 L32,49 L37,41" fill="#e8e4d4" ${st}/><path d="M31,43 L33,43 L33.4,53 L32,55 L30.6,53 Z" fill="#3a4428"/>
+      <rect x="14" y="43" width="9" height="2.6" rx="1" fill="#e0c060" ${st}/><rect x="41" y="43" width="9" height="2.6" rx="1" fill="#e0c060" ${st}/>
+      <path d="M39,48 h8 v6 l-4,2.4 l-4,-2.4 Z" fill="#e0c060" ${st}/><circle cx="43" cy="51.4" r="1.3" fill="#3a8a4a"/>
+      <ellipse cx="32" cy="28" rx="13" ry="14.5" fill="${skin}" ${st}/>
+      ${eyes(true)}<path d="M25,34.6 C28,32.4 36,32.4 39,34.6 C36,36 28,36 25,34.6 Z" fill="#2a1a12" ${st}/><path d="M29,38.6 h6" stroke="#8a4a3a" stroke-width="1.2"/>
+      <path d="M17,19 C17,8 47,8 47,19 Z" fill="#5e6e46" ${st}/><path d="M17,19 h30 v3 h-30 Z" fill="#2e6a3a" ${st}/>
+      <path d="M17,22 C22,25.5 42,25.5 47,22 L48,23.6 C42,27.6 22,27.6 16,23.6 Z" fill="#1e2416" ${st}/><circle cx="32" cy="14" r="2.6" fill="#e0c060" ${st}/>
+      <g transform="rotate(-10 54 40)"><rect x="49" y="31" width="10" height="14" rx="1.4" fill="#c8a070" ${st}/><rect x="51" y="34" width="6" height="9" fill="#fff"/><path d="M52,36 h4 M52,38.4 h4 M52,40.8 h3" stroke="#888" stroke-width=".7"/></g>
+    </svg>`;
+  }
+  if (id === 'chp') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.15)"/>
+      <path d="M11,64 C11,47 20,41 32,41 C44,41 53,47 53,64 Z" fill="#c8a870" ${st}/><path d="M27,41 L32,49 L37,41" fill="#b89860" ${st}/><path d="M31,42 L33,42 L33.6,52 L32,55 L30.4,52 Z" fill="#1e2a48"/>
+      <path d="M11,52 h11 M42,52 h11" stroke="#1e2a48" stroke-width="2"/>
+      <path d="M40,46 L43,44 L46,46 L46,50 L43,52.4 L40,50 Z" fill="#e8c040" ${st}/><path d="M43,46 l.7,1.6 h1.6 l-1.3,1 .5,1.7 -1.5,-1 -1.5,1 .5,-1.7 -1.3,-1 h1.6 Z" fill="#a87818"/>
+      <ellipse cx="32" cy="29" rx="12.5" ry="13.5" fill="${skin}" ${st}/>
+      <path d="M17,26 C15,6 49,6 47,26 L44,26 L44,22 C40,20 24,20 20,22 L20,26 Z" fill="#f4f4f0" ${st}/><path d="M18,21 h28" stroke="#1e2a48" stroke-width="2.4"/>
+      <path d="M32,9 l1.4,3 h3.2 l-2.6,2 1,3.2 -3,-2 -3,2 1,-3.2 -2.6,-2 h3.2 Z" fill="#e8c040" stroke="#2b1d16" stroke-width=".6"/>
+      <path d="M21,25 h9.6 q0,6 -5,6 q-4.6,0 -4.6,-6 Z M33.4,25 H43 q0,6 -4.6,6 q-5,0 -5,-6 Z" fill="#3a3020" ${st}/><path d="M30.6,26 h2.8" stroke="#2b1d16" stroke-width="1.2"/><path d="M23,26.4 l3,-.6 M35.4,26.4 l3,-.6" stroke="#e8c878" stroke-width="1"/>
+      <path d="M27,36 Q32,38.6 37,35" fill="none" stroke="#8a4a3a" stroke-width="1.5"/>
+    </svg>`;
+  }
+  if (id === 'zealot') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="62" rx="24" ry="2.5" fill="rgba(0,0,0,.25)"/>
+      <path d="M8,64 C8,46 18,40 32,40 C46,40 56,46 56,64 Z" fill="#3a3c40" ${st}/>
+      <path d="M25,40 L32,52 L39,40 Z" fill="#141416" ${st}/><path d="M32,44 v18" stroke="#2a2a2e" stroke-width="1"/><circle cx="32" cy="50" r=".8" fill="#5a5a60"/><circle cx="32" cy="56" r=".8" fill="#5a5a60"/>
+      <path d="M25,40 L28,52 L20,44 Z M39,40 L36,52 L44,44 Z" fill="#2a2c30" ${st}/>
+      <ellipse cx="32" cy="26" rx="12.5" ry="14" fill="#d8a888" ${st}/>
+      <path d="M19.6,22 C19,9 45,9 44.4,22 C41,16 23,16 19.6,22 Z" fill="#1a1410" ${st}/>
+      <path d="M19.5,27 C19,46 45,46 44.5,27 C42,34 38,36 32,36 C26,36 22,34 19.5,27 Z" fill="#1a1410" ${st}/>
+      <path d="M21,20.6 L30,24.4 M43,20.6 L34,24.4" stroke="#0e0a08" stroke-width="2.8" stroke-linecap="round"/>
+      <ellipse cx="26.4" cy="27" rx="1.9" ry="2.2" fill="#1e1410"/><ellipse cx="37.6" cy="27" rx="1.9" ry="2.2" fill="#1e1410"/><circle cx="27" cy="26.4" r=".6" fill="#fff"/><circle cx="38.2" cy="26.4" r=".6" fill="#fff"/>
+      <path d="M27,35.4 Q32,32.6 37,35.4 L36,36.6 Q32,35 28,36.6 Z" fill="#7a2a2a"/>
+      <path d="M30,29 Q32,32 34,29" fill="none" stroke="#a87858" stroke-width="1.2"/>
+      <g transform="rotate(-18 10 42)"><path d="M4,38 L14,34 L14,48 L4,44 Z" fill="#c8c8cc" ${st}/><path d="M14,36 h4 v10 h-4" fill="#8a8a90" ${st}/><path d="M1,37 Q-1,41 1,45 M-1,35 Q-4,41 -1,47" stroke="#e8c040" stroke-width="1" fill="none"/></g>
+      <g transform="rotate(14 50 52)"><rect x="42" y="46" width="16" height="10" rx="1.4" fill="#f4f0e4" ${st}/><circle cx="50" cy="51" r="4" fill="none" stroke="#c82a2a" stroke-width="1.6"/><path d="M47.2,53.8 L52.8,48.2" stroke="#c82a2a" stroke-width="1.6"/></g>
+    </svg>`;
+  }
+  if (id === 'cyborg') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <defs><radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff4a6a" stop-opacity=".8"/><stop offset="1" stop-color="#ff4a6a" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="32" cy="61" rx="20" ry="2.5" fill="rgba(0,0,0,.2)"/>
+      <path d="M11,64 C11,47 20,41 32,41 C44,41 53,47 53,64 Z" fill="#2a2e38" ${st}/>
+      <path d="M32,41 V64" stroke="#1a1e26" stroke-width="1"/><path d="M33,46 h16 M33,52 h18 M33,58 h18" stroke="#5a6070" stroke-width="1.2"/><circle cx="40" cy="49" r="1.4" fill="#3ae0a0"/>
+      <path d="M32,13 C24,13 19.5,19 19.5,27 C19.5,36 25,42 32,42 Z" fill="${skin}" ${st}/>
+      <path d="M32,13 C40,13 44.5,19 44.5,27 C44.5,36 39,42 32,42 Z" fill="#a8b0bc" ${st}/>
+      <path d="M36,18 h6 M37,33 h5 M35,38 h4" stroke="#7a8290" stroke-width="1"/><circle cx="41" cy="20" r=".8" fill="#5a6070"/><circle cx="41" cy="36" r=".8" fill="#5a6070"/>
+      <path d="M20,22 C20,11 32,9 32,13 C28,13 24,15 22,22 Z" fill="#3a2a1a" ${st}/>
+      <ellipse cx="26.4" cy="27" rx="2" ry="2.4" fill="#1e1410"/><path d="M22,22.4 L30,24" stroke="#2a1a12" stroke-width="2"/>
+      <circle cx="37.6" cy="27" r="3.6" fill="#1a1e26" ${st}/><circle cx="37.6" cy="27" r="6.5" fill="url(#cg)"/><circle cx="37.6" cy="27" r="1.7" fill="#ff2a4a"/>
+      <path d="M26,35 Q30,37.6 32,36 L38,36" fill="none" stroke="#8a3a3a" stroke-width="1.4"/><path d="M33,36 v1.4 M35,36 v1.4 M37,36 v1.4" stroke="#5a6070" stroke-width=".8"/>
+      <path d="M44,30 C50,30 50,40 56,42 M44,24 C52,22 54,14 58,12" stroke="#3ae0a0" stroke-width="1.2" fill="none"/><circle cx="56" cy="42" r="1.3" fill="#3ae0a0"/><circle cx="58" cy="12" r="1.3" fill="#ff3a5a"/>
+      <text x="14" y="58" font-family="Verdana" font-weight="700" font-size="4" fill="#3ae0a0" text-anchor="middle">ERR</text>
+    </svg>`;
+  }
+  if (id === 'ghostcyrus' || id === 'ghostgw') {
+    const gw = id === 'ghostgw';
+    const head = gw
+      ? `<path d="M18,26 C16,10 48,10 46,26 C44,18 40,16 32,16 C24,16 20,18 18,26 Z" fill="#f4f4fa" ${st}/><ellipse cx="17.5" cy="29" rx="3" ry="4.6" fill="#f4f4fa" ${st}/><ellipse cx="46.5" cy="29" rx="3" ry="4.6" fill="#f4f4fa" ${st}/>
+         <path d="M14,15 C20,6 44,6 50,15 L46,19 C40,14 24,14 18,19 Z" fill="#1e2a48" ${st}/><path d="M12,16 L20,12 L32,8 L44,12 L52,16" fill="none" stroke="#e0c060" stroke-width="1"/>
+         <path d="M28,35 Q32,37 36,35" fill="none" stroke="#7a6a8a" stroke-width="1.4"/>`
+      : `<path d="M19.5,30 C18,50 46,50 44.5,30 C42,36 38,37.4 32,37.4 C26,37.4 22,36 19.5,30 Z" fill="#3a2a30" ${st}/>
+         ${[0, 1, 2, 3, 4].map(i => `<circle cx="${23 + i * 4.5}" cy="${42 + (i % 2) * 2}" r="1.8" fill="#4a3a40" stroke="#2b1d16" stroke-width=".5"/>`).join('')}
+         <path d="M25,35 C28,33 36,33 39,35" stroke="#3a2a30" stroke-width="2" fill="none"/>
+         <path d="M18,21 L18,8 L23,12 L27,5 L32,10 L37,5 L41,12 L46,8 L46,21 Z" fill="#e0c060" ${st}/><path d="M18,21 h28" stroke="#a87818" stroke-width="2"/><circle cx="32" cy="15" r="2" fill="#3a6ac8"/><circle cx="24" cy="16" r="1.2" fill="#c83a3a"/><circle cx="40" cy="16" r="1.2" fill="#c83a3a"/>`;
+    const body = gw
+      ? `<path d="M10,64 C10,46 19,40 32,40 C45,40 54,46 54,64 Z" fill="#1e2a48" ${st}/><path d="M26,40 L32,48 L38,40" fill="#f4f4fa" ${st}/><path d="M29,46 Q32,50 35,46 Q32,54 29,46" fill="#f4f4fa" ${st}/>
+         <path d="M14,46 L22,44 L22,64 M50,46 L42,44 L42,64" stroke="#e0c060" stroke-width="1.6" fill="none"/>${[0, 1, 2].map(i => `<circle cx="38" cy="${52 + i * 4}" r="1" fill="#e0c060"/>`).join('')}`
+      : `<path d="M8,64 C8,46 18,40 32,40 C46,40 56,46 56,64 Z" fill="#7a3a8a" ${st}/><path d="M24,40 L32,64 L40,40" fill="#f4f0e4" ${st}/><path d="M8,56 C20,52 44,52 56,56" stroke="#e0c060" stroke-width="2" fill="none"/>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <defs><radialGradient id="gh" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#c8e8ff" stop-opacity=".9"/><stop offset="1" stop-color="#c8e8ff" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="32" cy="32" r="32" fill="url(#gh)"/>
+      <g opacity=".78">${body}<ellipse cx="32" cy="28" rx="12.5" ry="14" fill="#e8f0f8" ${st}/>${eyes(false)}${head}</g>
+      <path d="M6,60 q4,-4 8,0 t8,0 M42,60 q4,-4 8,0 t8,0" stroke="#c8e8ff" stroke-width="1.4" fill="none" opacity=".8"/>
+    </svg>`;
+  }
   if (id === 'censor') {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff5a7a"/><stop offset="1" stop-color="#ff5a7a" stop-opacity="0"/></radialGradient></defs>
@@ -161,6 +242,15 @@ function portraitSvg(id) {
   </svg>`;
 }
 const PORTRAIT_URL = {};
+// map looks for the new bosses
+Object.assign(LOOKS, {
+  police: { skin: '#e8b890', hair: '#1a1410', top: '#5e6e46', top2: '#3e4a2e', legs: '#3e4a2e', stache: true, cap: '#5e6e46' },
+  zealot: { skin: '#d8a888', hair: '#1a1410', top: '#3a3c40', top2: '#141416', legs: '#1a1a1e', stache: true, beard: true },
+  chp: { skin: '#eab890', hair: '#3a2a1a', top: '#c8a870', top2: '#a08050', legs: '#1e2a48', cap: '#f4f4f0', glasses: true },
+  cyborg: { skin: '#b8c0cc', hair: '#3a2a1a', top: '#2a2e38', top2: '#1a1e26', legs: '#2a2e38', cyber: true },
+  ghostcyrus: { skin: '#e8f0f8', hair: '#3a2a30', top: '#7a3a8a', top2: '#f4f0e4', legs: '#7a3a8a', beard: true, stache: true, cap: '#e0c060', coat: true, ghost: true },
+  ghostgw: { skin: '#e8f0f8', hair: '#f4f4fa', hairStyle: 'long', top: '#1e2a48', top2: '#f4f4fa', legs: '#e8dcc0', coat: true, ghost: true },
+});
 function portraitUrl(id) { return PORTRAIT_URL[id] || (PORTRAIT_URL[id] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(portraitSvg(id))); }
 
 // ---- tea scene: Agha Reza serving you chai, painted in a soft, warm, hand-drawn style ----

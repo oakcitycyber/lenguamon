@@ -31,6 +31,7 @@ const GYMS = {
   '?': { route: 3, city: 'SHIRAZ', boy: 'MORSHED ROSTAM', girl: 'MORSHED RUDABEH' },
   'μ': { route: [4, 5], city: 'KASHAN', boy: 'MORSHED ZAL', girl: 'MORSHED FARANAK' },
   'π': { route: 6, city: 'TEHRAN', boy: 'MORSHED FEREYDOUN', girl: 'MORSHED SINDOKHT' },
+  'ζ': { route: 7, city: 'MASHHAD', boy: 'MORSHED BAHRAM', girl: 'MORSHED PARIDOKHT' },
 };
 const GYM_ROUNDS = 8;
 function gymWords(route) {
@@ -72,6 +73,8 @@ async function gymDrill(g) {
 }
 async function gymTalk(g0) {
   const g = { ...g0, name: G(g0.boy, g0.girl) };
+  const left = gymTrainersLeft(curMap.id);
+  if (left) { await say([T(g.name, LANG === 'en' ? `Not so fast! Beat my ${left === 3 ? 'three boxers' : left === 1 ? 'last boxer' : left + ' boxers'} first, then we'll train.` : `${F('صبر کن', 'sabr kon')}! Beat my ${left === 3 ? 'three athletes' : left === 1 ? 'last athlete' : left + ' athletes'} first, then we will train.`)]); return; }
   if (Array.isArray(g0.route)) {
     await say(T(g.name, 'Which words shall we train today?'), { keep: true });
     const r = await choose(g0.route.map(x => ROUTE_NAMES[x]), { cls: 'yn' }); hideText();
@@ -103,3 +106,10 @@ npc('τ', { look: 'masoud', lookG: 'mahin', talk: () => isGirl() ? teaHost('KHAN
 npc('|', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('KAVEH', 'KATAYOUN'), `In the zurkhaneh we greet each other with ${F('خسته نباشید', 'khasteh nabashid')}.`), '"May you not be tired." Say it to anyone who is working hard!']); } });
 npc('_', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'right', talk: async () => { await say([T(G('BIZHAN', 'MANIZHEH'), `When you train well, the morshed shouts ${F('آفرین', 'afarin')}!`), 'It means "well done!" You can say it to anyone.']); } });
 npc(';', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('GIV', 'FARANGIS'), `${F('پهلوان', 'pahlevan')} means champion.`), 'A true pahlevan is strong AND kind. Be a pahlevan of words!']); } });
+
+// ---- Mashhad: teahouse, zurkhaneh and elder ----
+npc('ς', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('FARAMARZ', 'ROXANA'), `In Khorasan the old heroes of the Shahnameh are everywhere. A strong person is called ${F('رستم', 'rostam')}!`), `When you finish a hard job, say ${F('موفق شدم', 'movafagh shodam')}: "I made it!"`]); } });
+npc('ξ', { look: 'javad', lookG: 'goli', talk: () => isGirl()
+  ? teaHost('KHANOM SOODABEH', null, [`${F('خوش اومدی', 'khosh oomadi')}, ${F('دخترم', 'dokhtaram')}! Welcome to Mashhad!`, `Try your chai with ${F('نبات', 'nabat')}, saffron rock candy. Mashhad is famous for it.`, `${F('بفرمایید', 'befarmaid')}!`])
+  : teaHost('AGHA HOSSEIN', null, [`${F('خوش اومدی', 'khosh oomadi')}! You came all the way to Mashhad? ${F('خسته نباشی', 'khasteh nabashi')}!`, `Here, stir some ${F('نبات', 'nabat')} into your chai. Saffron rock candy, a Mashhad speciality.`, `${F('نوش جان', 'noosh-e jan')}!`]) });
+npc('ϗ', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(5, G('AGHA FEREYDOUN', 'KHANOM TAHMINEH'), G(`I have read the Shahnameh aloud in this teahouse for fifty years. Sit, and take the last sayings of the road.`, `My grandmother knew the whole Shahnameh by heart. Sit, my dear, and take the last sayings of the road.`)) });

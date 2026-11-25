@@ -227,7 +227,7 @@ async function wildEncounter(route) {
         if (BT.foe.hp <= 0) {
           SND.fx('faint'); await anim('#b-foe-spr', 'faint', 600);
           await say([`Wild ${esc(w.name)} fainted!`, `It was carrying the word ${W(w)} = "${M(w)}".`]);
-          await gainXp(BT.me, 4 + w.level * 3); await earn(2 + Math.floor(w.level / 4), 'You found'); break;
+          addWin(); await gainXp(BT.me, 4 + w.level * 3); await earn(2 + Math.floor(w.level / 4), 'You found'); break;
         }
       } else {
         await strike('me', false); await say([`${esc(monW(BT.me).name)}'s attack missed!`, `The answer was ${q.answerHtml}.`]);
@@ -250,7 +250,7 @@ async function wildEncounter(route) {
       $('#b-foe-spr').innerHTML = `<div class="daftar-ico"></div>`;
       for (let i = 0; i < shakes; i++) { SND.fx('shake'); await anim('#b-foe-spr', 'shake', 500); }
       if (shakes === 3) {
-        SND.fx('caught'); S.caught[w.key] = true;
+        SND.fx('caught'); S.caught[w.key] = true; addWin();
         await say([`Gotcha! The wild ${B(w.name)} was caught!`, `Its word ${W(w)} = "${M(w)}" was written into your Lenguadex!`]);
         if (S.team.length < 6 && !S.team.some(m => m.key === w.key)) { S.team.push(makeMon(w)); await say(`${esc(w.name)} joined your team!`); }
         else await say(`${esc(w.name)} was stored in your Lenguadex. (Swap it in from the Lenguadex menu.)`);
@@ -279,9 +279,9 @@ async function wildEncounter(route) {
 // each line: [npc Persian, npc translit, npc English, reply Persian, reply translit, reply English]
 const BOSSES = {
   b1: {
-    name: 'BASIJI', look: 'basij', lvl: 9, route: 1, need: 12, showEn: true, optEn: true,
-    title: 'the BASIJ CHECKPOINT on the road out of Yazd',
-    intro: [`${F('ایست!', 'ist!')} HALT! This is a Basij checkpoint.`, 'Nobody leaves Yazd unless they can answer my questions in Persian!'],
+    name: 'POLICE OFFICER', look: 'police', lvl: 9, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
+    title: 'the POLICE CHECKPOINT on the road out of Yazd',
+    intro: [`${F('ایست!', 'ist!')} HALT! This is a police checkpoint.`, 'Nobody leaves Yazd unless they can answer my questions in Persian!'],
     lines: [
       ['سلام!', 'salam!', 'Hello!', 'سلام، خوبی؟', 'salam, khubi?', 'Hello, how are you?'],
       ['مرسی، خوبم. تو چطوری؟', 'merci, khubam. to chetori?', "Thanks, I'm good. How are you?", 'من هم خوبم، مرسی', 'man ham khubam, merci', "I'm good too, thanks"],
@@ -296,7 +296,7 @@ const BOSSES = {
     beaten: `${F('باشه', 'bashe')}... fine. Your papers are in order. Go on to Isfahan.`,
   },
   b2: {
-    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: 12, showEn: true, optEn: false,
+    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
     title: 'the IRGC COMMANDER guarding the road to Shiraz',
     intro: [`${F('ایست!', 'ist!')} Stop right there, traveller.`, 'I am the IRGC COMMANDER. Nobody reaches Shiraz without passing my interrogation. In Persian!'],
     lines: [
@@ -313,9 +313,9 @@ const BOSSES = {
     beaten: `Hmph. ${F('برو', 'boro')}! Go! Shiraz is north. They say Shirin only speaks Persian.`,
   },
   b3: {
-    name: 'THE CENSOR', look: 'censor', lvl: 26, route: 3, need: 12, showEn: false, optEn: false, lair: true,
+    name: 'THE ZEALOT', look: 'zealot', lvl: 26, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
     title: 'the villain who seized the tomb of Hafez',
-    intro: [`So. You are the one collecting words. I am THE CENSOR ${F('سانسورچی', 'sansurchi')}.`, 'I have seized the tomb of Hafez and banned every word in Iran. Poems, jokes, greetings... all forbidden!', 'If you can still hold a conversation, prove it. In Persian. No English hints!'],
+    intro: [`So. You are the one collecting words. I am THE ZEALOT ${F('متعصب', "mote'asseb")}.`, 'I have seized the tomb of Hafez and banned every word in Iran. Poems, jokes, greetings... all forbidden!', 'If you can still hold a conversation, prove it. In Persian. No English hints!'],
     lines: [
       ['سلام. حالت چطوره؟', 'salam. halet chetore?', 'Hello. How are you doing?', 'خیلی خوبم، مرسی. تو چطوری؟', 'kheyli khubam, merci. to chetori?', "I'm very good, thanks. How are you?"],
       ['فارسی بلد نیستی!', 'farsi balad nisti!', "You don't know Persian!", 'چرا، فارسی بلدم!', 'chera, farsi baladam!', 'Yes I do, I know Persian!'],
@@ -324,14 +324,14 @@ const BOSSES = {
       ['غذا ممنوع است!', 'ghaza mamnu ast!', 'Food is forbidden!', 'چرا؟ من گرسنه‌ام!', 'chera? man gorosneh-am!', "Why? I'm hungry!"],
       ['هوا چطوره؟', 'hava chetore?', "How's the weather?", 'هوا آفتابی و گرمه', 'hava aftabi va garme', "It's sunny and warm"],
       ['امروز سر کار رفتی؟', 'emrooz sar-e kaar rafti?', 'Did you go to work today?', 'بله، صبح سر کار رفتم', 'baleh, sobh sar-e kaar raftam', 'Yes, I went to work this morning'],
-      ['چشم‌هات چه رنگیه؟ (his red eye scans you)', 'cheshmat che rangi-e?', 'What color are your eyes?', 'چشم‌های من قهوه‌ای است', 'cheshm-haye man ghahvei ast', 'My eyes are brown'],
+      ['چشم‌هات چه رنگیه؟ (he glares at you)', 'cheshmat che rangi-e?', 'What color are your eyes?', 'چشم‌های من قهوه‌ای است', 'cheshm-haye man ghahvei ast', 'My eyes are brown'],
       ['کلمه‌ها ممنوع هستند!', 'kalameh-ha mamnu hastand!', 'Words are forbidden!', 'نه! من فارسی حرف می‌زنم!', 'na! man farsi harf mizanam!', 'No! I speak Persian!'],
-      ['نه! نه! خداحافظ!', 'na! na! khodahafez!', 'No! No! Goodbye!', 'خداحافظ، سانسورچی!', 'khodahafez, sansurchi!', 'Goodbye, Censor!'],
+      ['نه! نه! خداحافظ!', 'na! na! khodahafez!', 'No! No! Goodbye!', 'خداحافظ، متعصب!', "khodahafez, mote'asseb!", 'Goodbye, Zealot!'],
     ],
-    beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} This isn't over! In TEHRAN I control every screen! (THE CENSOR fled north toward Tehran. The words of Hafez are free again!)`,
+    beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} This isn't over! In TEHRAN I control every screen! (THE ZEALOT fled north toward Tehran. The words of Hafez are free again!)`,
   },
   b4: {
-    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: 12, showEn: true, optEn: false,
+    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
     title: 'the STATE TV ANCHOR broadcasting live from the gate of Tehran',
     intro: [`${F('شب بخیر، بینندگان عزیز', 'shab bekheir, binandegan-e aziz')}! Good evening, dear viewers!`, 'We are LIVE at the gate of Tehran, where a dangerous traveller is trying to... SPEAK FREELY. Let us interview them!', 'Remember, viewers: everything is wonderful. Only approved words on this channel!'],
     lines: [
@@ -348,8 +348,8 @@ const BOSSES = {
     beaten: `...we are experiencing technical difficulties. ${F('ببخشید', 'bebakhshid')}! (The broadcast cut to a test pattern. The gate of Tehran is open!)`,
   },
   b5: {
-    name: 'THE CENSOR', look: 'censor', lvl: 44, route: 6, need: 12, showEn: false, optEn: false, lair: true,
-    title: 'THE CENSOR, jamming every word in Iran from the top of Milad Tower',
+    name: 'THE ZEALOT', look: 'zealot', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    title: 'THE ZEALOT, jamming every word in Iran from the top of Milad Tower',
     intro: [`You AGAIN? ${F('باز هم تو؟', 'baz ham to?')}`, 'From the top of Milad Tower I jam every phone, every screen, every word in Iran. Here I am all-powerful!', 'One last conversation. Long Persian sentences, no English hints. Fail, and Persian falls silent forever!'],
     lines: [
       ['باز هم تو؟', 'baz ham to?', 'You again?', 'بله، من دوباره اومدم!', 'baleh, man dobare oomadam!', 'Yes, I came back!'],
@@ -361,10 +361,28 @@ const BOSSES = {
       ['شماره تلفنت چنده؟', 'shomareh telefonet chande?', "What's your phone number?", 'نمی‌گم! شتر دیدی ندیدی', 'nemigam! shotor didi, nadidi', "I won't tell! (Did you see a camel? You didn't.)"],
       ['من همه چیز رو ممنوع می‌کنم!', 'man hame chiz ro mamnu mikonam!', 'I ban everything!', 'نمی‌تونی! ما با هم هستیم', 'nemitooni! ma ba ham hastim', "You can't! We are together"],
       ['چرا فارسی یاد می‌گیری؟', 'chera farsi yad migiri?', 'Why are you learning Persian?', 'چون ایران رو دوست دارم', 'chon iran ro doost daram', 'Because I love Iran'],
-      ['نه! نه! سیگنال قطع شد!', "na! na! signal ghat' shod!", 'No! No! The signal is cut!', 'خداحافظ سانسورچی! خوش گذشت', 'khodahafez sansurchi! khosh gozasht', 'Goodbye, Censor! I had a great time'],
+      ['نه! نه! سیگنال قطع شد!', "na! na! signal ghat' shod!", 'No! No! The signal is cut!', 'خداحافظ متعصب! خوش گذشت', "khodahafez mote'asseb! khosh gozasht", 'Goodbye, Zealot! I had a great time'],
     ],
-    beaten: `My signal... my beautiful silence... ${F('نه!', 'na!')} NOOOO! (THE CENSOR's jammer exploded into a shower of sparks. Every word in Iran is free again!)`,
+    beaten: `My signal... my beautiful silence... ${F('نه!', 'na!')} NOOOO! (THE ZEALOT's jammer exploded into a shower of sparks. Every word in Iran is free again!)`,
+  },  b6: {
+    name: 'GHOST OF CYRUS', look: 'ghostcyrus', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    title: 'the Ghost of Cyrus the Great, waiting at the tomb of Ferdowsi',
+    intro: [`${F('درود', 'dorood')}, traveller. I am the spirit of Cyrus, king of the four corners of the world.`, 'For 2,500 years I have listened to the language of my people. Ferdowsi kept it alive here, at Tus.', 'Speak with me, in Persian and only in Persian, and show me that it lives on in you.'],
+    lines: [
+      ['درود بر تو، ای جوان!', 'dorood bar to, ey javan!', 'Greetings to you, young one!', 'درود بر شما! شما کی هستید؟', 'dorood bar shoma! shoma ki hastid?', 'Greetings! Who are you?'],
+      ['من کوروش هستم، شاه ایران‌زمین.', 'man kourosh hastam, shah-e iran-zamin.', 'I am Cyrus, king of the land of Iran.', 'باورم نمی‌شه! از دیدنتون خیلی خوشحالم', 'bavaram nemishe! az didanetun kheyli khoshhalam', "I can't believe it! I'm so happy to see you"],
+      ['چرا تا اینجا اومدی؟', 'chera ta inja oomadi?', 'Why did you come all this way?', 'اومدم با زبان فارسی با شما حرف بزنم', 'oomadam ba zaban-e farsi ba shoma harf bezanam', 'I came to talk with you in Persian'],
+      ['فردوسی سی سال برای زبان فارسی زحمت کشید.', 'ferdowsi si sal baraye zaban-e farsi zahmat keshid.', 'Ferdowsi worked thirty years for the Persian language.', 'بله، شاهنامه رو می‌شناسم', 'baleh, shahnameh ro mishenasam', 'Yes, I know the Shahnameh'],
+      ['به نظرت مهم‌ترین چیز در زندگی چیه؟', 'be nazaret mohemtarin chiz dar zendegi chie?', 'In your opinion, what is the most important thing in life?', 'به نظر من، مهربانی و آزادی', 'be nazar-e man, mehrabani va azadi', 'In my opinion, kindness and freedom'],
+      ['دلت برای خانواده‌ات تنگ شده؟', 'delet baraye khanevadat tang shode?', 'Do you miss your family?', 'آره، ولی به‌زودی برمی‌گردم خونه', 'areh, vali bezoodi barmigardam khooneh', "Yes, but I'm going home soon"],
+      ['پندار نیک، گفتار نیک، کردار نیک. می‌دونی یعنی چی؟', 'pendar-e nik, goftar-e nik, kerdar-e nik. midooni yani chi?', 'Good thoughts, good words, good deeds. Do you know what it means?', 'یعنی خوب فکر کن، خوب حرف بزن، خوب رفتار کن', 'yani khub fekr kon, khub harf bezan, khub raftar kon', 'It means think well, speak well, act well'],
+      ['از سفرت چی یاد گرفتی؟', 'az safaret chi yad gerefti?', 'What did you learn from your journey?', 'یاد گرفتم که هر زبان یه دنیای جدیده', 'yad gereftam ke har zaban ye donya-ye jadide', 'I learned that every language is a new world'],
+      ['تو دل ایرانی داری.', 'to del-e irani dari.', 'You have an Iranian heart.', 'لطف دارید، این بزرگ‌ترین افتخار منه', 'lotf darid, in bozorgtarin eftekhar-e mane', "You're too kind, this is my greatest honor"],
+      ['بدرود، ای دوست. ایران رو فراموش نکن.', 'bedrood, ey doost. iran ro faramoosh nakon.', 'Farewell, friend. Do not forget Iran.', 'هیچ‌وقت فراموش نمی‌کنم. بدرود!', 'hichvaght faramoosh nemikonam. bedrood!', 'I will never forget. Farewell!'],
+    ],
+    beaten: `${F('آفرین', 'afarin')}. Persian lives on in you, as Ferdowsi promised it would. Go in peace, my friend. (The Ghost of Cyrus smiled, and faded into the morning light over Tus.)`,
   },
+
 };
 function bossReplyWord(b, line) {
   const sub = s => s.replace(/\{NAME\}/g, S.name);
@@ -419,7 +437,7 @@ async function bossBattle(id) {
 }
 
 // ---- evolution: after a level-up, a Lenguamon may try to grow its word into a phrase ----
-function evoTarget(m) { const nk = EVO[m.key]; if (!nk || (m.stage || 0) >= 2) return null; const nx = WORD[nk]; return nx && m.lvl >= nx.level ? nx : null; }
+function evoTarget(m) { const nk = EVO[m.key]; if (!nk || (m.stage || 0) >= 3) return null; const nx = WORD[nk]; return nx && m.lvl >= nx.level ? nx : null; }
 async function maybeEvolve(m) {
   const nx = evoTarget(m); if (!nx || m.evoTry === m.lvl) return false;
   m.evoTry = m.lvl;

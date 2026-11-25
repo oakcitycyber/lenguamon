@@ -1,12 +1,14 @@
 // ===== LENGUAMON story: NPCs, intro, title, ending =====
 const T = (who, html) => `${who}: ${html}`;
 function nextGoal() {
+  const w = r => `${winsIn(r)} / ${WINS_NEEDED}`;
   if (!S.flags.starter) return 'Visit Professor Haydeh at the school.';
-  if (!S.flags.b1) return `Catch at least ${BOSSES.b1.need} words on the ${ROUTE_NAMES[1]} (you have ${caughtInRoute(1)}), then get past the BASIJ CHECKPOINT on the way to Isfahan.`;
-  if (!S.flags.b2) return `Catch at least ${BOSSES.b2.need} words in ${ROUTE_NAMES[2]} (you have ${caughtInRoute(2)}), then get past the IRGC COMMANDER on the road to Shiraz.`;
-  if (!S.flags.b3) return `Catch at least ${BOSSES.b3.need} words on the ${ROUTE_NAMES[3]} (you have ${caughtInRoute(3)}), then defeat THE CENSOR at the tomb of Hafez in Shiraz.`;
-  if (!S.flags.b4) return `Follow THE CENSOR north through the Zagros Mountains, past Persepolis and Kashan. Catch at least ${BOSSES.b4.need} words in the ${ROUTE_NAMES[5]} (you have ${caughtInRoute(5)}), then get past the STATE TV ANCHOR at the gate of Tehran.`;
-  if (!S.flags.b5) return `Catch at least ${BOSSES.b5.need} words in ${ROUTE_NAMES[6]} (you have ${caughtInRoute(6)}), then face THE CENSOR at Milad Tower.`;
+  if (!S.flags.b1) return `Win ${WINS_NEEDED} battles on the ${ROUTE_NAMES[1]} (${w(1)}), then get past the POLICE CHECKPOINT on the way to Isfahan.`;
+  if (!S.flags.b2) return `Win ${WINS_NEEDED} battles in ${ROUTE_NAMES[2]} (${w(2)}), then get past the IRGC COMMANDER on the road to Shiraz.`;
+  if (!S.flags.b3) return `Win ${WINS_NEEDED} battles on the ${ROUTE_NAMES[3]} (${w(3)}), then defeat THE ZEALOT at the tomb of Hafez in Shiraz.`;
+  if (!S.flags.b4) return `Follow THE ZEALOT north through the Zagros Mountains, past Persepolis and Kashan. Win ${WINS_NEEDED} battles in the ${ROUTE_NAMES[5]} (${w(5)}), then get past the STATE TV ANCHOR at the gate of Tehran.`;
+  if (!S.flags.b5) return `Win ${WINS_NEEDED} battles in ${ROUTE_NAMES[6]} (${w(6)}), then face THE ZEALOT at Milad Tower.`;
+  if (!S.flags.b6) return `Take the Khorasan road from the east gate of Tehran. Win ${WINS_NEEDED} battles on the ${ROUTE_NAMES[7]} (${w(7)}), then meet the GHOST OF CYRUS THE GREAT at the tomb of Ferdowsi in Mashhad.`;
   return `You beat the game! Keep filling your Lenguadex: ${caughtCount()} / ${WORDS.length}.`;
 }
 async function healScene(who) {
@@ -20,12 +22,12 @@ npc('x', { look: 'maman', dir: 'left', talk: async () => {
 } });
 npc('y', { look: 'haydeh', talk: async () => {
   if (!S.flags.starter) { await starterScene(); return; }
-  if (S.flags.b5 && !S.flags.ending) { await endingScene(); return; }
+  if (S.flags.b6 && !S.flags.ending) { await endingScene(); return; }
   await say([T('HAYDEH', `${F('سلام', 'salam')}, ${nm()}! How is your Lenguadex?`), `You have caught ${B(caughtCount())} words.`, `NEXT: ${nextGoal()}`]);
   if (S.daftar < 5) { S.daftar = 5; SND.fx('good'); await say('HAYDEH: Take some fresh DAFTARS. You now have 5.'); }
 } });
 npc('z', { look: 'arash', lookG: 'ava', dir: 'up', talk: async () => {
-  await say([T(G('ARASH', 'AVA'), `I'm practising for the Basij checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
+  await say([T(G('ARASH', 'AVA'), `I'm practising for the police checkpoint. They ask so many questions!`), `Did you know ${F('چشم', 'chashm')} means EYE, but people also say it to mean "sure, will do"?`, 'Persian is full of surprises!']);
 } });
 npc('r', { look: 'reza', lookG: 'zari', talk: () => isGirl()
   ? teaHost('KHANOM ZARI', null, [`${F('بفرمایید', 'befarmaid')}, ${F('دخترم', 'dokhtaram')}! Come in, my daughter!`, `I am Khanom Zari, Agha Reza's wife. He is at the bazaar, so today I pour the ${F('چای', 'chai')}.`, 'Sit, sit. You look like you need a glass.'])
@@ -44,8 +46,8 @@ npc('v', { look: 'farhad', lookG: 'fereshteh', dir: 'right', talk: async () => {
 npc('g', { look: 'golnaz', dir: 'left', talk: async () => {
   await say([T('GOLNAZ', `When someone speaks too fast, say ${F('نمی‌فهمم', 'nemifahmam')}: "I don't understand".`), `Then ask: ${F('لطفا دوباره بگو', 'lotfan dobare begu')}, "please say it again".`]);
 } });
-npc('1', { look: 'basij', where: () => S.flags.b1 ? [11, 48] : null, talk: async () => {
-  if (S.flags.b1) { await say(T('BASIJI', `Hmph. You again? ${F('برو', 'boro')}! Go! Isfahan is north.`)); return; }
+npc('1', { look: 'police', where: () => S.flags.b1 ? [11, 48] : null, talk: async () => {
+  if (S.flags.b1) { await say(T('POLICE OFFICER', `Hmph. You again? ${F('برو', 'boro')}! Go! Isfahan is north.`)); return; }
   await gateBoss('b1');
 } });
 npc('i', { look: 'kian', lookG: 'kimia', dir: 'left', talk: async () => {
@@ -67,21 +69,21 @@ npc('o', { look: 'omid', lookG: 'mina', dir: 'left', talk: async () => {
 npc('a', { look: 'parisa', dir: 'left', talk: async () => {
   await say([T('PARISA', `${F('هوا چطوره؟', 'hava chetore?')} means "how's the weather?"`), `Today it's ${F('آفتابی', 'aftabi')}: sunny! Shirin loves to talk about the weather.`]);
 } });
-npc('3', { look: 'censor', hidden: () => !!S.flags.b3, talk: async () => {
+npc('3', { look: 'zealot', hidden: () => !!S.flags.b3, talk: async () => {
   await gateBoss('b3');
 } });
 npc('l', { look: 'shirin', dir: 'left', talk: async () => {
-  if (S.flags.b5) { await say([T('SHIRIN', `${F('مرسی', 'merci')}! ${F('دمت گرم', 'damet garm')}! You beat THE CENSOR for good. Every word in Iran is free!`), `${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}: your Persian got really good!`]); return; }
-  if (S.flags.b3) { await say([T('SHIRIN', `${F('مرسی', 'merci')}! The tomb of Hafez is free again.`), 'But THE CENSOR fled north to Tehran. Take the road at the north-west corner of the garden, past Persepolis!']); return; }
-  await say([T('SHIRIN', `${F('سلام', 'salam')}. I am Shirin. I look after the tomb of Hafez.`), 'THE CENSOR has taken it over and banned every word! He even banned poetry!', 'Only someone who can hold a real conversation in Persian can beat him. Please, try!']);
+  if (S.flags.b5) { await say([T('SHIRIN', `${F('مرسی', 'merci')}! ${F('دمت گرم', 'damet garm')}! You beat THE ZEALOT for good. Every word in Iran is free!`), `${F('فارسیت خیلی خوب شده', 'farsit kheyli khub shode')}: your Persian got really good!`]); return; }
+  if (S.flags.b3) { await say([T('SHIRIN', `${F('مرسی', 'merci')}! The tomb of Hafez is free again.`), 'But THE ZEALOT fled north to Tehran. Take the road at the north-west corner of the garden, past Persepolis!']); return; }
+  await say([T('SHIRIN', `${F('سلام', 'salam')}. I am Shirin. I look after the tomb of Hafez.`), 'THE ZEALOT has taken it over and banned every word! He even banned poetry!', 'Only someone who can hold a real conversation in Persian can beat him. Please, try!']);
 } });
 
 async function gateBoss(id) {
   const b = bossDef(id), name = b.name, routeName = ROUTE_NAMES[b.route], en = LANG === 'en';
-  const have = caughtInRoute(b.route);
+  const have = winsIn(b.route);
   await say(b.intro.map(l => T(name, l)));
   if (have < b.need) {
-    await say([`(To pass, you must hold a conversation with ${name} in ${en ? 'English' : 'Persian'}.)`, `(First catch at least ${B(b.need)} Lenguamon around ${esc(routeName)}. You have ${B(have)}.)`]);
+    await say([`(To pass, you must hold a conversation with ${name} in ${en ? 'English' : 'Persian'}.)`, `(First win ${B(b.need)} battles around ${esc(routeName)}: wild Lenguamon, trainers or your rival. You have won ${B(have)}.)`]);
     return;
   }
   if (!(await ask(en ? `${name}: Are you ready to talk? ${PF('آماده‌ای؟')}` : `${name}: Are you ready to talk? ${F('آماده‌ای؟', 'amadeyi?')}`))) { await say(T(name, en ? 'Alright. Come back when you are ready.' : `${F('باشه', 'bashe')}. Come back when you are ready.`)); return; }
@@ -91,12 +93,13 @@ async function gateBoss(id) {
   S.flags[id] = true; S.daftar += 5; healTeam();
   S.money = money() + 50;
   SND.fx('badge');
-  const badge = en ? ['', 'ROUTE 66', 'GOLDEN GATE', 'SPACE NEEDLE', 'LIBERTY BELL', 'EMPIRE STATE'][+id[1]] + ' STAR BADGE' : ['', 'YAZD', 'ISFAHAN', 'SHIRAZ', 'KAVIR', 'TEHRAN'][+id[1]] + ' KASHI BADGE';
+  const badge = en ? ['', 'ROUTE 66', 'GOLDEN GATE', 'SPACE NEEDLE', 'LIBERTY BELL', 'EMPIRE STATE', 'CAPITOL'][+id[1]] + ' STAR BADGE' : ['', 'YAZD', 'ISFAHAN', 'SHIRAZ', 'KAVIR', 'TEHRAN', 'MASHHAD'][+id[1]] + ' KASHI BADGE';
   await say([`${esc(S.name)} earned the ${B(badge)}!`, `You found 5 ${en ? 'NOTEBOOKS' : 'DAFTARS'} and ${fmtMoney(50)}, and your Lenguamon were healed.`]);
   writeSave();
   if (en) { await afterBossEN(id); return; }
-  if (id === 'b3') await say([T('SHIRIN', `You did it! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`), 'But THE CENSOR ran north toward Tehran. The road north of Shiraz is open now, past Persepolis and the Tomb of Cyrus. Follow him!']);
-  if (id === 'b5') { await say(['Footsteps hurry up the stairs of Milad Tower...', T('HAYDEH', `${nm()}! I took the night bus all the way from Yazd! I saw everything on the news!`)]); await endingScene(); }
+  if (id === 'b3') await say([T('SHIRIN', `You did it! ${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`), 'But THE ZEALOT ran north toward Tehran. The road north of Shiraz is open now, past Persepolis and the Tomb of Cyrus. Follow him!']);
+  if (id === 'b5') await say(['All over Tehran, phones light up and the radios sing again!', 'But a strange, cold wind blows from the east...', `A voice on the wind: ${F('به توس بیا، ای مسافر...', 'be toos bia, ey mosafer...')} "Come to Tus, traveller..."`, 'The KHORASAN road to MASHHAD is open now. Its gate is on the east side of Tehran, next to the zurkhaneh.']);
+  if (id === 'b6') { await say(['Footsteps hurry up the steps of the tomb of Ferdowsi...', T('HAYDEH', `${nm()}! I took the night train all the way from Yazd! I saw everything on the news!`)]); await endingScene(); }
 }
 
 async function starterScene() {
@@ -118,7 +121,7 @@ async function starterScene() {
     BI('Answer correctly and your attack lands. Miss, and the wild Lenguamon strikes back with the answer you needed!', 'اگر درست جواب بدهی، حمله‌ات به هدف می‌خورد. اگر اشتباه کنی، لنگوامون وحشی با همان جوابی که لازم داشتی به تو حمله می‌کند!'),
     BI(`Weaken a word, then use a ${B('DAFTAR')} ${F('دفتر', 'daftar')} (notebook) to write it down and catch it. Here are 5 DAFTARS.`, 'کلمه را ضعیف کن، بعد با دفتر آن را بنویس و شکارش کن. این پنج دفتر مال تو.'),
     BI('Long words and phrases are higher level and tougher. Short words are a good place to start.', 'کلمه‌ها و عبارت‌های بلند سطح بالاتر و سخت‌ترند. کلمه‌های کوتاه برای شروع خوب‌اند.'),
-    BI('On the way you will meet a Basij checkpoint, an IRGC commander and THE CENSOR, who has seized the tomb of Hafez in Shiraz.', 'در راه به ایست بازرسی بسیج، یک فرمانده‌ی سپاه و «سانسورچی» برمی‌خوری که آرامگاه حافظ در شیراز را تصرف کرده.'),
+    BI('On the way you will meet a police checkpoint, an IRGC commander and THE ZEALOT, who has seized the tomb of Hafez in Shiraz.', 'در راه به ایست بازرسی پلیس، یک فرمانده‌ی سپاه و «متعصب» برمی‌خوری که آرامگاه حافظ در شیراز را تصرف کرده.'),
     BI('Beyond Shiraz the road climbs through the Zagros Mountains, crosses the salt desert, and ends in TEHRAN, the biggest city of all.', 'بعد از شیراز، جاده از کوه‌های زاگرس بالا می‌رود، از کویر نمک می‌گذرد و به تهران، بزرگ‌ترین شهر، می‌رسد.'),
     BI('Every boss tests you with a real conversation. Win them all and you can truly hold a conversation in Persian!', 'هر غول آخر با یک گفت‌وگوی واقعی امتحانت می‌کند. همه را ببری، واقعاً می‌توانی فارسی صحبت کنی!'),
     BI('One more thing: practice a little every day. Your progress is saved on this device.', 'یک چیز دیگر: هر روز کمی تمرین کن. پیشرفتت روی همین دستگاه ذخیره می‌شود.'),
@@ -130,8 +133,8 @@ async function endingScene() {
   S.flags.ending = true; writeSave();
   SND.music('end');
   await say([
-    T('HAYDEH', `${nm()}! Five KASHI BADGES! ${F('آفرین', 'afarin')}!`),
-    'You talked your way past the Basij, the IRGC and State TV, and you out-talked THE CENSOR twice, from the tomb of Hafez to the top of Milad Tower. All in Persian!',
+    T('HAYDEH', `${nm()}! Six KASHI BADGES! ${F('آفرین', 'afarin')}!`),
+    'You talked your way past the police, the IRGC and State TV, you out-talked THE ZEALOT twice, from the tomb of Hafez to the top of Milad Tower, and you held a conversation with the ghost of Cyrus the Great himself. All in Persian!',
     'You can now hold a real conversation: greetings, family, time, the bazaar, food, feelings, directions, opinions, taxis, restaurants, and even taarof.',
     `${F('من بهت افتخار می‌کنم', 'man behet eftekhar mikonam')}: I'm proud of you!`,
   ]);
@@ -233,12 +236,15 @@ async function enterWorld() {
   if (!S.flags.starter && (S.map === 'house' || S.map === 'ushouse')) await run(() => say(T('MAMAN', LANG === 'en' ? `${nm()} ${PF('جان')}! Come here, ${PF('عزیزم')}. Talk to me.` : `${nm()} jan! Come here, talk to me.`)));
 }
 
-// ---- the far north: State TV at the gate of Tehran and THE CENSOR's last stand ----
+// ---- the far north: State TV at the gate of Tehran and THE ZEALOT's last stand ----
 npc('ψ', { look: 'anchor', where: () => S.flags.b4 ? [11, 27] : null, talk: async () => {
   if (S.flags.b4) { await say(T('STATE TV ANCHOR', `...and in other news, everything is fine. ${F('برو', 'boro')}, go, Tehran is that way.`)); return; }
   await gateBoss('b4');
 } });
-npc('Ω', { look: 'censor', hidden: () => !!S.flags.b5, talk: async () => {
+npc('Ω', { look: 'zealot', hidden: () => !!S.flags.b5, talk: async () => {
   if (!S.flags.b4) return;
   await gateBoss('b5');
 } });
+
+// ---- Mashhad: the grand finale ----
+npc('χ', { look: 'ghostcyrus', hidden: () => !!S.flags.b6, talk: async () => { if (!S.flags.b5) return; await gateBoss('b6'); } });
