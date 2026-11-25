@@ -163,7 +163,7 @@ npc('З', { look: 'trucker', dir: 'left', talk: async () => {
   await say([T(EN_N('BIG MIKE', 'BIG DEB'), `I've been driving Route 66 for thirty years. When it's time to go, we say ${E("let's hit the road!", 'راه بیفتیم!')}`), `And if you're late, text your friends: ${E("I'm running late", 'دارم دیر می‌کنم')}.`]);
 } });
 npc('И', { look: 'biker', lookG: 'surfer', dir: 'right', talk: async () => {
-  await say([T(EN_N('HANK', 'ROSA'), 'Phrasal verbs are a verb plus a little word. They change the meaning completely!'), `${E('Give up', 'تسلیم شدن')} means stop trying. ${E('Give back', 'پس دادن')} means return something. ${E('Give in', 'کوتاه آمدن')} means you finally agree.`]);
+  await say([T(EN_N('WYATT', 'NORA'), 'Phrasal verbs are a verb plus a little word. They change the meaning completely!'), `${E('Give up', 'تسلیم شدن')} means stop trying. ${E('Give back', 'پس دادن')} means return something. ${E('Give in', 'کوتاه آمدن')} means you finally agree.`]);
 } });
 // ---- San Francisco ----
 npc('Б', { look: 'tech', lookG: 'tech', dir: 'right', talk: async () => {
@@ -176,10 +176,10 @@ npc('Ж', { look: 'kid', dir: 'left', talk: async () => {
   await say([T(EN_N('LEO', 'MIA'), `Did you see the Golden Gate Bridge? It's ${E('awesome', 'فوق‌العاده')}!`), `Kids here say ${E("that's awesome!", 'خیلی باحاله!')} about everything. My mom says ${E('use your inside voice', 'آروم‌تر حرف بزن')}.`]);
 } });
 npc('Π', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(1, EN_N('GRANDPA AL', 'GRANDMA LORRAINE'), EN_N("I ran a bakery down on the wharf for forty years. A businessman learns a lot of sayings!", "I sold sourdough bread here for forty years. Let me tell you something.")) });
-npc('Э', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('MIKE', 'PEARL'), null, ["Hi there! You look like you could use a break.", `Baristas often ask ${E("for here or to go?", "اینجا میل می‌کنید یا می‌برید؟")}`, "For here, then. Sit down, it's on me."]) });
+npc('Э', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('GUS', 'PEARL'), null, ["Hi there! You look like you could use a break.", `Baristas often ask ${E("for here or to go?", "اینجا میل می‌کنید یا می‌برید؟")}`, "For here, then. Sit down, it's on me."]) });
 // ---- Pacific Coast Highway ----
 npc('Φ', { look: 'surfer', dir: 'left', talk: async () => {
-  await say([T(EN_N('DYLAN', 'SKYLER'), `Dude, the waves today are ${E('epic', 'فوق‌العاده')}!`), `Out here we're pretty ${E('laid-back', 'آرام و بی‌خیال')}. If something goes wrong, we just say ${E('no worries', 'اشکالی نداره')}.`]);
+  await say([T(EN_N('DYLAN', 'AUTUMN'), `Dude, the waves today are ${E('epic', 'فوق‌العاده')}!`), `Out here we're pretty ${E('laid-back', 'آرام و بی‌خیال')}. If something goes wrong, we just say ${E('no worries', 'اشکالی نداره')}.`]);
 } });
 npc('Ψ', { look: 'gma', dir: 'left', talk: async () => {
   await say([T('MARGARET', "I keep the lighthouse on these cliffs. On foggy nights I feel a little lonely."), `When you miss your country, in English you are ${E('homesick', 'دلتنگ وطن')}. It's okay to feel that way.`]);
@@ -215,16 +215,16 @@ npc('Θ', { look: 'ceo', where: () => S.flags.b2 ? [11, 26] : null, talk: async 
 const GYMS_EN = {
   'Ա': { route: 1, city: 'SANTA FE', boy: 'COACH MARTINEZ', girl: 'COACH GLORIA', gym: 'BOXING GYM' },
   'Գ': { route: 2, city: 'SAN FRANCISCO', boy: 'COACH KIM', girl: 'COACH JENNY', gym: 'BOXING GYM' },
-  'Ե': { route: 3, city: 'SEATTLE', boy: 'COACH WASHINGTON', girl: 'COACH TASHA', gym: 'BOXING GYM' },
+  'Ե': { route: 3, city: 'SEATTLE', boy: 'COACH ROBINSON', girl: 'COACH TASHA', gym: 'BOXING GYM' },
   'Է': { route: [4, 5], city: 'CHICAGO', boy: "COACH O'MALLEY", girl: 'COACH MAGGIE', gym: 'BOXING GYM' },
   'Թ': { route: 6, city: 'NEW YORK', boy: 'COACH BROOKS', girl: 'COACH DIANA', gym: 'BOXING GYM' },
 };
 for (const [m, g] of Object.entries(GYMS_EN)) npc(m, { look: 'coach', lookG: 'coachF', talk: () => gymTalk(g) });
 const BOXER_TIPS = {
   'Բ': ['MIGUEL', 'LUCIA', 'roll with the punches', 'کنار آمدن با سختی‌ها', 'When life gets hard, you adapt and keep going.'],
-  'Դ': ['TYLER', 'MEI', 'saved by the bell', 'درست سر بزنگاه نجات پیدا کردن', 'You were rescued at the very last second.'],
+  'Դ': ['ELI', 'MEI', 'saved by the bell', 'درست سر بزنگاه نجات پیدا کردن', 'You were rescued at the very last second.'],
   'Զ': ['MARCUS', 'KEISHA', 'throw in the towel', 'تسلیم شدن', 'It means to give up. Never throw in the towel!'],
-  'Ը': ['TONY', 'BRIDGET', 'below the belt', 'ناجوانمردانه', 'It means unfair. "That comment was below the belt!"'],
+  'Ը': ['PADDY', 'BRIDGET', 'below the belt', 'ناجوانمردانه', 'It means unfair. "That comment was below the belt!"'],
   'Ժ': ['DEVON', 'CAMILA', 'go the distance', 'تا آخر ادامه دادن', 'It means finishing something hard. Go the distance, champ!'],
 };
 for (const [m, [b, gl, idiom, fa, line]] of Object.entries(BOXER_TIPS)) npc(m, { look: 'boxer', lookG: 'boxerF', dir: 'left', talk: async () => {
