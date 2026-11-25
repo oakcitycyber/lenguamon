@@ -90,10 +90,10 @@ const TRAINERS_EN = {
     { route: 7, y: [18, 44], list: [
       ['abigail', 'HISTORY TEACHER ABIGAIL', 'parisa', 'CIVICS', 'Pop quiz! Do you know your civics words?', 'A+! Gold star!', () => `Thomas Jefferson wrote ${E('the Declaration of Independence', 'اعلامیه استقلال')} in 1776.`],
       ['ben', 'RE-ENACTOR BEN', 'grandpa', 'CIVICS', "Huzzah! I dress like it's 1776. Battle me, redcoat!", 'I surrender my musket!', () => `${E('the Founding Fathers', 'بنیان‌گذاران آمریکا')} wrote the Constitution in Philadelphia in 1787.`],
-      ['priya', 'LAW STUDENT PRIYA', 'tech', 'CIVICS', "I'm studying for the bar exam. Objection! Let's battle!", 'Objection sustained. You win!', () => `The highest court is ${E('the Supreme Court', 'دیوان عالی')}: nine judges decide the biggest cases.`],
+      ['anjali', 'LAW STUDENT ANJALI', 'tech', 'CIVICS', "I'm studying for the bar exam. Objection! Let's battle!", 'Objection sustained. You win!', () => `The highest court is ${E('the Supreme Court', 'دیوان عالی')}: nine judges decide the biggest cases.`],
       ['harold', 'BUTLER HAROLD', 'barista', 'FORMAL', 'Good afternoon. Might I trouble you for a battle?', 'Splendid form, if I may say so.', () => `To disagree politely: ${E('with all due respect', 'با کمال احترام')}...`],
       ['claire', 'DIPLOMAT CLAIRE', 'maryam', 'FORMAL', "It's an honor to meet you. Shall we have a civil battle?", 'I concede, with pleasure.', () => `${E("I'd be glad to", 'با کمال میل')}: a polite way to say yes.`],
-      ['joe', 'CRAB FISHERMAN JOE', 'biker', 'CIVICS', 'Fresh Maryland crabs! But first, a battle, hon!', "Well, I'll be! You got me, hon.", () => `In Baltimore, locals call everyone ${E('hon', 'عزیزم')}, short for "honey".`],
+      ['buddy', 'CRAB FISHERMAN BUDDY', 'biker', 'CIVICS', 'Fresh Maryland crabs! But first, a battle, hon!', "Well, I'll be! You got me, hon.", () => `In Baltimore, locals call everyone ${E('hon', 'عزیزم')}, short for "honey".`],
     ] },
   ],
 };
@@ -117,17 +117,17 @@ const trState = id => ((S.tr || (S.tr = {}))[id] || (S.tr[id] = {}));
 // ---- three athletes in every gym: beat them before the head trainer will train you ----
 // [map, words route, [boy-hero names], [girl-hero names]]
 const GYM_TRAINERS = {
-  fa: [['gym1', 1, ['PAHLEVAN ALI', 'PAHLEVAN SAEED', 'PAHLEVAN NADER'], ['PAHLEVAN MINA', 'PAHLEVAN SHIRIN', 'PAHLEVAN NEGAR']],
-    ['gym2', 2, ['PAHLEVAN HAMED', 'PAHLEVAN VAHID', 'PAHLEVAN JAVAD'], ['PAHLEVAN ELAHEH', 'PAHLEVAN ROYA', 'PAHLEVAN SAMIRA']],
-    ['gym3', 3, ['PAHLEVAN KIARASH', 'PAHLEVAN FARID', 'PAHLEVAN MASOUD'], ['PAHLEVAN SHADI', 'PAHLEVAN TARANEH', 'PAHLEVAN YASAMAN']],
-    ['gym4', 4, ['PAHLEVAN NAVID', 'PAHLEVAN EHSAN', 'PAHLEVAN OMID'], ['PAHLEVAN NILOUFAR', 'PAHLEVAN SETAREH', 'PAHLEVAN ARMITA']],
+  fa: [['gym1', 1, ['PAHLEVAN ALI', 'PAHLEVAN SAEED', 'PAHLEVAN NADER'], ['PAHLEVAN ZOHREH', 'PAHLEVAN MAHNAZ', 'PAHLEVAN NEGAR']],
+    ['gym2', 2, ['PAHLEVAN HAMED', 'PAHLEVAN VAHID', 'PAHLEVAN KAMBIZ'], ['PAHLEVAN ELAHEH', 'PAHLEVAN PARASTOO', 'PAHLEVAN SAMIRA']],
+    ['gym3', 3, ['PAHLEVAN KIARASH', 'PAHLEVAN FARID', 'PAHLEVAN HOOMAN'], ['PAHLEVAN SHADI', 'PAHLEVAN TARANEH', 'PAHLEVAN YASAMAN']],
+    ['gym4', 4, ['PAHLEVAN ARDALAN', 'PAHLEVAN EHSAN', 'PAHLEVAN SHAHAB'], ['PAHLEVAN NILOUFAR', 'PAHLEVAN SETAREH', 'PAHLEVAN ARMITA']],
     ['gym5', 6, ['PAHLEVAN SIAMAK', 'PAHLEVAN PAYAM', 'PAHLEVAN ARMAN'], ['PAHLEVAN SHIDEH', 'PAHLEVAN NAZILA', 'PAHLEVAN BITA']],
-    ['gym6', 7, ['PAHLEVAN SOHRAB', 'PAHLEVAN GIV', 'PAHLEVAN BIZHAN'], ['PAHLEVAN MANIZHEH', 'PAHLEVAN GORDAFARID', 'PAHLEVAN FARANAK']]],
-  en: [['usgym1', 1, ['BOXER RAY', 'BOXER LUIS', 'BOXER DANTE'], ['BOXER ROSA', 'BOXER JESSIE', 'BOXER LUPE']],
-    ['usgym2', 2, ['BOXER KENJI', 'BOXER SAM', 'BOXER LEO'], ['BOXER AMY', 'BOXER IRIS', 'BOXER JUNE']],
+    ['gym6', 7, ['PAHLEVAN BARZIN', 'PAHLEVAN FARSHAD', 'PAHLEVAN PEDRAM'], ['PAHLEVAN TANAZ', 'PAHLEVAN MAHSHID', 'PAHLEVAN ROSHANAK']]],
+  en: [['usgym1', 1, ['BOXER RAY', 'BOXER MATEO', 'BOXER DANTE'], ['BOXER CARMEN', 'BOXER JESSIE', 'BOXER INES']],
+    ['usgym2', 2, ['BOXER KENJI', 'BOXER SAM', 'BOXER DEREK'], ['BOXER HANNAH', 'BOXER IRIS', 'BOXER NAOMI']],
     ['usgym3', 3, ['BOXER TREY', 'BOXER COLE', 'BOXER RUSS'], ['BOXER SKYE', 'BOXER BROOKE', 'BOXER QUINN']],
-    ['usgym4', 4, ['BOXER MIKE', 'BOXER PAT', 'BOXER STAN'], ['BOXER KATIE', 'BOXER MOLLY', 'BOXER SHEILA']],
-    ['usgym5', 6, ['BOXER VINNIE', 'BOXER RICO', 'BOXER JAMAL'], ['BOXER GINA', 'BOXER TONI', 'BOXER KEISHA']],
+    ['usgym4', 4, ['BOXER SEAN', 'BOXER PAT', 'BOXER STAN'], ['BOXER KATIE', 'BOXER MOLLY', 'BOXER SHEILA']],
+    ['usgym5', 6, ['BOXER VINNIE', 'BOXER RICO', 'BOXER JAMAL'], ['BOXER GINA', 'BOXER TONI', 'BOXER TAMIKA']],
     ['usgym6', 7, ['BOXER GRANT', 'BOXER LINCOLN', 'BOXER JACKSON'], ['BOXER BETSY', 'BOXER DOLLY', 'BOXER HARRIET']]],
 };
 const GYM_TR_SPOTS = [[6, 6, 'left'], [1, 3, 'down'], [8, 3, 'down']];

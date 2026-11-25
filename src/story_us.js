@@ -278,8 +278,8 @@ async function afterBossEN(id) {
 
 // ---- Washington, DC: the grand finale ----
 npc('Ѣ', { look: 'ghostgw', hidden: () => !!S.flags.b6, talk: async () => { if (!S.flags.b5) return; await gateBoss('b6'); } });
-npc('Ѫ', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('MARCUS', 'DOLORES'), null, ["Welcome to DC! Half my customers work in Congress, so everyone here talks about politics.", `A useful phrase when you disagree politely: ${E('with all due respect...', 'با کمال احترام...')}`, 'Here, a coffee on the house. You look like you came a long way.']) });
+npc('Ѫ', { look: 'barista', lookG: 'baristaF', talk: () => teaHost(G('WALTER', 'MAXINE'), null, ["Welcome to DC! Half my customers work in Congress, so everyone here talks about politics.", `A useful phrase when you disagree politely: ${E('with all due respect...', 'با کمال احترام...')}`, 'Here, a coffee on the house. You look like you came a long way.']) });
 npc('Ѭ', { look: 'grandpa', lookG: 'gma', dir: 'left', talk: () => elderTalk(5, EN_N('GRANDPA FRANKLIN', 'GRANDMA ELEANOR'), EN_N("I was a tour guide on the National Mall for fifty years. The founders left us plenty of good advice.", "I taught American history for fifty years. The founders left us plenty of good advice, sweetheart.")) });
-GYMS_EN['Ծ'] = { route: 7, city: 'WASHINGTON, DC', boy: 'COACH JEFFERSON', girl: 'COACH ROSA', gym: 'BOXING GYM' };
+GYMS_EN['Ծ'] = { route: 7, city: 'WASHINGTON, DC', boy: 'COACH JEFFERSON', girl: 'COACH RUTH', gym: 'BOXING GYM' };
 npc('Ծ', { look: 'coach', lookG: 'coachF', talk: () => gymTalk(GYMS_EN['Ծ']) });
 npc('Կ', { look: 'boxer', lookG: 'boxerF', dir: 'left', talk: async () => { await say([T(EN_N('ANDRE', 'NIA'), `Lots of English idioms come from boxing. Like ${E("in your corner", 'پشتت بودن، طرفدارت بودن')}.`), "It means someone supports you. Your coach is always in your corner!"]); } });

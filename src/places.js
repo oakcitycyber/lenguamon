@@ -31,7 +31,7 @@ const GYMS = {
   '?': { route: 3, city: 'SHIRAZ', boy: 'MORSHED ROSTAM', girl: 'MORSHED RUDABEH' },
   'μ': { route: [4, 5], city: 'KASHAN', boy: 'MORSHED ZAL', girl: 'MORSHED FARANAK' },
   'π': { route: 6, city: 'TEHRAN', boy: 'MORSHED FEREYDOUN', girl: 'MORSHED SINDOKHT' },
-  'ζ': { route: 7, city: 'MASHHAD', boy: 'MORSHED BAHRAM', girl: 'MORSHED PARIDOKHT' },
+  'ζ': { route: 7, city: 'MASHHAD', boy: 'MORSHED ARDESHIR', girl: 'MORSHED PARIDOKHT' },
 };
 const GYM_ROUNDS = 8;
 function gymWords(route) {
@@ -111,5 +111,5 @@ npc(';', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => 
 npc('ς', { look: 'pahlevan', lookG: 'pahlevanF', dir: 'left', talk: async () => { await say([T(G('FARAMARZ', 'ROXANA'), `In Khorasan the old heroes of the Shahnameh are everywhere. A strong person is called ${F('رستم', 'rostam')}!`), `When you finish a hard job, say ${F('موفق شدم', 'movafagh shodam')}: "I made it!"`]); } });
 npc('ξ', { look: 'javad', lookG: 'goli', talk: () => isGirl()
   ? teaHost('KHANOM SOODABEH', null, [`${F('خوش اومدی', 'khosh oomadi')}, ${F('دخترم', 'dokhtaram')}! Welcome to Mashhad!`, `Try your chai with ${F('نبات', 'nabat')}, saffron rock candy. Mashhad is famous for it.`, `${F('بفرمایید', 'befarmaid')}!`])
-  : teaHost('AGHA HOSSEIN', null, [`${F('خوش اومدی', 'khosh oomadi')}! You came all the way to Mashhad? ${F('خسته نباشی', 'khasteh nabashi')}!`, `Here, stir some ${F('نبات', 'nabat')} into your chai. Saffron rock candy, a Mashhad speciality.`, `${F('نوش جان', 'noosh-e jan')}!`]) });
-npc('ϗ', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(5, G('AGHA FEREYDOUN', 'KHANOM TAHMINEH'), G(`I have read the Shahnameh aloud in this teahouse for fifty years. Sit, and take the last sayings of the road.`, `My grandmother knew the whole Shahnameh by heart. Sit, my dear, and take the last sayings of the road.`)) });
+  : teaHost('AGHA YOUSEF', null, [`${F('خوش اومدی', 'khosh oomadi')}! You came all the way to Mashhad? ${F('خسته نباشی', 'khasteh nabashi')}!`, `Here, stir some ${F('نبات', 'nabat')} into your chai. Saffron rock candy, a Mashhad speciality.`, `${F('نوش جان', 'noosh-e jan')}!`]) });
+npc('ϗ', { look: 'elder', lookG: 'elderF', dir: 'left', talk: () => elderTalk(5, G('AGHA MANOUCHEHR', 'KHANOM FARZANEH'), G(`I have read the Shahnameh aloud in this teahouse for fifty years. Sit, and take the last sayings of the road.`, `My grandmother knew the whole Shahnameh by heart. Sit, my dear, and take the last sayings of the road.`)) });
