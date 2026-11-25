@@ -5128,7 +5128,7 @@ async function wildEncounter(route) {
 // each line: [npc Persian, npc translit, npc English, reply Persian, reply translit, reply English]
 const BOSSES = {
   b1: {
-    name: 'POLICE OFFICER', look: 'police', lvl: 9, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
+    name: 'POLICE OFFICER', look: 'police', lvl: 9, route: 1, need: WINS_NEEDED, showEn: true,
     title: 'the POLICE CHECKPOINT on the road out of Yazd',
     intro: [`${F('ایست!', 'ist!')} HALT! This is a police checkpoint.`, 'Nobody leaves Yazd unless they can answer my questions in Persian!'],
     lines: [
@@ -5145,7 +5145,7 @@ const BOSSES = {
     beaten: `${F('باشه', 'bashe')}... fine. Your papers are in order. Go on to Isfahan.`,
   },
   b2: {
-    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
+    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: WINS_NEEDED, showEn: true,
     title: 'the IRGC COMMANDER guarding the road to Shiraz',
     intro: [`${F('ایست!', 'ist!')} Stop right there, traveller.`, 'I am the IRGC COMMANDER. Nobody reaches Shiraz without passing my interrogation. In Persian!'],
     lines: [
@@ -5162,7 +5162,7 @@ const BOSSES = {
     beaten: `Hmph. ${F('برو', 'boro')}! Go! Shiraz is north. They say Shirin only speaks Persian.`,
   },
   b3: {
-    name: 'THE ZEALOT', look: 'zealot', lvl: 26, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'THE ZEALOT', look: 'zealot', lvl: 26, route: 3, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'the villain who seized the tomb of Hafez',
     intro: [`So. You are the one collecting words. I am THE ZEALOT ${F('متعصب', "mote'asseb")}.`, 'I have seized the tomb of Hafez and banned every word in Iran. Poems, jokes, greetings... all forbidden!', 'If you can still hold a conversation, prove it. In Persian. No English hints!'],
     lines: [
@@ -5180,7 +5180,7 @@ const BOSSES = {
     beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} This isn't over! In TEHRAN I control every screen! (THE ZEALOT fled north toward Tehran. The words of Hafez are free again!)`,
   },
   b4: {
-    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
+    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: WINS_NEEDED, showEn: true,
     title: 'the STATE TV ANCHOR broadcasting live from the gate of Tehran',
     intro: [`${F('شب بخیر، بینندگان عزیز', 'shab bekheir, binandegan-e aziz')}! Good evening, dear viewers!`, 'We are LIVE at the gate of Tehran, where a dangerous traveller is trying to... SPEAK FREELY. Let us interview them!', 'Remember, viewers: everything is wonderful. Only approved words on this channel!'],
     lines: [
@@ -5197,7 +5197,7 @@ const BOSSES = {
     beaten: `...we are experiencing technical difficulties. ${F('ببخشید', 'bebakhshid')}! (The broadcast cut to a test pattern. The gate of Tehran is open!)`,
   },
   b5: {
-    name: 'THE ZEALOT', look: 'zealot', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'THE ZEALOT', look: 'zealot', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'THE ZEALOT, jamming every word in Iran from the top of Milad Tower',
     intro: [`You AGAIN? ${F('باز هم تو؟', 'baz ham to?')}`, 'From the top of Milad Tower I jam every phone, every screen, every word in Iran. Here I am all-powerful!', 'One last conversation. Long Persian sentences, no English hints. Fail, and Persian falls silent forever!'],
     lines: [
@@ -5214,7 +5214,7 @@ const BOSSES = {
     ],
     beaten: `My signal... my beautiful silence... ${F('نه!', 'na!')} NOOOO! (THE ZEALOT's jammer exploded into a shower of sparks. Every word in Iran is free again!)`,
   },  b6: {
-    name: 'GHOST OF CYRUS', look: 'ghostcyrus', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'GHOST OF CYRUS', look: 'ghostcyrus', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'the Ghost of Cyrus the Great, waiting at the tomb of Ferdowsi',
     intro: [`${F('درود', 'dorood')}, traveller. I am the spirit of Cyrus, king of the four corners of the world.`, 'For 2,500 years I have listened to the language of my people. Ferdowsi kept it alive here, at Tus.', 'Speak with me, in Persian and only in Persian, and show me that it lives on in you.'],
     lines: [
@@ -5259,7 +5259,7 @@ async function bossBattle(id) {
     const ans = bossReplyWord(b, line);
     const others = shuffle(b.lines.filter((l, i) => i !== li)).slice(0, 3).map(l => bossReplyWord(b, l));
     const fx = s => s.replace(/\{NAME\}/g, S.name);
-    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: say1(x.fa, x.tr0) + (b.optEn ? (en ? `<span class="en sm">${PF(x.en0)}</span>` : `<span class="en sm">${esc(x.en0)}</span>`) : '') }));
+    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: say1(x.fa, x.tr0) })); // answer choices are only in the language you are learning
     const q = {
       boss: true, w: ans, opts, hint: en ? 'Type your reply in English' : 'Type your reply (Latin letters)',
       prompt: `<span class="who">${esc(b.name)}:</span> ${say1(fx(line[0]), fx(line[1]))}${b.showEn ? `<span class="en sm">${en ? PF(fx(line[2])) : `"${esc(fx(line[2]))}"`}</span>` : ''}`,
@@ -5883,7 +5883,7 @@ const EN_N = (boy, girl) => G(boy, girl || boy);
 
 // ---- the five English bosses: [they say, -, Persian hint, you reply, (typed reply), Persian meaning of your reply] ----
 const BOSSES_EN = {
-  b1: { name: 'CHP OFFICER', look: 'chp', lvl: 14, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
+  b1: { name: 'CHP OFFICER', look: 'chp', lvl: 14, route: 1, need: WINS_NEEDED, showEn: true,
     intro: [`Pull over! License and registration, please. ${PF('بزنید کنار! گواهینامه و کارت ماشین، لطفاً.')}`, "Nobody drives into San Francisco until I'm sure they can talk like a local."],
     lines: [
       ['Good afternoon. Do you know why I pulled you over?', '', 'عصر بخیر. می‌دونید چرا نگهتون داشتم؟', 'No, officer. Was I speeding?', '', 'نه، جناب سروان. سرعتم زیاد بود؟'],
@@ -5898,7 +5898,7 @@ const BOSSES_EN = {
     ],
     beaten: "You talk like a local, all right. Go on, San Francisco is straight ahead. And watch that speed limit!",
   },
-  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
+  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: WINS_NEEDED, showEn: true,
     intro: ["Hey! I'm the CEO of the hottest startup in San Francisco. Let's circle back on your journey.", 'Nobody leaves this city without nailing my job interview. Ready to disrupt?'],
     lines: [
       ['So, tell me about yourself.', '', 'خب، از خودت بگو.', 'I work hard and I learn quickly.', '', 'سخت کار می‌کنم و سریع یاد می‌گیرم.'],
@@ -5913,7 +5913,7 @@ const BOSSES_EN = {
     ],
     beaten: "Wow. You're hired! Actually, never mind, you're too good for us. The coast road north to Seattle is all yours.",
   },
-  b3: { name: 'THE CYBORG', look: 'cyborg', lvl: 30, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  b3: { name: 'THE CYBORG', look: 'cyborg', lvl: 30, route: 3, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ['Ducking hello! I am THE CYBORG: half human, half autocorrect.', "I've taken over the Space Needle and I'm changing everyone's words. 'Love' becomes 'glove'! 'Friend' becomes 'fiend'!", 'Prove you can still say what you mean. No Persian hints this time!'],
     lines: [
       ['Hello. How are you feeling today?', '', 'سلام. امروز چه حسی داری؟', "I'm in a good mood, thanks for asking.", '', 'سرحالم، ممنون که پرسیدی.'],
@@ -5929,7 +5929,7 @@ const BOSSES_EN = {
     ],
     beaten: "Syntax error... SYSTEM OVERLOAD! This isn't over! In NEW YORK I'll autocorrect the whole city! (THE CYBORG flew east. Seattle's words are free again!)",
   },
-  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
+  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: WINS_NEEDED, showEn: true,
     intro: ["Hey, I'm drivin' here! You need a ride into the city or what?", "Nobody gets into New York unless they can keep up with a New York cabbie. Let's go, let's go!"],
     lines: [
       ['Where to, pal?', '', 'کجا می‌ری، رفیق؟', 'Times Square, please.', '', 'تایمز اسکوئر، لطفاً.'],
@@ -5944,7 +5944,7 @@ const BOSSES_EN = {
     ],
     beaten: "Ha! You talk like a real New Yorker! The bridge is open, pal. Go on in!",
   },
-  b5: { name: 'THE CYBORG', look: 'cyborg', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  b5: { name: 'THE CYBORG', look: 'cyborg', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ["You AGAIN?! I've plugged into the antenna on top of the Empire State Building!", "Every phone, every sign, every subway map in New York is mine. 'Pizza' is now 'piazza'!", 'One last conversation. Idioms, no hints. Fail, and the city that never sleeps will never speak again!'],
     lines: [
       ['Long time no see. Did you miss me?', '', 'خیلی وقته ندیدمت. دلت برام تنگ شده بود؟', 'Not really, but here I am.', '', 'نه واقعاً، ولی اینجام.'],
@@ -5959,7 +5959,7 @@ const BOSSES_EN = {
       ['Error... error... shutting down...', '', 'خطا... خطا... در حال خاموش شدن...', 'Goodbye, Cyborg. Keep me posted!', '', 'خداحافظ، سایبورگ. منو در جریان بذار!'],
     ],
     beaten: "System... shutting... dowwwn... (THE CYBORG's circuits fizzled out. Every word in America is free again!)",
-  },  b6: { name: 'GHOST OF WASHINGTON', look: 'ghostgw', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  },  b6: { name: 'GHOST OF WASHINGTON', look: 'ghostgw', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ['Good morrow, traveler. I am the ghost of George Washington, first President of these United States.', 'For more than two hundred years I have watched people from every corner of the earth come here and learn this language.', 'Let us converse, in English and only in English, and you shall show me what you have learned.'],
     lines: [
       ['Who goes there? State your name!', '', 'کی اونجاست؟ اسمت رو بگو!', "My name is {NAME}. It's an honor to meet you, sir.", '', 'اسم من {NAME} است. افتخار آشنایی با شما رو دارم، قربان.'],

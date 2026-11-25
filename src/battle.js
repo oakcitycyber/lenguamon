@@ -279,7 +279,7 @@ async function wildEncounter(route) {
 // each line: [npc Persian, npc translit, npc English, reply Persian, reply translit, reply English]
 const BOSSES = {
   b1: {
-    name: 'POLICE OFFICER', look: 'police', lvl: 9, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
+    name: 'POLICE OFFICER', look: 'police', lvl: 9, route: 1, need: WINS_NEEDED, showEn: true,
     title: 'the POLICE CHECKPOINT on the road out of Yazd',
     intro: [`${F('ایست!', 'ist!')} HALT! This is a police checkpoint.`, 'Nobody leaves Yazd unless they can answer my questions in Persian!'],
     lines: [
@@ -296,7 +296,7 @@ const BOSSES = {
     beaten: `${F('باشه', 'bashe')}... fine. Your papers are in order. Go on to Isfahan.`,
   },
   b2: {
-    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
+    name: 'IRGC COMMANDER', look: 'irgc', lvl: 16, route: 2, need: WINS_NEEDED, showEn: true,
     title: 'the IRGC COMMANDER guarding the road to Shiraz',
     intro: [`${F('ایست!', 'ist!')} Stop right there, traveller.`, 'I am the IRGC COMMANDER. Nobody reaches Shiraz without passing my interrogation. In Persian!'],
     lines: [
@@ -313,7 +313,7 @@ const BOSSES = {
     beaten: `Hmph. ${F('برو', 'boro')}! Go! Shiraz is north. They say Shirin only speaks Persian.`,
   },
   b3: {
-    name: 'THE ZEALOT', look: 'zealot', lvl: 26, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'THE ZEALOT', look: 'zealot', lvl: 26, route: 3, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'the villain who seized the tomb of Hafez',
     intro: [`So. You are the one collecting words. I am THE ZEALOT ${F('متعصب', "mote'asseb")}.`, 'I have seized the tomb of Hafez and banned every word in Iran. Poems, jokes, greetings... all forbidden!', 'If you can still hold a conversation, prove it. In Persian. No English hints!'],
     lines: [
@@ -331,7 +331,7 @@ const BOSSES = {
     beaten: `My bans... my beautiful bans... ${F('نه!', 'na!')} This isn't over! In TEHRAN I control every screen! (THE ZEALOT fled north toward Tehran. The words of Hafez are free again!)`,
   },
   b4: {
-    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
+    name: 'STATE TV ANCHOR', look: 'anchor', lvl: 34, route: 5, need: WINS_NEEDED, showEn: true,
     title: 'the STATE TV ANCHOR broadcasting live from the gate of Tehran',
     intro: [`${F('شب بخیر، بینندگان عزیز', 'shab bekheir, binandegan-e aziz')}! Good evening, dear viewers!`, 'We are LIVE at the gate of Tehran, where a dangerous traveller is trying to... SPEAK FREELY. Let us interview them!', 'Remember, viewers: everything is wonderful. Only approved words on this channel!'],
     lines: [
@@ -348,7 +348,7 @@ const BOSSES = {
     beaten: `...we are experiencing technical difficulties. ${F('ببخشید', 'bebakhshid')}! (The broadcast cut to a test pattern. The gate of Tehran is open!)`,
   },
   b5: {
-    name: 'THE ZEALOT', look: 'zealot', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'THE ZEALOT', look: 'zealot', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'THE ZEALOT, jamming every word in Iran from the top of Milad Tower',
     intro: [`You AGAIN? ${F('باز هم تو؟', 'baz ham to?')}`, 'From the top of Milad Tower I jam every phone, every screen, every word in Iran. Here I am all-powerful!', 'One last conversation. Long Persian sentences, no English hints. Fail, and Persian falls silent forever!'],
     lines: [
@@ -365,7 +365,7 @@ const BOSSES = {
     ],
     beaten: `My signal... my beautiful silence... ${F('نه!', 'na!')} NOOOO! (THE ZEALOT's jammer exploded into a shower of sparks. Every word in Iran is free again!)`,
   },  b6: {
-    name: 'GHOST OF CYRUS', look: 'ghostcyrus', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+    name: 'GHOST OF CYRUS', look: 'ghostcyrus', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, lair: true,
     title: 'the Ghost of Cyrus the Great, waiting at the tomb of Ferdowsi',
     intro: [`${F('درود', 'dorood')}, traveller. I am the spirit of Cyrus, king of the four corners of the world.`, 'For 2,500 years I have listened to the language of my people. Ferdowsi kept it alive here, at Tus.', 'Speak with me, in Persian and only in Persian, and show me that it lives on in you.'],
     lines: [
@@ -410,7 +410,7 @@ async function bossBattle(id) {
     const ans = bossReplyWord(b, line);
     const others = shuffle(b.lines.filter((l, i) => i !== li)).slice(0, 3).map(l => bossReplyWord(b, l));
     const fx = s => s.replace(/\{NAME\}/g, S.name);
-    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: say1(x.fa, x.tr0) + (b.optEn ? (en ? `<span class="en sm">${PF(x.en0)}</span>` : `<span class="en sm">${esc(x.en0)}</span>`) : '') }));
+    const opts = shuffle([ans, ...others]).map(x => ({ word: x, correct: x === ans, forms: x.trForms, html: say1(x.fa, x.tr0) })); // answer choices are only in the language you are learning
     const q = {
       boss: true, w: ans, opts, hint: en ? 'Type your reply in English' : 'Type your reply (Latin letters)',
       prompt: `<span class="who">${esc(b.name)}:</span> ${say1(fx(line[0]), fx(line[1]))}${b.showEn ? `<span class="en sm">${en ? PF(fx(line[2])) : `"${esc(fx(line[2]))}"`}</span>` : ''}`,

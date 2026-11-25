@@ -27,7 +27,7 @@ const EN_N = (boy, girl) => G(boy, girl || boy);
 
 // ---- the five English bosses: [they say, -, Persian hint, you reply, (typed reply), Persian meaning of your reply] ----
 const BOSSES_EN = {
-  b1: { name: 'CHP OFFICER', look: 'chp', lvl: 14, route: 1, need: WINS_NEEDED, showEn: true, optEn: true,
+  b1: { name: 'CHP OFFICER', look: 'chp', lvl: 14, route: 1, need: WINS_NEEDED, showEn: true,
     intro: [`Pull over! License and registration, please. ${PF('بزنید کنار! گواهینامه و کارت ماشین، لطفاً.')}`, "Nobody drives into San Francisco until I'm sure they can talk like a local."],
     lines: [
       ['Good afternoon. Do you know why I pulled you over?', '', 'عصر بخیر. می‌دونید چرا نگهتون داشتم؟', 'No, officer. Was I speeding?', '', 'نه، جناب سروان. سرعتم زیاد بود؟'],
@@ -42,7 +42,7 @@ const BOSSES_EN = {
     ],
     beaten: "You talk like a local, all right. Go on, San Francisco is straight ahead. And watch that speed limit!",
   },
-  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: WINS_NEEDED, showEn: true, optEn: false,
+  b2: { name: 'STARTUP CEO', look: 'ceo', lvl: 22, route: 2, need: WINS_NEEDED, showEn: true,
     intro: ["Hey! I'm the CEO of the hottest startup in San Francisco. Let's circle back on your journey.", 'Nobody leaves this city without nailing my job interview. Ready to disrupt?'],
     lines: [
       ['So, tell me about yourself.', '', 'خب، از خودت بگو.', 'I work hard and I learn quickly.', '', 'سخت کار می‌کنم و سریع یاد می‌گیرم.'],
@@ -57,7 +57,7 @@ const BOSSES_EN = {
     ],
     beaten: "Wow. You're hired! Actually, never mind, you're too good for us. The coast road north to Seattle is all yours.",
   },
-  b3: { name: 'THE CYBORG', look: 'cyborg', lvl: 30, route: 3, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  b3: { name: 'THE CYBORG', look: 'cyborg', lvl: 30, route: 3, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ['Ducking hello! I am THE CYBORG: half human, half autocorrect.', "I've taken over the Space Needle and I'm changing everyone's words. 'Love' becomes 'glove'! 'Friend' becomes 'fiend'!", 'Prove you can still say what you mean. No Persian hints this time!'],
     lines: [
       ['Hello. How are you feeling today?', '', 'سلام. امروز چه حسی داری؟', "I'm in a good mood, thanks for asking.", '', 'سرحالم، ممنون که پرسیدی.'],
@@ -73,7 +73,7 @@ const BOSSES_EN = {
     ],
     beaten: "Syntax error... SYSTEM OVERLOAD! This isn't over! In NEW YORK I'll autocorrect the whole city! (THE CYBORG flew east. Seattle's words are free again!)",
   },
-  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: WINS_NEEDED, showEn: true, optEn: false,
+  b4: { name: 'NEW YORK CABBIE', look: 'cabbie', lvl: 36, route: 5, need: WINS_NEEDED, showEn: true,
     intro: ["Hey, I'm drivin' here! You need a ride into the city or what?", "Nobody gets into New York unless they can keep up with a New York cabbie. Let's go, let's go!"],
     lines: [
       ['Where to, pal?', '', 'کجا می‌ری، رفیق؟', 'Times Square, please.', '', 'تایمز اسکوئر، لطفاً.'],
@@ -88,7 +88,7 @@ const BOSSES_EN = {
     ],
     beaten: "Ha! You talk like a real New Yorker! The bridge is open, pal. Go on in!",
   },
-  b5: { name: 'THE CYBORG', look: 'cyborg', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  b5: { name: 'THE CYBORG', look: 'cyborg', lvl: 44, route: 6, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ["You AGAIN?! I've plugged into the antenna on top of the Empire State Building!", "Every phone, every sign, every subway map in New York is mine. 'Pizza' is now 'piazza'!", 'One last conversation. Idioms, no hints. Fail, and the city that never sleeps will never speak again!'],
     lines: [
       ['Long time no see. Did you miss me?', '', 'خیلی وقته ندیدمت. دلت برام تنگ شده بود؟', 'Not really, but here I am.', '', 'نه واقعاً، ولی اینجام.'],
@@ -103,7 +103,7 @@ const BOSSES_EN = {
       ['Error... error... shutting down...', '', 'خطا... خطا... در حال خاموش شدن...', 'Goodbye, Cyborg. Keep me posted!', '', 'خداحافظ، سایبورگ. منو در جریان بذار!'],
     ],
     beaten: "System... shutting... dowwwn... (THE CYBORG's circuits fizzled out. Every word in America is free again!)",
-  },  b6: { name: 'GHOST OF WASHINGTON', look: 'ghostgw', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, optEn: false, lair: true,
+  },  b6: { name: 'GHOST OF WASHINGTON', look: 'ghostgw', lvl: 52, route: 7, need: WINS_NEEDED, showEn: false, lair: true,
     intro: ['Good morrow, traveler. I am the ghost of George Washington, first President of these United States.', 'For more than two hundred years I have watched people from every corner of the earth come here and learn this language.', 'Let us converse, in English and only in English, and you shall show me what you have learned.'],
     lines: [
       ['Who goes there? State your name!', '', 'کی اونجاست؟ اسمت رو بگو!', "My name is {NAME}. It's an honor to meet you, sir.", '', 'اسم من {NAME} است. افتخار آشنایی با شما رو دارم، قربان.'],
