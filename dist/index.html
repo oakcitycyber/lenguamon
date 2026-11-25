@@ -4287,6 +4287,8 @@ function buildMaps() {
 }
 // the American maps share their shape with the Persian ones
 const baseMap = id => ({ us: 'world', usnorth: 'north', useast: 'east' })[id] || id;
+// which words live in a patch of grass: the area's own route, and in the Chicago parks the words of the roads on either side
+function encRoute(map, y) { const r = regionOf(map, y); if (r) return r; if (baseMap(map) === 'north' && y >= 46 && y <= 65) return rand() < 0.5 ? 4 : 5; return 1; }
 function regionOf(map, y) {
   map = baseMap(map);
   if (map === 'east') return 7;
@@ -4384,7 +4386,7 @@ async function onStep() {
   // guard / scripted tiles
   if (TILE[ch] && TILE[ch].enc && !S.flags.noEnc) {
     if (encounterCooldown > 0) { encounterCooldown--; return; }
-    if (rand() < 0.13) { await run(() => wildEncounter(regionOf(curMap.id, PL.y))); encounterCooldown = 2; }
+    if (rand() < 0.13) { await run(() => wildEncounter(encRoute(curMap.id, PL.y))); encounterCooldown = 2; }
   }
 }
 async function warp(to, x, y, dir) {
@@ -4726,18 +4728,18 @@ Object.assign(MAP_SRC, {
       'Ϙ▫▫████▫▫ǁǁ▫▫█████▫Ϙ',
       'Ϙ▫S████▫▫ǁǁ▫▫█████▫Ϙ',
       'Ϙ▫▫████▫▫ǁǁ▫▫██ⓛ██SϘ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
-      'Ϙ█████▫▫Sǁǁ▫▫▫▫▫▫▫▫Ϙ',
-      'Ϙ█████▫▫▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
+      'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫::▫▫▫▫▫Ϙ',
+      'Ϙ█████▫▫Sǁǁ▫:::::::Ϙ',
+      'Ϙ█████▫▫▫ǁǁ▫:::::::Ϙ',
+      'Ϙ::::::▫▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
       'Ϙ▫█████▫▫ǁǁ▫ϘϘϘϘϘϘϘϘ',
-      'Ϙ▫█████▫▫ǁǁ▫Ϙ.....ϘϘ',
-      'ϘS██ⓚ██▫▫ǁǁ▫Ϙ.....ϘϘ',
+      'Ϙ▫█████▫▫ǁǁ▫Ϙ:::::ϘϘ',
+      'ϘS██ⓚ██▫▫ǁǁ▫Ϙ:::::ϘϘ',
       'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫Ϙ*≋≋≋*ϘϘ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁSϘ.≋≋≋.ϘϘ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁǁǁ.≋≋≋.ϘϘ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫Ϙ.....ϘϘ',
-      'Ϙ▫▫▫▫▫▫▫▫ǁǁ▫ϘϘϘϘϘϘϘϘ',
+      'Ϙ::::::▫▫ǁǁSϘ.≋≋≋.ϘϘ',
+      'Ϙ::::::▫▫ǁǁǁǁ.≋≋≋.ϘϘ',
+      'Ϙ::::::▫▫ǁǁ▫Ϙ:::::ϘϘ',
+      'Ϙ::::::▫▫ǁǁ▫ϘϘϘϘϘϘϘϘ',
       'Ϙ▫▫▫▫▫▫S▫ǁǁ▫▫▫▫▫▫▫▫Ϙ',
       'ϘϘ▫▫▫▫▫▫▫ǁǁ▫▫▫▫▫▫▫ϘϘ',
       'Ϙ¦¦¦¦¦¦¦¦ǁǁ¦¦¦¦¦¦¦¦Ϙ',
