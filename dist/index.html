@@ -295,9 +295,11 @@ button { font: inherit; cursor: pointer; }
 /* shop and bag */
 .shop { left: calc(var(--u) * 2); right: calc(var(--u) * 2); top: calc(var(--u) * 2); max-height: calc(var(--u) * 96); overflow-y: auto; gap: calc(var(--u) * .8); font-size: .82em; }
 .shop .mi { white-space: normal; }
-.shopi { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: calc(var(--u) * 3); width: 100%; line-height: 1.1; }
-.shopi small { color: #50586a; font-size: .78em; text-align: right; }
+.shopi { display: grid; grid-template-columns: 46% 1fr; align-items: center; gap: calc(var(--u) * 3); flex: 1; min-width: 0; line-height: 1.1; }
+.shopi > :first-child { justify-self: start; }
+.shopi small { color: #50586a; font-size: .78em; text-align: left; }
 .shop .mi { width: 100%; }
+.shop .mi > :not(.cur) { flex: 1; min-width: 0; }
 
 /* typing on a phone: no buttons, the question fills the screen above the keyboard */
 body.typing #pad, body.typing #keys, body.typing .bz-top { display: none; }
