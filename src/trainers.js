@@ -130,7 +130,8 @@ const GYM_TRAINERS = {
     ['usgym5', 6, ['BOXER VINNIE', 'BOXER RICO', 'BOXER JAMAL'], ['BOXER GINA', 'BOXER TONI', 'BOXER TAMIKA']],
     ['usgym6', 7, ['BOXER GRANT', 'BOXER LINCOLN', 'BOXER JACKSON'], ['BOXER BETSY', 'BOXER DOLLY', 'BOXER HARRIET']]],
 };
-const GYM_TR_SPOTS = [[8, 6, 'left'], [8, 4, 'left'], [8, 2, 'left']]; // each one watches the only path to the head trainer
+// one watches the door, and one watches each side of the ring; the head trainer waits until all three are beaten
+const GYM_TR_SPOTS = [[8, 6, 'left'], [1, 4, 'right'], [8, 4, 'left']];
 function gymTrainersLeft(mapId) { return TRAINER_NPCS.filter(n => n.tr && n.tr.gym && NPC_POS[n.marker].map === mapId && !trState(n.tr.id).won).length; }
 
 // ---- create the trainer NPCs and stand them beside the road ----

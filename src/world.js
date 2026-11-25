@@ -1,7 +1,6 @@
 // ===== LENGUAMON world: maps, NPCs, movement, menus =====
 // zurkhaneh interior: morshed by the drum alcove, an athlete in the sunken pit (gowd)
-// one way in: a rack of clubs closes the left side, so you pass all three gym trainers on the right before reaching the head
-function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffɱfffffw', 'wwwwEwwwww']; }
+function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffffffffw', 'wwwwEwwwww']; }
 const MAP_SRC = {
   world: {
     rows: [

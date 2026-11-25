@@ -3989,8 +3989,7 @@ function textInput(label, max = 10) {
 
 // ===== LENGUAMON world: maps, NPCs, movement, menus =====
 // zurkhaneh interior: morshed by the drum alcove, an athlete in the sunken pit (gowd)
-// one way in: a rack of clubs closes the left side, so you pass all three gym trainers on the right before reaching the head
-function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffɱfffffw', 'wwwwEwwwww']; }
+function GYM_ROWS(m, a) { return ['wwwwwwwwww', 'w&&w%%w&&w', `wfff${m}ffffw`, 'wff@@@@ffw', `wff${a}@@@ffw`, 'wff@@@@ffw', 'wffffffffw', 'wwwwEwwwww']; }
 const MAP_SRC = {
   world: {
     rows: [
@@ -4531,8 +4530,7 @@ function drawAlert(c, x, y) {
 // us:      Seattle (top), Pacific Coast Highway, San Francisco, Route 66, Santa Fe (start, bottom)
 // usnorth: New York City (top), Pennsylvania farmland, Chicago, Rocky Mountains (bottom)
 const DINER_ROWS = (h, e) => ['▤▤▤▤▤▤▤▤▤▤', '▤◘◘◘◘◘◘♫◘▤', `▤▚▚▚▚${h}▚▚▚▤`, '▤▬▬▬▬▬▬▚▚▤', '▤▚▚▚▚▚▚▚▚▤', `▤◙▚◙▚▚◙▚${e || '◙'}▤`, '▤▚▚▚▚▚▚▚▚▤', '▤▤▤▤E▤▤▤▤▤'];
-// one way in: a weight bench closes the left side, so you pass all three boxers on the right before reaching the coach
-const BOXING_ROWS = (c, a) => ['▤▤▤▤▤▤▤▤▤▤', '▤⚲⚲▤ȸȸ▤⚲⚲▤', `▤▒▒▒${c}▒▒▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', `▤▒▒${a}◫◫◫▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', '▤▒▒ɯ▒▒▒▒▒▤', '▤▤▤▤E▤▤▤▤▤'];
+const BOXING_ROWS = (c, a) => ['▤▤▤▤▤▤▤▤▤▤', '▤⚲⚲▤ȸȸ▤⚲⚲▤', `▤▒▒▒${c}▒▒▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', `▤▒▒${a}◫◫◫▒▒▤`, '▤▒▒◫◫◫◫▒▒▤', '▤▒▒▒▒▒▒▒▒▤', '▤▤▤▤E▤▤▤▤▤'];
 const SG = (title, fa, where, ...lines) => [`${title} ${PF(fa)}<br>${where}`, ...lines];
 Object.assign(MAP_SRC, {
   us: {
@@ -6475,7 +6473,8 @@ const GYM_TRAINERS = {
     ['usgym5', 6, ['BOXER VINNIE', 'BOXER RICO', 'BOXER JAMAL'], ['BOXER GINA', 'BOXER TONI', 'BOXER TAMIKA']],
     ['usgym6', 7, ['BOXER GRANT', 'BOXER LINCOLN', 'BOXER JACKSON'], ['BOXER BETSY', 'BOXER DOLLY', 'BOXER HARRIET']]],
 };
-const GYM_TR_SPOTS = [[8, 6, 'left'], [8, 4, 'left'], [8, 2, 'left']]; // each one watches the only path to the head trainer
+// one watches the door, and one watches each side of the ring; the head trainer waits until all three are beaten
+const GYM_TR_SPOTS = [[8, 6, 'left'], [1, 4, 'right'], [8, 4, 'left']];
 function gymTrainersLeft(mapId) { return TRAINER_NPCS.filter(n => n.tr && n.tr.gym && NPC_POS[n.marker].map === mapId && !trState(n.tr.id).won).length; }
 
 // ---- create the trainer NPCs and stand them beside the road ----
