@@ -227,6 +227,7 @@ const mir = d => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (m, x, y) => 
 const both = (d, attrs) => sh('path', { d, ...attrs }) + sh('path', { d: mir(d), ...attrs });
 
 function monsterSvg(w, flip = false) {
+  if (w.sp && w.sp.cryptid) return CB[w.sp.id]();
   const sp = speciesOf(w), r = rng(hashStr((w.lookKey || w.key) + '|look'));
   const col = TYPES[w.palType || w.type].pal;
   const X = new Set(sp.extra || []);
@@ -600,7 +601,7 @@ function monView(m) {
 function useLanguage(l) {
   if (LANG === l && WORDS.length) return;
   LANG = l; Object.assign(ROUTE_NAMES, ROUTE_NAMES_BY[l]);
-  parseWords(); assignSpecies(); buildEvolutions();
+  parseWords(); assignSpecies(); buildEvolutions(); addCryptidWords();
   for (const o of [MON_URL, MON_VIEW]) for (const k of Object.keys(o)) delete o[k];
   document.body.classList.toggle('learn-en', l === 'en');
 }

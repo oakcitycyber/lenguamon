@@ -5,7 +5,8 @@ function stat(w, ok) { const s = S.stats[w.key] || (S.stats[w.key] = [0, 0]); s[
 function makeQuestion(w, dir) {
   const field = dir === 'en2fa' ? 'trForms' : 'enForms';
   const overlaps = (a, b) => a[field].some(f => b[field].includes(f)) || a.key === b.key;
-  const tiers = [WORDS.filter(x => x.route === w.route && x.type === w.type), WORDS.filter(x => x.route === w.route), WORDS];
+  const R = w.cryptid ? 0 : w.route, pool = WORDS.filter(x => !x.cryptid);
+  const tiers = [pool.filter(x => x.route === R && x.type === w.type), pool.filter(x => x.route === R), pool];
   const picks = [];
   for (const tier of tiers) {
     // wrong answers of a similar length, so a long phrase doesn't stand out among short words
@@ -43,7 +44,7 @@ function quiz(q, title, o = {}) {
     const el = $('#quiz');
     $('#b-foe').classList.toggle('hidename', !!o.hideFoe);
     el.innerHTML = `<div class="box qz"><div class="qz-t">${title || ''}</div><div class="qz-p">${q.prompt}</div>
-      <div class="qz-o${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
+      <div class="qz-o${q.noOpts ? ' hide' : ''}${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
       <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}"><button>ENTER</button></form></div>`;
     el.classList.add('show'); window.__q = q;
     const inp = el.querySelector('input'); const t0 = performance.now();
@@ -136,7 +137,7 @@ function chooseWild(route) {
   return elig[0];
 }
 function reviewWord(except) {
-  const pool = WORDS.filter(w => (S.seen[w.key] || S.caught[w.key]) && w.key !== except.key);
+  const pool = WORDS.filter(w => (S.seen[w.key] || S.caught[w.key]) && w.key !== except.key && !w.cryptid);
   if (pool.length < 4) return null;
   const scored = pool.map(w => { const s = S.stats[w.key] || [0, 0]; return { w, s: s[1] * 2 - s[0] + rand() * 3 }; }).sort((a, b) => b.s - a.s);
   return scored[Math.floor(rand() * Math.min(6, scored.length))].w;
@@ -150,7 +151,7 @@ async function battleIntro(music) {
   await fade(false, 150);
 }
 async function battleOutro() {
-  BT.trainer = null; hideText(); await fade(true, 200); bShow(false); BT.boss = null; musicForPlace(); drawWorld(); await fade(false, 200);
+  $('#battle').classList.remove('legend'); BT.trainer = null; hideText(); await fade(true, 200); bShow(false); BT.boss = null; musicForPlace(); drawWorld(); await fade(false, 200);
 }
 async function gainXp(m, amt) {
   const w = monW(m); m.xp += amt;
@@ -195,12 +196,15 @@ async function foeTurn(lastOk, lastQ) {
 
 async function wildEncounter(route) {
   if (!S.team.length) return;
-  const w = chooseWild(route);
+  const legend = cryptidHere();
+  const w = legend || chooseWild(route);
   const firstTime = !S.seen[w.key] && !S.caught[w.key];
   S.seen[w.key] = true;
   BT.foe = { w, lvl: w.level, max: maxHp(w.level), hp: maxHp(w.level) }; BT.me = lead(); BT.boss = null;
-  await battleIntro('battle');
-  await say(`A wild ${B(w.name)} appeared!`);
+  $('#battle').classList.toggle('legend', !!legend);
+  await battleIntro(legend ? 'boss' : 'battle');
+  if (legend) await say([esc(legend.cryptid.sighting), `The legendary ${B(speciesOf(w).name)} appeared!`, `(A cryptid! To catch it, you must write its phrase with no choices to help you.)`]);
+  else await say(`A wild ${B(w.name)} appeared!`);
   await say(`Go! ${B(monW(BT.me).name)}! Show what you know!`);
   let menuIdx = 0, first = true;
   while (true) {
@@ -242,6 +246,7 @@ async function wildEncounter(route) {
       S.daftar--;
       await say(`${esc(S.name)} opened a ${DAF()}! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
+      if (w.cryptid) { q.opts = q.opts.filter(o => o.correct); q.noOpts = true; } // no choices for a legend
       const res = await quiz(q, `Write it in your ${DAF()}`);
       stat(w, res.ok);
       if (!res.ok) {
@@ -259,6 +264,7 @@ async function wildEncounter(route) {
         if (S.team.length < 6 && !S.team.some(m => m.key === w.key)) { S.team.push(makeMon(w)); await say(`${esc(w.name)} joined your team!`); }
         else await say(`${esc(w.name)} was stored in your Lenguadex. (Swap it in from the Lenguadex menu.)`);
         await gainXp(BT.me, 2 + w.level * 2);
+        if (w.cryptid) await cryptidCaught(w);
         break;
       } else {
         bDraw(); await say(['Oh no! The word broke free!', 'Weaken it more before writing it down.']);

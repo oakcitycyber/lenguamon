@@ -81,6 +81,7 @@ const TYPES = {
   HEALTH: { label: 'HEALTH', pal: ['#ffd8d8', '#d86060', '#702020'] },
   NYC: { label: 'BIG CITY', pal: ['#fff4a0', '#d8b020', '#6a5000'] },
   IDIOM: { label: 'IDIOM', pal: ['#ffe0e8', '#e8607a', '#7a1830'] },
+  LEGEND: { label: 'LEGEND', pal: ['#ffe8a0', '#c89020', '#5a3a08'] },
   SLANG: { label: 'SLANG', pal: ['#f0d8ff', '#9a58d8', '#40206a'] },
   HERITAGE: { label: 'HERITAGE', pal: ['#c8f4f0', '#30a8a0', '#105a56'] },
   CIVICS: { label: 'CIVICS', pal: ['#d8e0ff', '#4868c8', '#1a2a6a'] },

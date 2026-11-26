@@ -52,6 +52,9 @@ The whole game is one self-contained file, `index.html` (about 1.2 MB including 
 - **Gyms.** A zurkhaneh (traditional Iranian gym) or a boxing gym in each city gives an 8-round typed drill on that city's words, with experience for your whole team. You have to beat 3 gym trainers before the head trainer will train you.
 - **Old sayings.** An elder in every city teaches proverbs, 50 in each game, recorded in the SAYINGS notebook. You'll always find elders at the teahouses and cafés. Persian proverbs come with a word-for-word translation and their meaning. American sayings come with a Persian equivalent. Once you know an elder's sayings, they quiz you.
 - **Sightseeing.** Every landmark has a sign saying what it is, where it is and why it matters, and you can reach every one of them on foot. The Persian game covers windcatchers, Si-o-se-pol, Hafezieh, Persepolis, the Tomb of Cyrus, Fin Garden, Milad Tower, Azadi Tower, Damavand, the tomb of Omar Khayyam and the tomb of Ferdowsi. The English game covers Route 66, the Golden Gate Bridge, the Space Needle, Old Faithful, Devils Tower, the Bean, the Empire State Building, the Statue of Liberty, the Liberty Bell, Fort McHenry, the Washington Monument and the Capitol Building.
+- **Cryptids.** Each game hides 8 legendary creatures, one per area, as very rare wild encounters (about 1 battle in 100) once that area's boss is beaten. To catch one you type its "legend" phrase with no answer choices shown. START > CRYPTIDS shows silhouettes until you meet them, and catching all 8 earns the CRYPTID HUNTER badge.
+  - Persian game: Karkadann (Yazd desert road), Huma (Isfahan), Azhdaha (Shiraz road), Shahmaran (Zagros), Lamassu (Persepolis), Martikhoras (Dasht-e Kavir), Simurgh (Tehran) and Rakhsh (Khorasan).
+  - English game: Chupacabra (Route 66), Bigfoot (Pacific Coast Highway), Jackalope (Rocky Mountains), Mothman (Chicago), Squonk (Pennsylvania), Sewer Alligator (New York City), Chessie (road to D.C.) and the Demon Cat of the Capitol (Washington, DC).
 - **Map.** START > MAP shows Iran or the United States with your route and a "you are here" marker.
 - **Painted scenes.** Kurt's paintings show when a teahouse owner serves chai, a barista serves coffee, or Maman puts you to bed. There are boy and girl versions of each.
 - **Girl hero.** If you play as a girl, most NPCs have women counterparts.
@@ -71,6 +74,7 @@ src/art2.js       smooth tiles, characters, Iranian landmarks, terrain (mountain
 src/art_us.js     American tiles and landmarks
 src/scenery.js    scattered trees, bushes, rocks and wildflowers; ambient animation
 src/monsters.js   SVG animals (Iranian and American sets), species assignment, evolution
+src/cryptids.js   the 16 cryptids: drawings, legend phrases, rare encounters, the CRYPTIDS page
 src/portraits.js  boss and professor portraits, teahouse and café scenes
 src/ui.js         text box, menus, bilingual and Persian markup
 src/world.js      Iranian maps (including the Khorasan road to Mashhad), movement, START menu, Lenguadex, team
