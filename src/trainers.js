@@ -373,7 +373,8 @@ async function trainerBattle(tr, team, music) {
       const rv = !first && rand() < 0.3 ? reviewWord(w) : null;
       first = false;
       const qw = rv || w, q = makeQuestion(qw, 'en2fa');
-      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
+      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`, { back: true });
+      if (res.cancel) continue;
       stat(qw, res.ok);
       if (res.ok) {
         const crit = res.ms < 5000, dmg = dmgRoll(5 + BT.me.lvl * 0.9) * (crit ? 1.5 : 1) | 0;

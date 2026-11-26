@@ -45,12 +45,15 @@ function quiz(q, title, o = {}) {
     $('#b-foe').classList.toggle('hidename', !!o.hideFoe);
     el.innerHTML = `<div class="box qz"><div class="qz-t">${title || ''}</div><div class="qz-p">${q.prompt}</div>
       <div class="qz-o${q.noOpts ? ' hide' : ''}${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
-      <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}"><button>ENTER</button></form></div>`;
+      <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}">${o.back ? '<button type="button" class="qz-back">BACK</button>' : ''}<button>ENTER</button></form></div>`;
     el.classList.add('show'); window.__q = q;
     const inp = el.querySelector('input'); const t0 = performance.now();
     inp.disabled = true; setTimeout(() => { inp.disabled = false; inp.value = ''; inp.focus(); }, 300); // ignore leftover A-button presses
-    const block = () => { }; pushH(block);
     let done = false;
+    // BACK (button, B, or Esc) returns to the battle menu without using a turn
+    const cancel = () => { if (done) return; done = true; inp.blur(); SND.fx('cancel'); el.classList.remove('show'); el.innerHTML = ''; popH(block); $('#b-foe').classList.remove('hidename'); res({ cancel: true }); };
+    const block = b => { if (o.back && b === 'b') cancel(); }; pushH(block);
+    if (o.back) el.querySelector('.qz-back').addEventListener('click', cancel);
     el.querySelector('form').addEventListener('submit', async e => {
       e.preventDefault(); if (done) return;
       const g = grade(q, inp.value); if (!g) { inp.focus(); return; }
@@ -63,7 +66,7 @@ function quiz(q, title, o = {}) {
       el.classList.remove('show'); el.innerHTML = ''; popH(block); $('#b-foe').classList.remove('hidename');
       res({ ok: g.ok, ms: performance.now() - t0, chosen: g.chosen });
     });
-    inp.addEventListener('keydown', e => e.stopPropagation());
+    inp.addEventListener('keydown', e => { e.stopPropagation(); if (o.back && e.key === 'Escape') { e.preventDefault(); cancel(); } });
   });
 }
 
@@ -223,7 +226,8 @@ async function wildEncounter(route) {
       const st = S.stats[qw.key] || [0, 0];
       const dir = 'en2fa'; // always type the Persian
       const q = makeQuestion(qw, dir);
-      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`);
+      const res = await quiz(q, `${esc(monW(BT.me).name)} attacks!`, { back: true });
+      if (res.cancel) continue;
       stat(qw, res.ok);
       if (res.ok) {
         const crit = res.ms < 5000;
@@ -247,7 +251,8 @@ async function wildEncounter(route) {
       await say(`${esc(S.name)} opened a ${DAF()}! Write the word to catch it!`);
       const q = makeQuestion(w, 'en2fa');
       if (w.cryptid) { q.opts = q.opts.filter(o => o.correct); q.noOpts = true; } // no choices for a legend
-      const res = await quiz(q, `Write it in your ${DAF()}`);
+      const res = await quiz(q, `Write it in your ${DAF()}`, { back: true });
+      if (res.cancel) { S.daftar++; continue; }
       stat(w, res.ok);
       if (!res.ok) {
         await say([`The ink smudged! The word slipped off the page.`, `The answer was ${q.answerHtml}.`]);
