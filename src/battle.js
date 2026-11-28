@@ -35,16 +35,18 @@ function grade(q, typed) {
   let best = null, bestD = 1e9, correctD = 1e9;
   for (const o of q.opts) { for (const f of o.forms) { const d = lev(t, f); if (d < bestD) { bestD = d; best = o; } if (o.correct && d < correctD) correctD = d; } }
   const cf = q.opts.find(o => o.correct).forms.reduce((a, f) => lev(t, f) <= lev(t, a) ? f : a);
-  const ok = best && best.correct && correctD <= tolFor(cf.length);
+  // hard mode (no choices shown): only the right answer counts, within the same typo tolerance
+  const ok = q.recall ? correctD <= tolFor(cf.length) : best && best.correct && correctD <= tolFor(cf.length);
   return { ok, chosen: best, exact: correctD === 0 };
 }
 // show the quiz panel; resolves {ok, ms, chosen}
 function quiz(q, title, o = {}) {
   return new Promise(res => {
     const el = $('#quiz');
+    if (OPTS.hard && !q.boss) q.recall = true; // HARD MODE: total recall, no answer choices
     $('#b-foe').classList.toggle('hidename', !!o.hideFoe);
-    el.innerHTML = `<div class="box qz"><div class="qz-t">${title || ''}</div><div class="qz-p">${q.prompt}</div>
-      <div class="qz-o${q.noOpts ? ' hide' : ''}${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
+    el.innerHTML = `<div class="box qz${q.noOpts || q.recall ? ' recall' : ''}"><div class="qz-t">${title || ''}${q.recall && !q.noOpts ? ' <span class="qz-hard">HARD</span>' : ''}</div><div class="qz-p">${q.prompt}</div>
+      <div class="qz-o${q.noOpts || q.recall ? ' hide' : ''}${q.opts.some(o => (o.word.tr0 || '').length > 15 || (o.word.en0 || '').length > 20) || q.boss ? ' one' : ''}">${q.opts.map((o, i) => `<div class="qo" data-i="${i}"><span class="ql">${'ABCD'[i]}</span>${o.html}</div>`).join('')}</div>
       <form class="qz-i"><input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${q.hint}">${o.back ? '<button type="button" class="qz-back">BACK</button>' : ''}<button>ENTER</button></form></div>`;
     el.classList.add('show'); window.__q = q;
     const inp = el.querySelector('input'); const t0 = performance.now();
