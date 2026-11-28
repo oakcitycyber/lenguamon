@@ -61,7 +61,7 @@ The whole game is one self-contained file, `index.html` (about 1.2 MB including 
 - **Living landscape.** The routes have scattered trees, bushes, rocks and wildflowers that sway in the wind. Grass sways, water sparkles, butterflies, birds and cloud shadows move across the land, and steam rises from samovars and espresso machines.
 - **Sightseeing mode.** Name your hero **Cyrus the Great** (Persian game) or **George Washington** (English game). Every road opens, every word is in your Lenguadex, and you start with a fully evolved team. Wild battles and trainers stay quiet (turn them back on in OPTIONS), and you can fast-travel from the map.
 
-Options (START > OPTIONS): transliteration on/off, music, sound effects, text speed and HARD MODE. Hard mode hides the 4 answer choices in battles, gym drills and catching, so every word has to come from memory (boss conversations keep their reply choices). In sightseeing mode there is also a wild Lenguamon on/off option.
+Options (START > OPTIONS): transliteration on/off, music, sound effects, text speed, HARD MODE and SCREEN FLASHES (page-wide flashes when a battle starts and when attacks hit). Hard mode hides the 4 answer choices in battles, gym drills and catching, so every word has to come from memory (boss conversations keep their reply choices). In sightseeing mode there is also a wild Lenguamon on/off option.
 
 ## Project layout
 

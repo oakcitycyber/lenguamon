@@ -118,6 +118,8 @@ async function strike(attacker, hit, dmg, crit) {
   await sleep(170);
   if (hit) {
     SND.fx('hit');
+    // a page-wide flash on every hit: white when you land one, gold on a critical, red when you get hit
+    pageFlash(attacker === 'foe' ? '#ff3a3a' : crit ? '#ffd040' : '#ffffff', crit ? 320 : 220, attacker === 'foe' ? .55 : .7);
     spawnFx(tSel, burstSvg(attacker === 'me' ? (crit ? '#ffd040' : '#fff070') : '#ff7a4a', crit), 'burst' + (crit ? ' big' : ''), 450);
     if (attacker === 'foe' || crit) anim('#screen', 'shake-screen', 350);
     if (dmg != null) spawnFx(tSel, `-${dmg}`, 'dmg' + (attacker === 'foe' ? ' bad' : ''), 900);
@@ -151,7 +153,9 @@ function reviewWord(except) {
 async function battleIntro(music) {
   SND.music(music); SND.fx('encounter');
   $('#battle').classList.toggle('lair', !!(BT.boss && BT.boss.lair));
-  await flash(3); await fade(true, 150);
+  // the whole page flashes as the battle begins (three pulses, about three a second)
+  for (let i = 0; i < 3; i++) { flash(1); await pageFlash(BT.boss ? '#ffe0a0' : '#ffffff', 300, .9); }
+  await fade(true, 150);
   bShow(true); bDraw(); hideText();
   await fade(false, 150);
 }

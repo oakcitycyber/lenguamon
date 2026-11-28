@@ -330,6 +330,8 @@ body.typing .qz-i input { font-size: 16px; }
 .qz.recall { top: auto; }
 body.typing .qz.recall { top: auto; }
 
+#pageflash { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0; }
+
 </style>
 </head>
 <body>
@@ -4250,6 +4252,15 @@ async function ask(q, yes = 'YES', no = 'NO') {
   return r === 0;
 }
 function fade(on, ms = 250) { const f = $('#fade'); f.style.transitionDuration = ms + 'ms'; f.classList.toggle('on', on); return sleep(ms); }
+// page-wide flashes (battle start and hits); they can be turned off in OPTIONS > SCREEN FLASHES
+function pageFlash(color = '#fff', ms = 160, peak = .85) {
+  if (OPTS.flashes === false) return Promise.resolve();
+  let f = document.getElementById('pageflash');
+  if (!f) { f = document.createElement('div'); f.id = 'pageflash'; document.body.appendChild(f); }
+  f.style.transition = 'none'; f.style.background = color; f.style.opacity = peak; void f.offsetWidth;
+  f.style.transition = `opacity ${ms}ms ease-out`; f.style.opacity = 0;
+  return sleep(ms);
+}
 async function flash(n = 3) { const f = $('#flash'); for (let i = 0; i < n; i++) { f.classList.add('on'); await sleep(70); f.classList.remove('on'); await sleep(70); } }
 function waitA() { return new Promise(res => { const h = b => { if (b === 'a' || b === 'b' || b === 'start') { popH(h); res(b); } }; pushH(h); }); }
 
@@ -4737,16 +4748,17 @@ async function optionsScreen() {
   let idx = 0;
   while (true) {
     const items = [
-      `TRANSLITERATION: ${OPTS.translit ? 'ON' : 'OFF'}`, `MUSIC: ${OPTS.music ? 'ON' : 'OFF'}`, `SOUND FX: ${OPTS.sfx ? 'ON' : 'OFF'}`, `TEXT SPEED: ${['FAST', 'MID', 'SLOW'][OPTS.speed]}`, `HARD MODE: ${OPTS.hard ? 'ON' : 'OFF'}`, 'BACK'];
-    const cy = !!(S && S.cyrus); if (cy) items.splice(5, 0, `WILD LENGUAMON: ${S.flags.noEnc ? 'OFF' : 'ON'}`);
+      `TRANSLITERATION: ${OPTS.translit ? 'ON' : 'OFF'}`, `MUSIC: ${OPTS.music ? 'ON' : 'OFF'}`, `SOUND FX: ${OPTS.sfx ? 'ON' : 'OFF'}`, `TEXT SPEED: ${['FAST', 'MID', 'SLOW'][OPTS.speed]}`, `HARD MODE: ${OPTS.hard ? 'ON' : 'OFF'}`, `SCREEN FLASHES: ${OPTS.flashes === false ? 'OFF' : 'ON'}`, 'BACK'];
+    const cy = !!(S && S.cyrus); if (cy) items.splice(6, 0, `WILD LENGUAMON: ${S.flags.noEnc ? 'OFF' : 'ON'}`);
     const r0 = await choose(items, { cls: 'opts', start: idx });
     if (r0 < 0 || r0 === items.length - 1) return; idx = r0;
-    if (cy && r0 === 5) { S.flags.noEnc = !S.flags.noEnc; writeSave(); continue; }
+    if (cy && r0 === 6) { S.flags.noEnc = !S.flags.noEnc; writeSave(); continue; }
     const r = r0;
     if (r === 0) OPTS.translit = !OPTS.translit;
     if (r === 1) { OPTS.music = !OPTS.music; SND.refresh(); }
     if (r === 2) OPTS.sfx = !OPTS.sfx;
     if (r === 3) OPTS.speed = (OPTS.speed + 1) % 3;
+    if (r === 5) OPTS.flashes = OPTS.flashes === false;
     if (r === 4) { OPTS.hard = !OPTS.hard; saveOpts(); await say(OPTS.hard ? ['HARD MODE is ON.', 'Battles no longer show answer choices. Type every word and phrase from memory!', '(Boss conversations still show their reply choices.)'] : ['HARD MODE is OFF.', 'Battles show 4 answer choices again.']); continue; }
     saveOpts();
   }
@@ -5280,6 +5292,8 @@ async function strike(attacker, hit, dmg, crit) {
   await sleep(170);
   if (hit) {
     SND.fx('hit');
+    // a page-wide flash on every hit: white when you land one, gold on a critical, red when you get hit
+    pageFlash(attacker === 'foe' ? '#ff3a3a' : crit ? '#ffd040' : '#ffffff', crit ? 320 : 220, attacker === 'foe' ? .55 : .7);
     spawnFx(tSel, burstSvg(attacker === 'me' ? (crit ? '#ffd040' : '#fff070') : '#ff7a4a', crit), 'burst' + (crit ? ' big' : ''), 450);
     if (attacker === 'foe' || crit) anim('#screen', 'shake-screen', 350);
     if (dmg != null) spawnFx(tSel, `-${dmg}`, 'dmg' + (attacker === 'foe' ? ' bad' : ''), 900);
@@ -5313,7 +5327,9 @@ function reviewWord(except) {
 async function battleIntro(music) {
   SND.music(music); SND.fx('encounter');
   $('#battle').classList.toggle('lair', !!(BT.boss && BT.boss.lair));
-  await flash(3); await fade(true, 150);
+  // the whole page flashes as the battle begins (three pulses, about three a second)
+  for (let i = 0; i < 3; i++) { flash(1); await pageFlash(BT.boss ? '#ffe0a0' : '#ffffff', 300, .9); }
+  await fade(true, 150);
   bShow(true); bDraw(); hideText();
   await fade(false, 150);
 }

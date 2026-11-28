@@ -468,16 +468,17 @@ async function optionsScreen() {
   let idx = 0;
   while (true) {
     const items = [
-      `TRANSLITERATION: ${OPTS.translit ? 'ON' : 'OFF'}`, `MUSIC: ${OPTS.music ? 'ON' : 'OFF'}`, `SOUND FX: ${OPTS.sfx ? 'ON' : 'OFF'}`, `TEXT SPEED: ${['FAST', 'MID', 'SLOW'][OPTS.speed]}`, `HARD MODE: ${OPTS.hard ? 'ON' : 'OFF'}`, 'BACK'];
-    const cy = !!(S && S.cyrus); if (cy) items.splice(5, 0, `WILD LENGUAMON: ${S.flags.noEnc ? 'OFF' : 'ON'}`);
+      `TRANSLITERATION: ${OPTS.translit ? 'ON' : 'OFF'}`, `MUSIC: ${OPTS.music ? 'ON' : 'OFF'}`, `SOUND FX: ${OPTS.sfx ? 'ON' : 'OFF'}`, `TEXT SPEED: ${['FAST', 'MID', 'SLOW'][OPTS.speed]}`, `HARD MODE: ${OPTS.hard ? 'ON' : 'OFF'}`, `SCREEN FLASHES: ${OPTS.flashes === false ? 'OFF' : 'ON'}`, 'BACK'];
+    const cy = !!(S && S.cyrus); if (cy) items.splice(6, 0, `WILD LENGUAMON: ${S.flags.noEnc ? 'OFF' : 'ON'}`);
     const r0 = await choose(items, { cls: 'opts', start: idx });
     if (r0 < 0 || r0 === items.length - 1) return; idx = r0;
-    if (cy && r0 === 5) { S.flags.noEnc = !S.flags.noEnc; writeSave(); continue; }
+    if (cy && r0 === 6) { S.flags.noEnc = !S.flags.noEnc; writeSave(); continue; }
     const r = r0;
     if (r === 0) OPTS.translit = !OPTS.translit;
     if (r === 1) { OPTS.music = !OPTS.music; SND.refresh(); }
     if (r === 2) OPTS.sfx = !OPTS.sfx;
     if (r === 3) OPTS.speed = (OPTS.speed + 1) % 3;
+    if (r === 5) OPTS.flashes = OPTS.flashes === false;
     if (r === 4) { OPTS.hard = !OPTS.hard; saveOpts(); await say(OPTS.hard ? ['HARD MODE is ON.', 'Battles no longer show answer choices. Type every word and phrase from memory!', '(Boss conversations still show their reply choices.)'] : ['HARD MODE is OFF.', 'Battles show 4 answer choices again.']); continue; }
     saveOpts();
   }

@@ -114,6 +114,15 @@ async function ask(q, yes = 'YES', no = 'NO') {
   return r === 0;
 }
 function fade(on, ms = 250) { const f = $('#fade'); f.style.transitionDuration = ms + 'ms'; f.classList.toggle('on', on); return sleep(ms); }
+// page-wide flashes (battle start and hits); they can be turned off in OPTIONS > SCREEN FLASHES
+function pageFlash(color = '#fff', ms = 160, peak = .85) {
+  if (OPTS.flashes === false) return Promise.resolve();
+  let f = document.getElementById('pageflash');
+  if (!f) { f = document.createElement('div'); f.id = 'pageflash'; document.body.appendChild(f); }
+  f.style.transition = 'none'; f.style.background = color; f.style.opacity = peak; void f.offsetWidth;
+  f.style.transition = `opacity ${ms}ms ease-out`; f.style.opacity = 0;
+  return sleep(ms);
+}
 async function flash(n = 3) { const f = $('#flash'); for (let i = 0; i < n; i++) { f.classList.add('on'); await sleep(70); f.classList.remove('on'); await sleep(70); } }
 function waitA() { return new Promise(res => { const h = b => { if (b === 'a' || b === 'b' || b === 'start') { popH(h); res(b); } }; pushH(h); }); }
 

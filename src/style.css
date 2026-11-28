@@ -321,3 +321,5 @@ body.typing .qz-i input { font-size: 16px; }
 .qz-hard { float: right; background: #8a1c2c; color: #fff; border-radius: calc(var(--u) * 1); padding: 0 calc(var(--u) * 1.5); font-size: .85em; }
 .qz.recall { top: auto; }
 body.typing .qz.recall { top: auto; }
+
+#pageflash { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0; }
